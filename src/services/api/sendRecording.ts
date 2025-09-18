@@ -5,7 +5,7 @@ export default async function sendRecording(audioBlob: Blob): Promise<string> {
   formData.append("file", audioBlob, "recording.webm");
 
   try {
-    const response = await axios.post(`${import.meta.env.API_URL}/audio/transcribe`, formData, {
+    const response = await axios.post(`${import.meta.env.VITE_API_URL}/audio/transcribe`, formData, {
       headers: {
         "Content-Type": "multipart/form-data",
       },

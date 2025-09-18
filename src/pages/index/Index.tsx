@@ -25,6 +25,44 @@ export default function Index() {
             🔑 Fazer login
         </button>
         </div>
+
+        {/*Navegação temporária*/}
+        <div className="linha-login">
+        <button className="botao-login" onClick={() => navigate("/GameSectionSpeech")}>
+            Sessão1
+        </button>
+        </div>
+        <div className="linha-login">
+        <button className="botao-login" onClick={() => navigate("/GameSectionMultipleChoice")}>
+            Sessão2
+        </button>
+        </div>
+        <div className="linha-login">
+        <button className="botao-login" onClick={() => navigate("/GameSectionFinal")}>
+            Sessão3
+        </button>
+        </div>
+        <div className="linha-login">
+        <button className="botao-login" onClick={() => navigate("/GameSectionSpeechSyllable")}>
+            Sessão4
+        </button>
+        </div>
+        <div className="linha-login">
+        <button className="botao-login" onClick={() => navigate("/GameSectionApresentation")}>
+            Sessão5
+        </button>
+        </div>
+        <div className="linha-login">
+        <button className="botao-login" onClick={() => navigate("/PlayerMenu")}>
+            PlayerMenu
+        </button>
+        </div>
+        <div className="linha-login">
+        <button className="botao-login" onClick={() => navigate("/GameConfig")}>
+            Config
+        </button>
+        </div>
+
     </div>
     );
 }

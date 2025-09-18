@@ -9,6 +9,7 @@ import GameSectionMultipleChoice from '../../pages/game-sections/GameSectionMult
 import GameSectionFinal from '../../pages/game-sections/GameSectionFinal';
 import GameSectionSpeechSyllable from '../../pages/game-sections/GameSectionSpeechSyllable';
 import GameConfig from '../../pages/game-configurations/GameConfig';
+import GameSectionApresentation from '../../pages/game-sections/GameSectionApresentation';
 
 export function Router() {
   return (
@@ -19,6 +20,7 @@ export function Router() {
         <Route path="/PlayerMenu" element={<PlayerMenu/>}/>
         <Route path="/Register" element={<Register/>}/>
         <Route path="/TeacherMenu" element={<TeacherMenu/>}/>
+        <Route path="/GameSectionApresentation" element={<GameSectionApresentation/>}/>
         <Route path="/GameSectionSpeech" element={<GameSectionSpeech/>}/>
         <Route path="/GameSectionMultipleChoice" element={<GameSectionMultipleChoice/>}/>
         <Route path="/GameSectionFinal" element={<GameSectionFinal/>}/>

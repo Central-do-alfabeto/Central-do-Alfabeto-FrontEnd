@@ -9,7 +9,7 @@ export default function Register() {
   const navigate = useNavigate();
   const location = useLocation();
 
-   const { role = "teacher" } = location.state || {};
+  const { role = "educators" } = location.state || {};
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();

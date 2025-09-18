@@ -3,7 +3,7 @@ import { currentPhaseIndex, TotalAudioReproductions, TotalErrors, PlayerID } fro
 
 export function playerDataUpdate() {
     try {
-        const response = axios.put(`${import.meta.env.API_URL}/player/${PlayerID}/updateProgress`, {
+        const response = axios.put(`${import.meta.env.VITE_API_URL}/player/${PlayerID}/updateProgress`, {
             currentPhaseIndex,
             TotalAudioReproductions,
             TotalErrors,

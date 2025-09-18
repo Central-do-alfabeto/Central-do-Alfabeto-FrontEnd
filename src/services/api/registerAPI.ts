@@ -3,7 +3,7 @@ import axios from "axios";
 
 export async function registerAPI(email: string, password: string, nomeCompleto: string, AccountType: string) {
     try {
-        const response = await axios.post(`${import.meta.env.API_URL}/${AccountType}/register`, {
+        const response = await axios.post(`${import.meta.env.VITE_API_URL}/${AccountType}/register`, {
             email,
             password,
             nomeCompleto,
