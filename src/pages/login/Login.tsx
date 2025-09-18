@@ -26,7 +26,7 @@ export default function Login() {
             }
 
         } catch (err: any) {
-            console.error("Erro no login:", err.message);
+            alert('Email ou senha incorretos!');
         }
     };
 

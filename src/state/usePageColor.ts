@@ -4,7 +4,7 @@ import { type PaletaCores, paletasDisponiveis } from "../store/paletaCores";
 let globalPaleta: PaletaCores = paletasDisponiveis.clara;
 let listeners: ((paleta: PaletaCores) => void)[] = [];
 
-export function PageColor() {
+export function usePageColor() {
   const [paleta, setPaleta] = useState(globalPaleta);
 
   const setGlobalPaleta = (nomePaleta: keyof typeof paletasDisponiveis) => {

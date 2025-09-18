@@ -1,15 +1,17 @@
 import { useState } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import { registerAPI } from "../../services/api/registerAPI";  
+import { AiOutlineEye, AiOutlineEyeInvisible } from "react-icons/ai";
 
 export default function Register() {
   const [nomeCompleto, setNomeCompleto] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [showPassword, setShowPassword] = useState(false);
   const navigate = useNavigate();
   const location = useLocation();
 
-   const { role = "teacher" } = location.state || {};
+  const { role = "educators" } = location.state || {};
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -35,6 +37,9 @@ export default function Register() {
           placeholder="Nome Completo"
           value={nomeCompleto}
           onChange={(e) => setNomeCompleto(e.target.value)}
+          pattern="^[A-Za-zÀ-ÿ\s]+$"
+          title="O nome deve conter apenas letras e espaços."
+          maxLength={100}
           required
         />
 
@@ -43,16 +48,26 @@ export default function Register() {
           placeholder="E-mail"
           value={email}
           onChange={(e) => setEmail(e.target.value)}
+          maxLength={100}
           required
         />
 
         <input
-          type="password"
+          type={showPassword ? "text" : "password"}
           placeholder="Senha"
           value={password}
           onChange={(e) => setPassword(e.target.value)}
+          pattern="^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{8,}$"
+          title="A senha deve ter no mínimo 8 caracteres, incluindo letras e números."
+          maxLength={32}
           required
         />
+        <button
+          type="button"
+          onClick={() => setShowPassword(!showPassword)}
+        >
+          {showPassword ? <AiOutlineEyeInvisible size={20} /> : <AiOutlineEye size={20} />}
+        </button>
 
         <button type="submit">Cadastrar</button>
       </form>

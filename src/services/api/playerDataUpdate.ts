@@ -3,7 +3,7 @@ import { currentPhaseIndex, TotalAudioReproductions, TotalErrors, PlayerID } fro
 
 export function playerDataUpdate() {
     try {
-        const response = axios.put(`${import.meta.env.API_URL}/player/${PlayerID}/updateProgress`, {
+        const response = axios.put(`${import.meta.env.VITE_API_URL}/player/${PlayerID}/updateProgress`, {
             currentPhaseIndex,
             TotalAudioReproductions,
             TotalErrors,
@@ -11,7 +11,12 @@ export function playerDataUpdate() {
         });
 
         console.log(response);
-    } catch(e: any) {
-        console.log(e);
+    } catch (error) {
+        if (axios.isAxiosError(error)) {
+            console.error("Erro em playerDataUpdate:", error.message);
+            throw error;
+        }
+        console.error("Erro não esperado:", error);
+        throw error;
     }
 }

@@ -1,9 +1,9 @@
-import { PageColor } from "../../state/pageColor";
+import { usePageColor } from "../../state/usePageColor";
 import { paletasDisponiveis } from "../../store/paletaCores";
-import { useShowText } from "../../state/showText";
+import { useShowText } from "../../state/useShowText";
 
 export default function Config() {
-  const [paleta, setPaleta] = PageColor();
+  const [paleta, setPaleta] = usePageColor();
   const [showText, setShowText] = useShowText();
 
   const handleLogout = () => {

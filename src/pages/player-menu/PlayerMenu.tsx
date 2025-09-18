@@ -48,7 +48,7 @@ export default function PlayerMenu() {
         </div>
 
         <div className="start-button">
-        <button onClick={() => navigate('/GameSectionApresentation')}>INICIAR</button>
+        <button onClick={() => navigate('/GameSectionPresentation')}>INICIAR</button>
         </div>
 
         </div>

@@ -2,7 +2,7 @@ import axios from 'axios';
 
 export async function loginAPI(email: string, password: string) {
     try {
-        const response = await axios.post(`${import.meta.env.API_URL}/auth/login`, { email, password });
+        const response = await axios.post(`${import.meta.env.VITE_API_URL}/auth/login`, { email, password });
 
     return {
         name: response.data.user.name,
@@ -11,7 +11,12 @@ export async function loginAPI(email: string, password: string) {
         teacherStudents: response.data.usar.teacherStudents || undefined
     };
     
-    } catch (error: any) {
-        throw new Error(error.response?.data || "Erro no login");
+    } catch (error) {
+        if (axios.isAxiosError(error)) {
+            console.error("Erro em loginAPI:", error.message);
+            throw error;
+        }
+        console.error("Erro não esperado:", error);
+        throw error;
     }
 }
