@@ -1,0 +1,205 @@
+/* Reset básico */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: Arial, sans-serif;
+  background-color: #b4f5b1;
+  min-height: 100vh;
+}
+
+/* Cabeçalho */
+.educador-header {
+  background-color: #2e7d32;
+  color: white;
+  padding: 15px 30px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.logo-header {
+  height: 60px; /* Aumentei a logo */
+}
+
+.logout-btn {
+  background-color: #d32f2f;
+  color: white;
+  border: none;
+  padding: 10px 18px;
+  border-radius: 15px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.logout-btn:hover {
+  transform: scale(1.05);
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+}
+
+/* Container principal */
+.educador-container {
+  display: flex;
+  justify-content: center;
+  padding-top: 40px;
+  min-height: 100vh;
+}
+
+/* Sidebar de alunos */
+.aluno-sidebar {
+  background-color: white;
+  border-radius: 15px;
+  padding: 20px;
+  width: 250px;
+  box-shadow: 0 0 10px rgba(0,0,0,0.1);
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start; /* <-- Garante alinhamento ao topo */
+}
+
+.aluno-sidebar h3 {
+  margin-bottom: 10px;
+  font-size: 1.4em;
+  color: #1a1a1a;
+}
+
+.aluno-sidebar ul {
+  list-style: none;
+  padding: 0;
+  margin-top: 0; /* <-- Remove margem excessiva */
+}
+
+.aluno-sidebar li {
+  background-color: #689f38;
+  color: white;
+  margin-bottom: 10px;
+  padding: 10px;
+  border-radius: 12px;
+  cursor: pointer;
+  font-weight: bold;
+  transition: background-color 0.2s ease;
+  width: 100%;
+  text-align: center;
+}
+
+/* Botão de adicionar aluno */
+.botao-adicionar-aluno {
+  background-color: #2e7d32;
+  color: white;
+  border: none;
+  padding: 12px;
+  border-radius: 15px;
+  font-size: 1em;
+  font-weight: bold;
+  margin-top: 20px;
+  cursor: pointer;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  width: 100%;
+}
+
+.botao-adicionar-aluno:hover {
+  transform: scale(1.05);
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+}
+
+/* Painel do aluno */
+.painel-aluno {
+  flex: 1;
+  background-color: white;
+  border-radius: 15px;
+  padding: 30px;
+  box-shadow: 0 0 10px rgba(0,0,0,0.1);
+  overflow-y: auto;
+  margin-left: 30px;
+}
+
+/* Título */
+.titulo-detalhe {
+  font-size: 1.8em;
+  margin-bottom: 40px; 
+  color: #1a1a1a;
+  font-weight: bold;
+}
+
+/* Informações do aluno */
+.info-aluno {
+  display: flex;
+  gap: 20px;
+  margin-bottom: 30px;
+  flex-wrap: wrap;
+}
+
+.foto-aluno {
+  width: 120px;
+  height: 120px;
+  border-radius: 10px;
+  object-fit: cover;
+}
+
+.dados-aluno {
+  flex: 1;
+  text-align: left;
+  font-size: 1em;
+  color: #333;
+}
+
+.anotacoes {
+  flex: 1 1 100%;
+  margin-top: 15px;
+  text-align: left;
+}
+
+.anotacoes textarea {
+  width: 100%;
+  padding: 10px;
+  border-radius: 10px;
+  border: 1px solid #ccc;
+  resize: vertical;
+}
+
+/* Gráficos */
+.graficos-aluno {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 20px;
+}
+
+.grafico {
+  background-color: #f0f0f0;
+  padding: 20px;
+  border-radius: 15px;
+  font-size: 1.1em;
+  color: #333;
+  font-weight: bold;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+}
+
+/* Responsivo */
+@media (max-width: 768px) {
+  .educador-container {
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .aluno-sidebar {
+    width: 100%;
+    margin-bottom: 20px;
+  }
+
+  .info-aluno {
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .dados-aluno {
+    text-align: center;
+  }
+
+  .painel-aluno {
+    margin-left: 0;
+  }
+}

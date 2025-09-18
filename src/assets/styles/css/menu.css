@@ -1,0 +1,70 @@
+body {
+  margin: 0;
+  padding: 0;
+  background: url('imagens/fundo menu.png') no-repeat center center fixed;
+  background-size: cover;
+  font-family: 'Comic Sans MS', cursive, sans-serif;
+}
+
+.container {
+  position: relative;
+  width: 100vw;
+  height: 100vh;
+}
+
+/* Ícone logout */
+.logout-icon {
+  position: absolute;
+  top: 20px;
+  right: 20px;
+  width: 50px;
+  height: auto;
+  cursor: pointer;
+}
+
+/* Ícones do menu (áudio e config) */
+.menu-icons {
+  position: absolute;
+  top: 42%;
+  right: 5%;
+  display: flex;
+  flex-direction: row; /* Antes era column */
+  gap: 20px; /* Espaçamento entre os ícones */
+}
+
+.menu-icons button {
+  background: none;
+  border: none;
+  padding: 0;
+  cursor: pointer;
+}
+
+.menu-icons button img {
+  width: 10vh; /* Tamanho reduzido */
+  height: auto;
+}
+
+/* Botão iniciar */
+.start-button {
+  position: absolute;
+  bottom: 15%;
+  left: 50%;
+  transform: translateX(-50%);
+}
+
+.start-button button {
+  background-color: #2e7d32;
+  color: white;
+  font-size: 32px;
+  font-weight: bold;
+  padding: 20px 50px;
+  border: none;
+  border-radius: 30px;
+  cursor: pointer;
+  box-shadow: 0 6px 10px rgba(0,0,0,0.2);
+  transition: transform 0.2s;
+}
+
+.start-button button:hover {
+  transform: scale(1.05);
+}
