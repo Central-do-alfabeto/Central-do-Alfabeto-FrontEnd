@@ -25,8 +25,9 @@ export default function Login() {
                 navigate("/TeacherMenu");  // Redireciona ao menu do educador
             }
 
-        } catch (err: any) {
+        } catch (e: unknown) {
             alert('Email ou senha incorretos!');
+            console.log(e);
         }
     };
 
