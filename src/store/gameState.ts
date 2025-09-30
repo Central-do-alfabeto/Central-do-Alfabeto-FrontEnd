@@ -18,6 +18,11 @@ export function setCurrentPhaseIndex(value: number) {
   setSessionNumber("currentPhaseIndex", currentPhaseIndex);
 }
 
+export function syncCurrentPhaseIndex(value: number) {
+  currentPhaseIndex = value;
+  setSessionNumber("currentPhaseIndex", currentPhaseIndex);
+}
+
 // PlayerID
 export let PlayerID: number = getSessionNumber("PlayerID", 0);
 export function setPlayerID(value: number) {

@@ -2,7 +2,7 @@
 import { useState } from "react";
 
 let globalShowText = false;
-let listeners: ((value: boolean) => void)[] = [];
+const listeners: ((value: boolean) => void)[] = [];
 
 export function useShowText() {
   const [showText, setShowTextState] = useState(globalShowText);

@@ -1,14 +1,16 @@
 import { useLayoutEffect } from "react";
 import { playAudio } from "../../utils/playAudio";
 import { useNavigate } from "react-router-dom";
+import { useAudioRunning } from "../../state/useAudioRunning";
 
 export default function PlayerMenu() {
     const audioPathName: string = 'Menu';
     const navigate = useNavigate();
+    const [audioRunning, setAudioRunning] = useAudioRunning();
 
     useLayoutEffect(() => {
-        playAudio(audioPathName);
-    }, []);
+        playAudio(audioPathName, setAudioRunning);
+    }, [audioPathName, setAudioRunning]);
 
     return (
         <div className="container">
@@ -29,7 +31,7 @@ export default function PlayerMenu() {
         </button> */}
 
         <div className="menu-icons">
-        <button className="icon" onClick={() => playAudio(audioPathName)}>
+        <button className="icon" onClick={() => playAudio(audioPathName, setAudioRunning, true)} disabled={audioRunning}>
              <img 
                 src="../../assets/images/sound-icon.png"
                 alt="logoDoSite"

@@ -2,7 +2,7 @@ import { useState } from "react";
 import { type PaletaCores, paletasDisponiveis } from "../store/paletaCores";
 
 let globalPaleta: PaletaCores = paletasDisponiveis.clara;
-let listeners: ((paleta: PaletaCores) => void)[] = [];
+const listeners: ((paleta: PaletaCores) => void)[] = [];
 
 export function usePageColor() {
   const [paleta, setPaleta] = useState(globalPaleta);

@@ -1,33 +1,54 @@
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
 import { useState } from "react";
 import { loginAPI } from "../../services/api/loginAPI";
-import { setCurrentPhaseIndex } from "../../store/gameState";
-import { Link } from "react-router-dom";
-import { setStudents } from "../../store/TeacherStudentsInfo";
+import { setPlayerID, syncCurrentPhaseIndex } from "../../store/gameState";
+import { setStudents } from "../../store/teacherStudentsInfo";
+import { setAuthSession } from "../../store/auth";
+import { AiOutlineEye, AiOutlineEyeInvisible } from "react-icons/ai";
+import "./Login.css";
 
 
 export default function Login() {
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
+    const [showPassword, setShowPassword] = useState(false);
+    const [isLoading, setIsLoading] = useState(false);
     const navigate = useNavigate();
 
     const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
 
+        if (isLoading) {
+            return;
+        }
+
+        setIsLoading(true);
+
         try {
             const user = await loginAPI(email, password);
 
+            setAuthSession({
+                token: user.token,
+                role: user.isStudent ? "STUDENT" : "EDUCATOR",
+                userId: user.userId,
+            });
+
             if (user.isStudent) {
-                setCurrentPhaseIndex(user.currentPhaseIndex);
+                setPlayerID(user.userId);
+                if (typeof user.currentPhaseIndex === "number") {
+                    syncCurrentPhaseIndex(user.currentPhaseIndex);
+                }
                 navigate("/PlayerMenu");  // Redireciona ao menu do aluno
             } else {
-                setStudents(user.teacherStudents);
+                setStudents(Array.isArray(user.teacherStudents) ? user.teacherStudents : []);
                 navigate("/TeacherMenu");  // Redireciona ao menu do educador
             }
 
         } catch (e: unknown) {
             alert('Email ou senha incorretos!');
             console.log(e);
+        } finally {
+            setIsLoading(false);
         }
     };
 
@@ -48,16 +69,39 @@ export default function Login() {
                 required
             />
 
-            <input 
-                type="password" 
-                placeholder="Senha"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                required
-            />
-            <button type="submit">Login</button>
+            <div className="input-with-icon">
+                <input 
+                    type={showPassword ? "text" : "password"}
+                    placeholder="Senha"
+                    value={password}
+                    onChange={(e) => setPassword(e.target.value)}
+                    required
+                />
+                <button
+                    type="button"
+                    className="toggle-password"
+                    onClick={() => setShowPassword((prev) => !prev)}
+                    aria-label={showPassword ? "Ocultar senha" : "Mostrar senha"}
+                    disabled={isLoading}
+                >
+                    {showPassword ? <AiOutlineEyeInvisible size={20} /> : <AiOutlineEye size={20} />}
+                </button>
+            </div>
+
+            <button type="submit" disabled={isLoading}>
+                {isLoading ? "Entrando..." : "Login"}
+            </button>
         </form>
-        <Link to="/">Ainda não tem conta? Cadastre-se</Link>
+        <div className="login-footer">
+            <Link to="/">Ainda não tem conta? Cadastre-se</Link>
+            <button
+                type="button"
+                onClick={() => navigate("/")}
+                disabled={isLoading}
+            >
+                Voltar
+            </button>
+        </div>
         </div>
     );
 }

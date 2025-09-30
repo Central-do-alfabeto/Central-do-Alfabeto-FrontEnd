@@ -1,11 +1,11 @@
-import axios from "axios";
+import apiClient from "./apiClient";
 
 export default async function sendRecording(audioBlob: Blob): Promise<string> {
   const formData = new FormData();
-  formData.append("file", audioBlob, "recording.webm");
+  formData.append("audioFile", audioBlob, "recording.webm");
 
   try {
-    const response = await axios.post(`${import.meta.env.VITE_API_URL}/audio/transcribe`, formData, {
+    const response = await apiClient.post(`/audio/transcribe`, formData, {
       headers: {
         "Content-Type": "multipart/form-data",
       },
@@ -13,11 +13,11 @@ export default async function sendRecording(audioBlob: Blob): Promise<string> {
 
     return response.data.message;
   } catch (error) {
-        if (axios.isAxiosError(error)) {
+        if (error instanceof Error) {
             console.error("Erro em sendRecording:", error.message);
-            throw error;
+        } else {
+            console.error("Erro não esperado:", error);
         }
-        console.error("Erro não esperado:", error);
         throw error;
   }
 }

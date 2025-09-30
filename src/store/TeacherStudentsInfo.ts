@@ -1,5 +1,11 @@
-let students = {};
+import type { TeacherStudentSummary } from "../services/api/loginAPI";
 
-export function setStudents(teacherStudents: object) {
+let students: TeacherStudentSummary[] = [];
+
+export function setStudents(teacherStudents: TeacherStudentSummary[] = []) {
     students = teacherStudents;
+}
+
+export function getStudents(): TeacherStudentSummary[] {
+    return students;
 }
