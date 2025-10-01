@@ -9,7 +9,7 @@ export function playAudio(name: string, setUseAudioRunning: Dispatch<SetStateAct
 
   audio.play()
     .then(() => {
-      console.log(`Reproduzindo: audio_${name}.mp4`);
+      console.log(`Reproduzindo: audio_${name}.mp3`);
       setUseAudioRunning(true);
     })
     .catch(err => {
