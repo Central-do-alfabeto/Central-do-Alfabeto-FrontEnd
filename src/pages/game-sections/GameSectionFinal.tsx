@@ -21,7 +21,6 @@ export default function GameSectionFinal() {
   const { redirect } = useSectionRedirect();
   const navigate = useNavigate();
 
-
   const word1 = Words[currentPhaseIndex].word1;
   const word2 = Words[currentPhaseIndex].word2;
   const word3 = Words[currentPhaseIndex].word3;
@@ -34,7 +33,7 @@ export default function GameSectionFinal() {
       if (clickedWord === word2) setCanGoNext2(true);
       if (clickedWord === word3) setCanGoNext3(true);
     } else {
-      playAudio(`Helper${currentPhaseIndex}`, setAudioRunning, true);
+      playAudio(`Helper${currentPhaseIndex}`, setAudioRunning, true); // COMENTÁRIO DO BRIAN: Precisa de um áudio de erro aqui
       incrementTotalErrors();
     }
 
@@ -57,7 +56,7 @@ export default function GameSectionFinal() {
       <form>
         {showText && <p>Grave cada palavra corretamente para continuar! 🎯</p>}
 
-        <label onClick={() => playAudio(word1, setAudioRunning, true)}>{word1}</label>
+        <label onClick={() => playAudio(`palavra_${word1}`, setAudioRunning, true)}>{word1}</label>
         <button
           id="startRecordingWord1"
           onClick={() => { toggleRecording(); setClickedWord(word1); }}
@@ -66,7 +65,7 @@ export default function GameSectionFinal() {
           {isRecording && clickedWord === word1 ? "⏹️ Parar" : "🎙️ Gravar"}
         </button>
 
-        <label onClick={() => playAudio(word2, setAudioRunning, true)}>{word2}</label>
+        <label onClick={() => playAudio(`palavra_${word2}`, setAudioRunning, true)}>{word2}</label>
         <button
           id="startRecordingWord2"
           onClick={() => { toggleRecording(); setClickedWord(word2); }}
@@ -75,7 +74,7 @@ export default function GameSectionFinal() {
           {isRecording && clickedWord === word2 ? "⏹️ Parar" : "🎙️ Gravar"}
         </button>
 
-        <label onClick={() => playAudio(word3, setAudioRunning, true)}>{word3}</label>
+        <label onClick={() => playAudio(`palavra_${word3}`, setAudioRunning, true)}>{word3}</label>
         <button
           id="startRecordingWord3"
           onClick={() => { toggleRecording(); setClickedWord(word3); }}
