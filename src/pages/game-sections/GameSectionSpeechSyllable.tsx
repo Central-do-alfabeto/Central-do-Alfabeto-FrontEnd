@@ -23,7 +23,6 @@ export default function GameSectionSpeechSyllable() {
   const syllables = ["a", "e", "i", "o", "u"].map(v => `${letter}${v}`);
   const helperAudioName = `Helper${currentPhaseIndex}_GameSectionSpeechSyllable`; // COMENTÁRIO DO BRIAN: Precisa de um áudio de erro aqui
 
-
   async function handleResult(audioBlob: Blob) {
     const result = await sendRecording(audioBlob);
     const idx = syllables.indexOf(clickedWord);
@@ -65,3 +64,29 @@ export default function GameSectionSpeechSyllable() {
           <button
             onClick={() => {
               toggleRecording();
+              setClickedWord(syll);
+            }}
+            disabled={
+              canGoNextWords[idx] ||
+              (isRecording && clickedWord !== syll) ||
+              audioRunning
+            }
+          >
+            {isRecording && clickedWord === syll ? "⏹️ Parar" : "🎙️ Gravar"}
+          </button>
+        </div>
+      ))}
+
+      <button
+        disabled={!canGoNext || audioRunning}
+        onClick={() => redirect("GameSectionSpeechSyllable")}
+      >
+        {showText && <div>Próxima fase</div>}
+      </button>
+
+      <button onClick={() => navigate("/PlayerMenu")} disabled={audioRunning}>
+        {showText && <div>Retornar</div>}
+      </button>
+    </div>
+  );
+}
