@@ -17,25 +17,31 @@ export default function GameSectionSpeech() {
   const [showText] = useShowText();
   const { redirect } = useSectionRedirect();
 
-  // 🔥 callback para tratar o resultado do backend
+  const letter = Letters[currentPhaseIndex];
+  
+  const presentationAudioName = `essa_letra_${letter}_alfabeto`; 
+  
+  const helperAudioName = `Helper${currentPhaseIndex}`;
+
+  // Callback para tratar o resultado do back-end
   async function handleResult(audioBlob: Blob) {
     const result = await sendRecording(audioBlob);
 
-    if (result === Letters[currentPhaseIndex]) {
-      setCanGoNext(true); // libera "Próxima fase"
+    if (result === letter) {
+      setCanGoNext(true); // Libera a próxima fase
     } else {
       incrementTotalErrors();
-      setCanGoNext(false); // mantém bloqueado
-      playAudio(`Helper${currentPhaseIndex}`, setAudioRunning, true);
+      setCanGoNext(false); // Mantém a próxima fase bloqueada
+      playAudio(`Helper${currentPhaseIndex}`, setAudioRunning, true); // COMENTÁRIO DO BRIAN: Precisa de um áudio de erro aqui
     }
   }
 
   useEffect(() => {
     setCanGoNext(false);
     if (!showText) {
-      playAudio("Section1", setAudioRunning);
+      playAudio("repita_letra_mostrada", setAudioRunning);
     }
-  }, [showText, setAudioRunning]);
+  }, [showText, setAudioRunning, helperAudioName]); 
 
   return (
     <div>
@@ -47,13 +53,13 @@ export default function GameSectionSpeech() {
         className="letra"
         onClick={() =>
           playAudio(
-            `AuxLetter${Letters[currentPhaseIndex]}`,
+            presentationAudioName,
             setAudioRunning,
             true
           )
         }
       >
-        {Letters[currentPhaseIndex]}
+        {letter}
       </div>
 
       {/* Botão Gravar (bloqueia se acertou ou se áudio está tocando) */}
