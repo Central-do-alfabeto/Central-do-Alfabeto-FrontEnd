@@ -1,0 +1,130 @@
+/* 🌿 Fundo geral */
+.page {
+  background-color: #C9F5CA; /* verde suave */
+  min-height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-family: "Comic Sans MS", cursive, sans-serif;
+  padding: 20px;
+}
+
+/* 📌 Container central */
+.container {
+  background-color: #ffffff;
+  border-radius: 16px;
+  box-shadow: 0px 6px 20px rgba(0, 0, 0, 0.1);
+  padding: 40px 30px;
+  width: 100%;
+  max-width: 420px;
+  text-align: center;
+
+  opacity: 0;
+  transform: translateY(40px);
+  animation: slideUpFade 0.8s ease-out forwards;
+}
+
+/* ✨ Animação de entrada */
+@keyframes slideUpFade {
+  from {
+    opacity: 0;
+    transform: translateY(40px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* 🔠 Sílabas */
+.syllable {
+  font-size: 42px;
+  font-weight: bold;
+  color: #2e7d32;
+  margin: 20px 0 10px;
+  cursor: pointer;
+  transition: transform 0.2s ease;
+}
+
+.syllable:hover {
+  transform: scale(1.1);
+}
+
+/* 🎙️ Botões de gravação */
+.recordButton {
+  width: 100%;
+  padding: 14px;
+  font-size: 16px;
+  font-weight: bold;
+  background-color: #FFEFB4; /* amarelo pastel */
+  color: #333;
+  border: none;
+  border-radius: 10px;
+  cursor: pointer;
+  margin-bottom: 18px;
+  transition: background-color 0.3s ease, transform 0.2s ease;
+}
+
+.recordButton:hover:not(:disabled) {
+  background-color: #FFE387;
+  transform: scale(1.03);
+}
+
+.recordButton:disabled {
+  background-color: #eeeeee;
+  color: #777;
+  cursor: not-allowed;
+}
+
+/* ✅ Próxima fase */
+.nextButton {
+  width: 100%;
+  padding: 14px;
+  font-size: 16px;
+  font-weight: bold;
+  background-color: #D8EDD9;
+  color: #444;
+  border: none;
+  border-radius: 10px;
+  cursor: pointer;
+  margin-top: 10px;
+  margin-bottom: 25px;
+  transition: background-color 0.3s ease, transform 0.2s ease;
+}
+
+.nextButton:hover:not(:disabled) {
+  background-color: #A8DCAB;
+  transform: scale(1.03);
+}
+
+.nextButton:disabled {
+  background-color: #E7F5E8;
+  color: #999;
+  cursor: not-allowed;
+}
+
+/* 🔙 Botão voltar */
+.returnButton {
+  background: none;
+  border: none;
+  color: #1B6B1B;
+  font-size: 15px;
+  text-decoration: underline;
+  cursor: pointer;
+  transition: opacity 0.2s ease;
+}
+
+.returnButton:hover {
+  opacity: 0.8;
+}
+
+/* 📱 Responsivo */
+@media (max-width: 480px) {
+  .container {
+    padding: 30px 20px;
+  }
+
+  .syllable {
+    font-size: 34px;
+  }
+}
