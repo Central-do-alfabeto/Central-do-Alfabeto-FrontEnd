@@ -48,7 +48,7 @@ export default function GameSectionFinal() {
   useEffect(() => {
     setCanGoNext(false);
     if (!showText) {
-      playAudio('SectionFinal', setAudioRunning);
+      playAudio('repita_palavra_mostrada', setAudioRunning);
     }
   }, [showText, setAudioRunning]);
 
