@@ -1,0 +1,170 @@
+/* 🌿 Fundo geral */
+.speech-page {
+  background-color: #c9f5ca; /* fundo aluno verde pastel */
+  min-height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-family: "Comic Sans MS", cursive, sans-serif;
+  position: relative;
+  padding: 20px;
+}
+
+/* 🎛️ Ícones canto superior direito */
+.menu-icons {
+  position: absolute;
+  top: 20px;
+  right: 20px;
+  display: flex;
+  gap: 15px;
+  z-index: 10;
+}
+
+.menu-icons button {
+  background-color: #ffffff;         /* fundo branco */
+  border: none;
+  border-radius: 50%;               /* formato circular */
+  width: 50px;
+  height: 50px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  cursor: pointer;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15); /* sombra suave */
+  transition: transform 0.25s ease, box-shadow 0.25s ease;
+}
+
+.menu-icons button:hover {
+  transform: scale(1.1);
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2); /* destaque no hover */
+}
+
+.menu-icons img {
+  width: 28px;
+  height: 28px;
+  filter: brightness(0.8); /* leve suavização da cor do ícone */
+}
+
+
+/* 🧭 Painel central */
+.speech-container {
+  background-color: #ffffff;
+  padding: 40px 30px;
+  border-radius: 20px;
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.08);
+  text-align: center;
+  max-width: 400px;
+  width: 100%;
+  animation: slideUpFade 0.6s ease-out;
+}
+
+/* ✨ Animação de entrada */
+@keyframes slideUpFade {
+  from {
+    opacity: 0;
+    transform: translateY(40px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* 🔠 Letra principal */
+.letter-display {
+  font-size: 100px;
+  font-weight: bold;
+  color: #2e7d32;
+  margin-bottom: 30px;
+  transition: transform 0.2s;
+}
+
+.letter-display:hover {
+  transform: scale(1.1);
+}
+
+/* 🟠 Botões - layout */
+.button-row {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+  margin-bottom: 20px;
+}
+
+/* 🎙️ Botão de gravação */
+.record-button {
+  font-size: 18px;
+  padding: 12px 20px;
+  border: none;
+  border-radius: 10px;
+  cursor: pointer;
+  font-weight: bold;
+  background-color: #ffefb5; /* amarelo pastel */
+  color: #4e4e4e;
+  transition: background-color 0.3s ease, transform 0.2s ease;
+}
+
+.record-button:hover {
+  background-color: #ffe38f; /* amarelo pastel mais quente */
+  transform: scale(1.05);
+}
+
+.record-button:disabled {
+  background-color: #e0e0e0;
+  color: #777;
+  cursor: not-allowed;
+}
+
+/* ✅ Botão próxima fase */
+.next-button {
+  font-size: 18px;
+  padding: 12px 20px;
+  border: none;
+  border-radius: 10px;
+  cursor: pointer;
+  font-weight: bold;
+  background-color: #a5d6a7; /* verde pastel */
+  color: #2e4732;
+  transition: background-color 0.3s ease, transform 0.2s ease;
+}
+
+.next-button:hover {
+  background-color: #81c784; /* verde suave mais forte */
+  transform: scale(1.05);
+}
+
+.next-button:disabled {
+  background-color: #d8edd9;
+  color: #777;
+  cursor: not-allowed;
+}
+
+/* 🔙 Botão voltar */
+.return-button {
+  background: none;
+  border: none;
+  color: #2e7d32;
+  font-size: 16px;
+  text-decoration: underline;
+  cursor: pointer;
+}
+
+.return-button:hover {
+  color: #2e7d32; /* sem mudança no hover */
+}
+
+/* 📱 Responsivo */
+@media (max-width: 480px) {
+  .letter-display {
+    font-size: 70px;
+  }
+
+  .button-row {
+    flex-direction: column;
+  }
+
+  .record-button,
+  .next-button {
+    width: 100%;
+  }
+}

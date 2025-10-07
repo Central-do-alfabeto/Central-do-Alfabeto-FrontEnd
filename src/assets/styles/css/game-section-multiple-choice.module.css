@@ -1,0 +1,148 @@
+/* 🌿 Fundo geral */
+.page {
+  background-color: #c9f5ca; /* Fundo verde pastel suave (mesmo das outras telas) */
+  min-height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-family: "Comic Sans MS", cursive, sans-serif;
+  padding: 20px;
+}
+
+/* 🧭 Container central */
+.container {
+  background-color: #ffffff;
+  padding: 40px 30px;
+  border-radius: 20px;
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.08);
+  text-align: center;
+  max-width: 450px;
+  width: 100%;
+  animation: slideUpFade 0.6s ease-out;
+}
+
+/* ✨ Animação de entrada suave */
+@keyframes slideUpFade {
+  from {
+    opacity: 0;
+    transform: translateY(40px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* 📝 Título */
+.title {
+  font-size: 28px;
+  font-weight: bold;
+  color: #2e7d32;
+  margin-bottom: 20px;
+}
+
+/* 🔊 Botão de repetir som */
+.repeat-button {
+  background-color: #6fcf74; /* verde mais vivo */
+  border: none;
+  padding: 12px 20px;
+  border-radius: 10px;
+  cursor: pointer;
+  font-size: 16px;
+  font-weight: bold;
+  color: white;
+  transition: background-color 0.3s ease, transform 0.2s ease;
+  margin-bottom: 25px; /* ✅ espaçamento maior */
+  width: 100%;
+}
+
+.repeat-button:hover {
+  background-color: #5cb562;
+  transform: scale(1.03);
+}
+
+/* 🅰️ Botões de opções */
+.options {
+  display: flex;
+  justify-content: center;
+  flex-direction: column;
+  gap: 15px; /* ✅ espaçamento entre letras */
+  margin-bottom: 25px;
+}
+
+.option-button {
+  font-size: 22px;
+  padding: 12px 20px;
+  background-color: #e2f7e4; /* verde pastel mais visível */
+  color: #2e7d32;
+  border: 2px solid #9bd3a1;
+  border-radius: 12px;
+  cursor: pointer;
+  transition: background-color 0.3s ease, transform 0.2s ease;
+  width: 100%;
+}
+
+.option-button:hover {
+  background-color: #c7edcb; /* tom mais vivo no hover */
+  transform: scale(1.05);
+}
+
+.option-button:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+/* ✅ Próxima fase */
+.next-button {
+  font-size: 18px;
+  padding: 12px 20px;
+  border: none;
+  border-radius: 10px;
+  cursor: pointer;
+  font-weight: bold;
+  background-color: #2e7d32;
+  color: white;
+  transition: background-color 0.3s ease, transform 0.2s ease;
+  margin-bottom: 10px;
+  width: 100%;
+}
+
+.next-button:hover {
+  background-color: #256628;
+  transform: scale(1.05);
+}
+
+.next-button:disabled {
+  background-color: #d8edd9;
+  color: #777;
+  cursor: not-allowed;
+}
+
+/* 🔙 Botão retornar */
+.return-button {
+  background: none;
+  border: none;
+  color: #2e7d32;
+  font-size: 16px;
+  text-decoration: underline;
+  cursor: pointer;
+}
+
+.return-button:hover {
+  color: #2e7d32; /* Sem mudança de cor no hover */
+}
+
+/* 📱 Responsivo */
+@media (max-width: 480px) {
+  .title {
+    font-size: 22px;
+  }
+
+  .option-button {
+    font-size: 18px;
+  }
+
+  .container {
+    padding: 30px 20px;
+  }
+}

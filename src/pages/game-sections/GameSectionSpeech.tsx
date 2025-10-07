@@ -30,7 +30,6 @@ export default function GameSectionSpeech() {
       const transcript = await sendRecording(audioBlob);
       const expected = Letters[currentPhaseIndex];
 
-<<<<<<< HEAD
       if (matchesExpectedSpeech(transcript, expected)) {
         setCanGoNext(true);
       } else {
@@ -42,14 +41,6 @@ export default function GameSectionSpeech() {
       console.error("Falha ao processar áudio:", error);
       incrementTotalErrors();
       setCanGoNext(false);
-=======
-    if (result === letter) {
-      setCanGoNext(true); // Libera a próxima fase
-    } else {
-      incrementTotalErrors();
-      setCanGoNext(false); // Mantém a próxima fase bloqueada
-      playAudio(`Helper${currentPhaseIndex}`, setAudioRunning, true); // COMENTÁRIO DO BRIAN: Precisa de um áudio de erro aqui
->>>>>>> 896aafc7c65cbed0fcbbd53d29f75ad77e52ad85
     }
   }
 

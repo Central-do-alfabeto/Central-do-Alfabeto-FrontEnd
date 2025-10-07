@@ -1,0 +1,100 @@
+/* 🌿 Fundo da página */
+.page {
+
+  font-family: "Poppins", "Segoe UI", sans-serif;
+  min-height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 1rem;
+}
+
+/* 🌟 Container central para destacar o conteúdo */
+.centralContainer {
+  background: rgba(255, 255, 255, 0.6); /* branco translúcido */
+  border-radius: 20px;
+  padding: 2rem;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.1);
+  max-width: 500px;
+  width: 100%;
+  animation: fadeUp 0.6s ease-out forwards;
+  opacity: 0;
+  transform: translateY(20px);
+}
+
+/* 🧭 Container interno */
+.configContainer {
+  text-align: center;
+}
+
+/* ✨ Animação de entrada */
+@keyframes fadeUp {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* 📝 Título */
+.configContainer h1 {
+  font-size: 1.9rem;
+  font-weight: 600;
+  color: #2e7d32;
+  margin-bottom: 1.5rem;
+}
+
+/* 📌 Itens de configuração */
+.configItem {
+  margin-bottom: 1.5rem;
+  text-align: left;
+}
+
+label {
+  display: block;
+  font-weight: 500;
+  color: #2e7d32;
+  margin-bottom: 0.4rem;
+}
+
+/* 🎨 Select */
+select {
+  width: 100%;
+  font-size: 1rem;
+  padding: 0.5rem;
+  border-radius: 8px;
+  border: 1px solid #b5d6b3;
+  background-color: #f8fff7;
+  color: #2e7d32;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+  transition: border-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+select:focus {
+  outline: none;
+  border-color: #66bb6a;
+  box-shadow: 0 0 0 3px rgba(102, 187, 106, 0.25);
+}
+
+/* 🟩 Botão */
+button {
+  display: block;
+  width: 100%;
+  padding: 0.8rem;
+  background-color: #66bb6a;
+  border: none;
+  color: white;
+  font-size: 1rem;
+  font-weight: 600;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background-color 0.3s ease, transform 0.15s ease;
+}
+
+button:hover {
+  background-color: #57a45b;
+  transform: scale(1.03);
+}

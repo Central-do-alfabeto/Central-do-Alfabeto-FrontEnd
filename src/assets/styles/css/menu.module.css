@@ -1,0 +1,71 @@
+/* 🌿 Fundo da página com imagem */
+.pageBackground {
+  width: 100vw;
+  height: 100vh;
+  background: url("/src/assets/images/fundo\ menu.png") no-repeat center center;
+  background-size: cover;
+  font-family: 'Comic Sans MS', cursive, sans-serif;
+  position: relative;
+  overflow: hidden;
+}
+
+/* 📐 Container geral */
+.container {
+  position: relative;
+  width: 100%;
+  height: 100%;
+}
+
+/* 🎧⚙ Ícones do menu (áudio e config) */
+.menuIcons {
+  position: absolute;
+  top: 42%;
+  right: 5%;
+  display: flex;
+  flex-direction: row;
+  gap: 20px;
+}
+
+.menuIcons button {
+  background: none;
+  border: none;
+  padding: 0;
+  cursor: pointer;
+  transition: transform 0.25s ease;
+}
+
+/* ✨ Hover — aumenta suavemente */
+.menuIcons button:hover {
+  transform: scale(1.15);
+}
+
+.menuIcons button img {
+  width: 10vh;
+  height: auto;
+  display: block;
+}
+
+/* 🟩 Botão Iniciar */
+.startButton {
+  position: absolute;
+  bottom: 15%;
+  left: 50%;
+  transform: translateX(-50%);
+}
+
+.startButton button {
+  background-color: #2e7d32;
+  color: white;
+  font-size: 32px;
+  font-weight: bold;
+  padding: 20px 50px;
+  border: none;
+  border-radius: 30px;
+  cursor: pointer;
+  box-shadow: 0 6px 10px rgba(0,0,0,0.2);
+  transition: transform 0.25s ease;
+}
+
+.startButton button:hover {
+  transform: scale(1.08);
+}
