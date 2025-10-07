@@ -1,8 +1,8 @@
 // src/state/showText.ts
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 let globalShowText = false;
-const listeners: ((value: boolean) => void)[] = [];
+const listeners = new Set<(value: boolean) => void>();
 
 export function useShowText() {
   const [showText, setShowTextState] = useState(globalShowText);
@@ -13,8 +13,14 @@ export function useShowText() {
     listeners.forEach((listener) => listener(value));
   };
 
-  // registra listener para atualizar estado caso globalShowText mude fora deste hook
-  listeners.push(setShowTextState);
+  useEffect(() => {
+    const listener = (value: boolean) => setShowTextState(value);
+    listeners.add(listener);
+
+    return () => {
+      listeners.delete(listener);
+    };
+  }, []);
 
   return [showText, setShowText] as const;
 }

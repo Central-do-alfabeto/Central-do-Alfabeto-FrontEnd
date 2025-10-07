@@ -2,6 +2,7 @@ import { useLayoutEffect } from "react";
 import { playAudio } from "../../utils/playAudio";
 import { useNavigate } from "react-router-dom";
 import { useAudioRunning } from "../../state/useAudioRunning";
+import { currentPhaseIndex } from "../../store/gameState";
 
 export default function PlayerMenu() {
     const audioPathName: string = 'Menu';
@@ -50,7 +51,7 @@ export default function PlayerMenu() {
         </div>
 
         <div className="start-button">
-        <button onClick={() => navigate('/GameSectionPresentation')}>INICIAR</button>
+        <button onClick={() => { if(currentPhaseIndex === 0) { navigate('/FirstPresentationSection') } else { navigate('/GameSectionPresentation') }}}>INICIAR</button>
         </div>
 
         </div>

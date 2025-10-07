@@ -8,6 +8,7 @@ import sendRecording from "../../services/api/sendRecording";
 import { useAudioRunning } from "../../state/useAudioRunning";
 import { useShowText } from "../../state/useShowText";
 import useSectionRedirect from "../../hooks/useSectionRedirect";
+import { matchesExpectedSpeech } from "../../utils/speechUtils";
 
 export default function GameSectionSpeech() {
   const [canGoNext, setCanGoNext] = useState(false);
@@ -19,14 +20,21 @@ export default function GameSectionSpeech() {
 
   // 🔥 callback para tratar o resultado do backend
   async function handleResult(audioBlob: Blob) {
-    const result = await sendRecording(audioBlob);
+    try {
+      const transcript = await sendRecording(audioBlob);
+      const expected = Letters[currentPhaseIndex];
 
-    if (result === Letters[currentPhaseIndex]) {
-      setCanGoNext(true); // libera "Próxima fase"
-    } else {
+      if (matchesExpectedSpeech(transcript, expected)) {
+        setCanGoNext(true);
+      } else {
+        incrementTotalErrors();
+        setCanGoNext(false);
+        playAudio(`Helper${currentPhaseIndex}`, setAudioRunning, true);
+      }
+    } catch (error) {
+      console.error("Falha ao processar áudio:", error);
       incrementTotalErrors();
-      setCanGoNext(false); // mantém bloqueado
-      playAudio(`Helper${currentPhaseIndex}`, setAudioRunning, true);
+      setCanGoNext(false);
     }
   }
 

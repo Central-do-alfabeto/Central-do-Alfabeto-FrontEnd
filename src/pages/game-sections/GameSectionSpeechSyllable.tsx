@@ -8,6 +8,7 @@ import sendRecording from "../../services/api/sendRecording";
 import { useAudioRunning } from "../../state/useAudioRunning";
 import { useShowText } from "../../state/useShowText";
 import useSectionRedirect from "../../hooks/useSectionRedirect";
+import { matchesExpectedSpeech } from "../../utils/speechUtils";
 
 export default function GameSectionSpeechSyllable() {
   const [canGoNextWords, setCanGoNextWords] = useState([false, false, false, false, false]);
@@ -22,23 +23,32 @@ export default function GameSectionSpeechSyllable() {
   const syllables = ["a", "e", "i", "o", "u"].map(v => `${Letters[currentPhaseIndex]}${v}`);
 
   async function handleResult(audioBlob: Blob) {
-    const result = await sendRecording(audioBlob);
-    const idx = syllables.indexOf(clickedWord);
+    try {
+      const transcript = await sendRecording(audioBlob);
+      const idx = syllables.indexOf(clickedWord);
 
-    if (result === clickedWord && idx !== -1) {
-      setCanGoNextWords(prev => {
-        const updated = [...prev];
-        updated[idx] = true;
-        return updated;
-      });
-    } else {
+      if (idx !== -1 && matchesExpectedSpeech(transcript, clickedWord)) {
+        setCanGoNextWords((prev) => {
+          const updated = [...prev];
+          updated[idx] = true;
+          const allDone = updated.every(Boolean);
+          setCanGoNext(allDone);
+          return updated;
+        });
+      } else {
+        incrementTotalErrors();
+        setCanGoNext(false);
+        playAudio(
+          `Helper${currentPhaseIndex}_GameSectionSpeechSyllable`,
+          setAudioRunning,
+          true
+        );
+      }
+    } catch (error) {
+      console.error("Falha ao processar áudio:", error);
       incrementTotalErrors();
-      playAudio(`Helper${currentPhaseIndex}_GameSectionSpeechSyllable`, setAudioRunning, true);
+      setCanGoNext(false);
     }
-
-    setCanGoNext(
-      syllables.every((_, i) => (i === idx ? true : canGoNextWords[i]))
-    );
   }
 
   useEffect(() => {

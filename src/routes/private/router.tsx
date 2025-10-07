@@ -11,6 +11,7 @@ import GameSectionSpeechSyllable from '../../pages/game-sections/GameSectionSpee
 import GameConfig from '../../pages/game-configurations/GameConfig';
 import GameSectionCongratulations from '../../pages/game-sections/GameSectionCongratulations';
 import GameSectionPresentation from '../../pages/game-sections/GameSectionPresentation';
+import FirstPresentationSection from '../../pages/first-presentation-section/FirstPresentationSection';
 
 export function Router() {
   return (
@@ -28,6 +29,7 @@ export function Router() {
         <Route path="/GameSectionFinal" element={<GameSectionFinal/>}/>
         <Route path="/GameSectionCongratulations" element={<GameSectionCongratulations/>}/>
         <Route path="/GameConfig" element={<GameConfig/>}/>
+        <Route path="/FirstPresentationSection" element={<FirstPresentationSection/>}/>
       </Routes>
     </BrowserRouter>
   );

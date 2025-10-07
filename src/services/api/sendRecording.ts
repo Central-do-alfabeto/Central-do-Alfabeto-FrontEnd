@@ -11,13 +11,25 @@ export default async function sendRecording(audioBlob: Blob): Promise<string> {
       },
     });
 
-    return response.data.message;
+    if (typeof response.data === "string") {
+      return response.data;
+    }
+
+    if (response.data && typeof response.data.message === "string") {
+      return response.data.message;
+    }
+
+    console.warn(
+      "Resposta inesperada em sendRecording:",
+      response.data
+    );
+    return "";
   } catch (error) {
-        if (error instanceof Error) {
-            console.error("Erro em sendRecording:", error.message);
-        } else {
-            console.error("Erro não esperado:", error);
-        }
-        throw error;
+    if (error instanceof Error) {
+      console.error("Erro em sendRecording:", error.message);
+    } else {
+      console.error("Erro não esperado:", error);
+    }
+    throw error;
   }
 }
