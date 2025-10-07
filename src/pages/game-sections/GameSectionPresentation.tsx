@@ -9,21 +9,28 @@ import useSectionRedirect from "../../hooks/useSectionRedirect";
 
 export default function GameSectionPresentation() {
     const navigate = useNavigate();
-    const [showText] = useShowText(); 
+    const [showText] = useShowText();
     const [audioRunning, setAudioRunning] = useAudioRunning();
     const { redirect } = useSectionRedirect();
 
+    // 1. Definição da letra e construção do nome do áudio
+    const letter = Letters[currentPhaseIndex];
+    const presentationAudioName = `essa_letra_${letter}_alfabeto`;
+
     useEffect(() => {
         if (showText) return;
-        playAudio("AudioPresentation", setAudioRunning);
-    }, [showText, setAudioRunning]);
+        
+        // 2. Toca o áudio de apresentação/introdução da letra
+        playAudio(presentationAudioName, setAudioRunning);
+        
+    }, [showText, setAudioRunning, presentationAudioName]);
 
     return (
         <div>
             {/* Mostra o texto apenas se showText for true */}
             {showText && (
                 <section className="textoEscondido">
-                    Esta é a letra {Letters[currentPhaseIndex]}. Clique na letra para saber sua pronúncia!
+                    Esta é a letra {letter}. Clique na letra para saber sua pronúncia!
                 </section>
             )}
 
@@ -31,13 +38,13 @@ export default function GameSectionPresentation() {
             <section
                 onClick={() =>
                     playAudio(
-                        `AuxLetter${Letters[currentPhaseIndex]}`,
+                        presentationAudioName,
                         setAudioRunning,
                         true
                     )
                 }
             >
-                {Letters[currentPhaseIndex]}
+                {letter}
             </section>
 
             {/* Navegação */}

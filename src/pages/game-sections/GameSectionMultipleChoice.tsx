@@ -22,7 +22,7 @@ export default function GameSectionMultipleChoice() {
     setCanGoNext(false);
 
     if (!showText) {
-      playAudio("Section2", setAudioRunning);
+      playAudio("Section2", setAudioRunning); // COMENTÁRIO DO BRIAN: Precisamos gravar os áudios dessa sessão de determinar qual a letra correta
     }
   }, [showText, setAudioRunning]);
 
@@ -36,7 +36,7 @@ export default function GameSectionMultipleChoice() {
 
   function wrongAnswer() {
     incrementTotalErrors();
-    playAudio("Section2WrongAnswer", setAudioRunning, true);
+    playAudio("Section2WrongAnswer", setAudioRunning, true); // COMENTÁRIO DO BRIAN: Precisa de um áudio de resposta errada pra isso aqui também
   }
 
   return (

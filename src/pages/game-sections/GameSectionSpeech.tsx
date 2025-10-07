@@ -18,12 +18,19 @@ export default function GameSectionSpeech() {
   const [showText] = useShowText();
   const { redirect } = useSectionRedirect();
 
-  // 🔥 callback para tratar o resultado do backend
+  const letter = Letters[currentPhaseIndex];
+  
+  const presentationAudioName = `essa_letra_${letter}_alfabeto`; 
+  
+  const helperAudioName = `Helper${currentPhaseIndex}`;
+
+  // Callback para tratar o resultado do back-end
   async function handleResult(audioBlob: Blob) {
     try {
       const transcript = await sendRecording(audioBlob);
       const expected = Letters[currentPhaseIndex];
 
+<<<<<<< HEAD
       if (matchesExpectedSpeech(transcript, expected)) {
         setCanGoNext(true);
       } else {
@@ -35,15 +42,23 @@ export default function GameSectionSpeech() {
       console.error("Falha ao processar áudio:", error);
       incrementTotalErrors();
       setCanGoNext(false);
+=======
+    if (result === letter) {
+      setCanGoNext(true); // Libera a próxima fase
+    } else {
+      incrementTotalErrors();
+      setCanGoNext(false); // Mantém a próxima fase bloqueada
+      playAudio(`Helper${currentPhaseIndex}`, setAudioRunning, true); // COMENTÁRIO DO BRIAN: Precisa de um áudio de erro aqui
+>>>>>>> 896aafc7c65cbed0fcbbd53d29f75ad77e52ad85
     }
   }
 
   useEffect(() => {
     setCanGoNext(false);
     if (!showText) {
-      playAudio("Section1", setAudioRunning);
+      playAudio("repita_letra_mostrada", setAudioRunning);
     }
-  }, [showText, setAudioRunning]);
+  }, [showText, setAudioRunning, helperAudioName]); 
 
   return (
     <div>
@@ -55,13 +70,13 @@ export default function GameSectionSpeech() {
         className="letra"
         onClick={() =>
           playAudio(
-            `AuxLetter${Letters[currentPhaseIndex]}`,
+            presentationAudioName,
             setAudioRunning,
             true
           )
         }
       >
-        {Letters[currentPhaseIndex]}
+        {letter}
       </div>
 
       {/* Botão Gravar (bloqueia se acertou ou se áudio está tocando) */}

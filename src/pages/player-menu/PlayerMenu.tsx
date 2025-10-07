@@ -10,7 +10,7 @@ export default function PlayerMenu() {
     const [audioRunning, setAudioRunning] = useAudioRunning();
 
     useLayoutEffect(() => {
-        playAudio(audioPathName, setAudioRunning);
+        playAudio("tela_inicial", setAudioRunning);
     }, [audioPathName, setAudioRunning]);
 
     return (
@@ -32,7 +32,7 @@ export default function PlayerMenu() {
         </button> */}
 
         <div className="menu-icons">
-        <button className="icon" onClick={() => playAudio(audioPathName, setAudioRunning, true)} disabled={audioRunning}>
+        <button className="icon" onClick={() => playAudio("tela_inicial", setAudioRunning, true)} disabled={audioRunning}>
              <img 
                 src="../../assets/images/sound-icon.png"
                 alt="logoDoSite"

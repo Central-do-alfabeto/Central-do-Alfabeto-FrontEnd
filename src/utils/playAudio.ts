@@ -1,12 +1,17 @@
 import { incrementTotalAudioReproductions } from "../store/gameState";
 import type { Dispatch, SetStateAction } from "react";
 
+<<<<<<< HEAD
 export function playAudio(
   name: string,
   setUseAudioRunning: Dispatch<SetStateAction<boolean>>,
   btnClicked: boolean = false
 ): void {
   const audioPath = `/audio/audio_${name}.mp3`;
+=======
+export function playAudio(name: string, setUseAudioRunning: Dispatch<SetStateAction<boolean>>, btnCLicked: boolean = false): void {
+  const audioPath = `../audio/${name}.mp3`;
+>>>>>>> 896aafc7c65cbed0fcbbd53d29f75ad77e52ad85
   const audio = new Audio(audioPath);
 
   if (btnClicked) incrementTotalAudioReproductions();
@@ -22,6 +27,10 @@ export function playAudio(
   audio
     .play()
     .then(() => {
+<<<<<<< HEAD
+=======
+      console.log(`Reproduzindo: ${name}.mp3`);
+>>>>>>> 896aafc7c65cbed0fcbbd53d29f75ad77e52ad85
       setUseAudioRunning(true);
       console.log(`Reproduzindo: audio_${name}.mp3`);
     })
