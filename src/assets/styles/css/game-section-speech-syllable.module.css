@@ -1,6 +1,6 @@
 /* 🌿 Fundo geral */
 .page {
-  background-color: #C9F5CA; /* verde suave */
+  background-color: var(--color-background);
   min-height: 100vh;
   display: flex;
   justify-content: center;
@@ -11,17 +11,36 @@
 
 /* 📌 Container central */
 .container {
-  background-color: #ffffff;
+  background-color: var(--color-surface-soft);
   border-radius: 16px;
   box-shadow: 0px 6px 20px rgba(0, 0, 0, 0.1);
   padding: 40px 30px;
   width: 100%;
   max-width: 420px;
   text-align: center;
+  color: var(--color-text);
 
   opacity: 0;
   transform: translateY(40px);
   animation: slideUpFade 0.8s ease-out forwards;
+}
+
+.form {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.helperText {
+  font-size: 16px;
+  color: var(--color-text);
+  opacity: 0.8;
+  margin-bottom: 10px;
+}
+
+.syllableGroup {
+  width: 100%;
+  margin-bottom: 12px;
 }
 
 /* ✨ Animação de entrada */
@@ -40,7 +59,7 @@
 .syllable {
   font-size: 42px;
   font-weight: bold;
-  color: #2e7d32;
+  color: var(--color-text);
   margin: 20px 0 10px;
   cursor: pointer;
   transition: transform 0.2s ease;
@@ -56,17 +75,21 @@
   padding: 14px;
   font-size: 16px;
   font-weight: bold;
-  background-color: #FFEFB4; /* amarelo pastel */
+  background-color: #ffefb4;
   color: #333;
   border: none;
   border-radius: 10px;
   cursor: pointer;
   margin-bottom: 18px;
   transition: background-color 0.3s ease, transform 0.2s ease;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
 }
 
 .recordButton:hover:not(:disabled) {
-  background-color: #FFE387;
+  background-color: #ffe387;
   transform: scale(1.03);
 }
 
@@ -82,24 +105,27 @@
   padding: 14px;
   font-size: 16px;
   font-weight: bold;
-  background-color: #D8EDD9;
-  color: #444;
+  background-color: var(--color-surface);
+  color: var(--color-on-surface);
   border: none;
   border-radius: 10px;
   cursor: pointer;
   margin-top: 10px;
   margin-bottom: 25px;
   transition: background-color 0.3s ease, transform 0.2s ease;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
 }
 
 .nextButton:hover:not(:disabled) {
-  background-color: #A8DCAB;
+  background-color: var(--color-surface-hover);
   transform: scale(1.03);
 }
 
 .nextButton:disabled {
-  background-color: #E7F5E8;
-  color: #999;
+  opacity: 0.6;
   cursor: not-allowed;
 }
 
@@ -107,11 +133,15 @@
 .returnButton {
   background: none;
   border: none;
-  color: #1B6B1B;
+  color: var(--color-text);
   font-size: 15px;
   text-decoration: underline;
   cursor: pointer;
   transition: opacity 0.2s ease;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
 }
 
 .returnButton:hover {

@@ -1,6 +1,36 @@
+/* 🔊 Botão de repetir som */
+.repeatButton {
+  background-color: var(--color-surface);
+  border: none;
+  padding: 12px 20px;
+  border-radius: 10px;
+  cursor: pointer;
+  font-size: 16px;
+  font-weight: bold;
+  color: var(--color-on-surface);
+  transition: background-color 0.3s ease, transform 0.2s ease;
+  margin-bottom: 25px; /* ✅ espaçamento maior */
+  width: 100%;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+}
+.optionButton {
+  font-size: 22px;
+  padding: 12px 20px;
+  background-color: var(--color-surface-soft);
+  color: var(--color-text);
+  border: 2px solid var(--color-surface);
+  border-radius: 12px;
+  cursor: pointer;
+  transition: background-color 0.3s ease, transform 0.2s ease;
+  width: 100%;
+}
+/* 🌿 Fundo geral */
 /* 🌿 Fundo geral */
 .page {
-  background-color: #c9f5ca; /* Fundo verde pastel suave (mesmo das outras telas) */
+  background-color: var(--color-background);
   min-height: 100vh;
   display: flex;
   justify-content: center;
@@ -11,7 +41,7 @@
 
 /* 🧭 Container central */
 .container {
-  background-color: #ffffff;
+  background-color: var(--color-surface-soft);
   padding: 40px 30px;
   border-radius: 20px;
   box-shadow: 0 8px 20px rgba(0, 0, 0, 0.08);
@@ -19,6 +49,7 @@
   max-width: 450px;
   width: 100%;
   animation: slideUpFade 0.6s ease-out;
+  color: var(--color-text);
 }
 
 /* ✨ Animação de entrada suave */
@@ -37,27 +68,31 @@
 .title {
   font-size: 28px;
   font-weight: bold;
-  color: #2e7d32;
+  color: var(--color-text);
   margin-bottom: 20px;
 }
 
 /* 🔊 Botão de repetir som */
-.repeat-button {
-  background-color: #6fcf74; /* verde mais vivo */
+.repeatButton {
+  background-color: var(--color-surface);
   border: none;
   padding: 12px 20px;
   border-radius: 10px;
   cursor: pointer;
   font-size: 16px;
   font-weight: bold;
-  color: white;
+  color: var(--color-on-surface);
   transition: background-color 0.3s ease, transform 0.2s ease;
-  margin-bottom: 25px; /* ✅ espaçamento maior */
+  margin-bottom: 25px;
   width: 100%;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
 }
 
-.repeat-button:hover {
-  background-color: #5cb562;
+.repeatButton:hover {
+  background-color: var(--color-surface-hover);
   transform: scale(1.03);
 }
 
@@ -66,70 +101,85 @@
   display: flex;
   justify-content: center;
   flex-direction: column;
-  gap: 15px; /* ✅ espaçamento entre letras */
+  gap: 15px;
   margin-bottom: 25px;
 }
 
-.option-button {
+.optionButton {
   font-size: 22px;
   padding: 12px 20px;
-  background-color: #e2f7e4; /* verde pastel mais visível */
-  color: #2e7d32;
-  border: 2px solid #9bd3a1;
+  background-color: var(--color-surface-soft);
+  color: var(--color-text);
+  border: 2px solid var(--color-surface);
   border-radius: 12px;
   cursor: pointer;
   transition: background-color 0.3s ease, transform 0.2s ease;
   width: 100%;
 }
 
-.option-button:hover {
-  background-color: #c7edcb; /* tom mais vivo no hover */
+.optionButton:hover {
+  filter: brightness(0.95);
   transform: scale(1.05);
 }
 
-.option-button:disabled {
+.optionButton:disabled {
   opacity: 0.6;
   cursor: not-allowed;
 }
 
 /* ✅ Próxima fase */
-.next-button {
+.nextButton {
   font-size: 18px;
   padding: 12px 20px;
   border: none;
   border-radius: 10px;
   cursor: pointer;
   font-weight: bold;
-  background-color: #2e7d32;
-  color: white;
+  background-color: var(--color-surface);
+  color: var(--color-on-surface);
   transition: background-color 0.3s ease, transform 0.2s ease;
   margin-bottom: 10px;
   width: 100%;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
 }
 
-.next-button:hover {
-  background-color: #256628;
+.nextButton:hover {
+  background-color: var(--color-surface-hover);
   transform: scale(1.05);
 }
 
-.next-button:disabled {
-  background-color: #d8edd9;
-  color: #777;
+.nextButton:disabled {
+  opacity: 0.6;
   cursor: not-allowed;
 }
 
 /* 🔙 Botão retornar */
-.return-button {
+.returnButton {
   background: none;
   border: none;
-  color: #2e7d32;
+  color: var(--color-text);
   font-size: 16px;
   text-decoration: underline;
   cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
 }
 
-.return-button:hover {
-  color: #2e7d32; /* Sem mudança de cor no hover */
+.returnButton:hover {
+  color: var(--color-text);
+  opacity: 0.8;
+}
+
+.helperText {
+  font-size: 16px;
+  margin-bottom: 12px;
+  color: var(--color-text);
+  opacity: 0.8;
 }
 
 /* 📱 Responsivo */
@@ -138,7 +188,7 @@
     font-size: 22px;
   }
 
-  .option-button {
+  .optionButton {
     font-size: 18px;
   }
 

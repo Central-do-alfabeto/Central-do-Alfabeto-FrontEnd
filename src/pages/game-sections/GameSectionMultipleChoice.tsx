@@ -7,6 +7,7 @@ import optionsForPhase from "../../utils/randomLetterGenerator";
 import { useAudioRunning } from "../../state/useAudioRunning";
 import { useShowText } from "../../state/useShowText";
 import useSectionRedirect from "../../hooks/useSectionRedirect";
+import styles from "../../assets/styles/css/game-section-multiple-choice.module.css";
 
 export default function GameSectionMultipleChoice() {
   const [options, setOptions] = useState<string[]>([]);
@@ -40,45 +41,58 @@ export default function GameSectionMultipleChoice() {
   }
 
   return (
-    <div>
-      {showText && <p>Escolha a letra correta para continuar! 📝</p>}
+    <div className={styles.page}>
+      <div className={styles.container}>
+        {showText && (
+          <p className={styles.helperText}>Escolha a letra correta para continuar! 📝</p>
+        )}
 
-      {/* Título mostrando a fase atual */}
-      <h1>Fase {currentPhaseIndex}</h1>
+        <h1 className={styles.title}>Fase {currentPhaseIndex}</h1>
 
-      {/* Botão para ouvir novamente o som da fase */}
-      <button
-        title="Reproduzir som da fase"
-        onClick={() => playAudio("Section2", setAudioRunning, true)}
-        disabled={audioRunning}
-      >
-        ▶️ Ouvir de novo
-      </button>
+        <button
+          className={styles.repeatButton}
+          title="Reproduzir som da fase"
+          onClick={() => playAudio("Section2", setAudioRunning, true)}
+          disabled={audioRunning}
+        >
+          <span aria-hidden="true">▶️</span>
+          {showText && <span> Ouvir de novo</span>}
+        </button>
 
-      {/* Botões com as opções de letras */}
-      <div>
-        {options.map((option, idx) => (
-          <button
-            key={idx}
-            onClick={() => handleClick(option)}
-            disabled={canGoNext || audioRunning}
-          >
-            {option}
-          </button>
-        ))}
+        <div className={styles.options}>
+          {options.map((option, idx) => (
+            <button
+              key={idx}
+              className={styles.optionButton}
+              onClick={() => handleClick(option)}
+              disabled={canGoNext || audioRunning}
+              aria-label={`Selecionar a opção ${option}`}
+            >
+              {option}
+            </button>
+          ))}
+        </div>
+
+        <button
+          className={styles.nextButton}
+          onClick={() => redirect("GameSectionMultipleChoice")}
+          disabled={!canGoNext || audioRunning}
+          aria-label="Ir para a próxima fase"
+        >
+          <span aria-hidden="true">➡️</span>
+          {showText && <span> Próxima fase</span>}
+        </button>
+
+        <button
+          className={styles.returnButton}
+          onClick={() => navigate("/PlayerMenu")}
+          disabled={audioRunning}
+          aria-label="Retornar ao menu do jogador"
+        >
+          <span aria-hidden="true">⬅️</span>
+          {showText && <span> Retornar</span>}
+        </button>
       </div>
-
-      {/* Botão para ir para a próxima fase */}
-      <button
-        onClick={() => redirect("GameSectionMultipleChoice")}
-        disabled={!canGoNext || audioRunning}
-      >
-        {showText && <div>Próxima fase</div>}
-      </button>
-
-      <button onClick={() => navigate("/PlayerMenu")} disabled={audioRunning}>
-        {showText && <div>Retornar</div>}
-      </button>
     </div>
   );
 }

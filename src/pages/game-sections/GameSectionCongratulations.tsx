@@ -6,6 +6,7 @@ import { useAudioRunning } from "../../state/useAudioRunning";
 import { useShowText } from "../../state/useShowText";
 import { playerDataUpdate } from "../../services/api/playerDataUpdate";
 import { Letters } from "../../store/gameConstants"; 
+import styles from "../../assets/styles/css/game-section-congratulations.module.css";
 
 export default function GameSectionCongratulations() {
   const [showText] = useShowText();
@@ -32,26 +33,36 @@ export default function GameSectionCongratulations() {
   }, [showText, setAudioRunning, congratulationAudioName]); 
 
   return (
-    <div>
-      <div className="congratulations">
-        {/* Placeholder de texto ou imagem */}
-        {showText && <p>Parabéns! Você completou a letra {completedLetter}! 🎉</p>}
+    <div className={styles.page}>
+      <div className={styles.container}>
+        {showText && (
+          <p className={styles.message}>
+            Parabéns! Você completou a letra {completedLetter}! 🎉
+          </p>
+        )}
+
+        <div className={styles.buttonRow}>
+          <button
+            type="button"
+            className={styles.nextButton}
+            onClick={() => navigate("/GameSectionPresentation")}
+            disabled={audioRunning}
+          >
+            <span aria-hidden="true">➡️</span>
+            {showText && <span> Próxima fase</span>}
+          </button>
+
+          <button
+            type="button"
+            className={styles.returnButton}
+            onClick={() => navigate("/PlayerMenu")}
+            disabled={audioRunning}
+          >
+            <span aria-hidden="true">⬅️</span>
+            {showText && <span> Voltar ao menu</span>}
+          </button>
+        </div>
       </div>
-
-      <button
-        className="section2"
-        onClick={() => navigate("/GameSectionPresentation")}
-        disabled={audioRunning} // Desativa botão enquanto áudio toca
-      >
-        {showText && <div>Próxima fase</div>}
-      </button>
-
-      <button
-        onClick={() => navigate("/PlayerMenu")}
-        disabled={audioRunning}
-      >
-        {showText && <div>Voltar ao menu</div>}
-      </button>
     </div>
   );
 }

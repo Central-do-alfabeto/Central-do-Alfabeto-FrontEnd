@@ -1,4 +1,5 @@
 // gameState.ts
+import { updatePlayerMetadata } from "./auth";
 
 // Função auxiliar para ler do sessionStorage ou usar valor padrão
 function getSessionNumber(key: string, defaultValue: number = 0): number {
@@ -16,11 +17,13 @@ export let currentPhaseIndex: number = getSessionNumber("currentPhaseIndex", 0);
 export function setCurrentPhaseIndex(value: number) {
   currentPhaseIndex += value;
   setSessionNumber("currentPhaseIndex", currentPhaseIndex);
+  updatePlayerMetadata({ currentPhaseIndex });
 }
 
 export function syncCurrentPhaseIndex(value: number) {
   currentPhaseIndex = value;
   setSessionNumber("currentPhaseIndex", currentPhaseIndex);
+  updatePlayerMetadata({ currentPhaseIndex });
 }
 
 // PlayerID

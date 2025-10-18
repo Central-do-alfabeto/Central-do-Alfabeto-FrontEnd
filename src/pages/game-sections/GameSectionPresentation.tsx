@@ -6,6 +6,7 @@ import { useEffect } from "react";
 import { useShowText } from "../../state/useShowText";
 import { useAudioRunning } from "../../state/useAudioRunning";
 import useSectionRedirect from "../../hooks/useSectionRedirect";
+import styles from "../../assets/styles/css/game-section-presentation.module.css";
 
 export default function GameSectionPresentation() {
     const navigate = useNavigate();
@@ -26,37 +27,60 @@ export default function GameSectionPresentation() {
     }, [showText, setAudioRunning, presentationAudioName]);
 
     return (
-        <div>
-            {/* Mostra o texto apenas se showText for true */}
-            {showText && (
-                <section className="textoEscondido">
-                    Esta é a letra {letter}. Clique na letra para saber sua pronúncia!
+        <div className={styles.page}>
+            <div className={styles.container}>
+                {showText && (
+                    <section className={styles.helperText}>
+                        Esta é a letra {letter}. Clique na letra para saber sua pronúncia!
+                    </section>
+                )}
+
+                <section
+                    className={styles.letterDisplay}
+                    onClick={() =>
+                        playAudio(
+                            presentationAudioName,
+                            setAudioRunning,
+                            true
+                        )
+                    }
+                    role="button"
+                    tabIndex={0}
+                    onKeyDown={(event) => {
+                        if (event.key === "Enter" || event.key === " ") {
+                            event.preventDefault();
+                            playAudio(
+                                presentationAudioName,
+                                setAudioRunning,
+                                true
+                            );
+                        }
+                    }}
+                >
+                    {letter}
                 </section>
-            )}
 
-            {/* Letra clicável para pronúncia */}
-            <section
-                onClick={() =>
-                    playAudio(
-                        presentationAudioName,
-                        setAudioRunning,
-                        true
-                    )
-                }
-            >
-                {letter}
-            </section>
-
-            {/* Navegação */}
-            <button
-                onClick={() => redirect("GameSectionPresentation")}
-                disabled={audioRunning}
-            >
-                {showText && <div>Próxima sessão</div>}
-            </button>
-            <button onClick={() => navigate("/PlayerMenu")} disabled={audioRunning}>
-                {showText && <div>Voltar ao menu</div>}
-            </button>
+                <div className={styles.buttonRow}>
+                    <button
+                        type="button"
+                        className={styles.nextButton}
+                        onClick={() => redirect("GameSectionPresentation")}
+                        disabled={audioRunning}
+                    >
+                        <span aria-hidden="true">➡️</span>
+                        {showText && <span> Próxima sessão</span>}
+                    </button>
+                    <button
+                        type="button"
+                        className={styles.returnButton}
+                        onClick={() => navigate("/PlayerMenu")}
+                        disabled={audioRunning}
+                    >
+                        <span aria-hidden="true">⬅️</span>
+                        {showText && <span> Voltar ao menu</span>}
+                    </button>
+                </div>
+            </div>
         </div>
     );
 }

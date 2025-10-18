@@ -1,13 +1,27 @@
-<<<<<<< HEAD
 import { useNavigate, Link } from "react-router-dom";
 import { useState } from "react";
 import { loginAPI } from "../../services/api/loginAPI";
 import { setPlayerID, syncCurrentPhaseIndex } from "../../store/gameState";
-import { setStudents } from "../../store/teacherStudentsInfo";
+import { setStudents } from "../../store/TeacherStudentsInfo";
 import { setAuthSession } from "../../store/auth";
 import { AiOutlineEye, AiOutlineEyeInvisible } from "react-icons/ai";
-import "./Login.css";
+import styles from "../../assets/styles/css/login.module.css";
+import logo from "../../assets/images/logo-do-site.png";
 
+
+const resolveRole = (role?: string, fallbackIsStudent?: boolean): "STUDENT" | "EDUCATOR" => {
+    const normalized = role?.trim().toLowerCase();
+
+    if (normalized === "educador" || normalized === "educator" || normalized === "teacher") {
+        return "EDUCATOR";
+    }
+
+    if (normalized === "aluno" || normalized === "student" || normalized === "estudante") {
+        return "STUDENT";
+    }
+
+    return fallbackIsStudent ? "STUDENT" : "EDUCATOR";
+};
 
 export default function Login() {
     const [email, setEmail] = useState("");
@@ -27,14 +41,22 @@ export default function Login() {
 
         try {
             const user = await loginAPI(email, password);
+            const role = resolveRole(user.role, user.isStudent);
+            const isStudent = role === "STUDENT";
 
             setAuthSession({
                 token: user.token,
-                role: user.isStudent ? "STUDENT" : "EDUCATOR",
+                role,
                 userId: user.userId,
+                playerMeta: isStudent
+                    ? {
+                        currentPhaseIndex: typeof user.currentPhaseIndex === "number" ? user.currentPhaseIndex : undefined,
+                        email,
+                    }
+                    : undefined,
             });
 
-            if (user.isStudent) {
+            if (isStudent) {
                 setPlayerID(user.userId);
                 if (typeof user.currentPhaseIndex === "number") {
                     syncCurrentPhaseIndex(user.currentPhaseIndex);
@@ -54,123 +76,59 @@ export default function Login() {
     };
 
     return (
-        
-        <div className="login-container">
+        <div className={styles.page}>
+            <div className={styles.loginContainer}>
+                <img src={logo} alt="Logo do Quebra-Cabeça do Autismo" className={styles.logo} />
 
-        {/* <img src="imagens/logo do site.png" alt="Logo do Jogo Educacional" className="logo"> */}
+                <h1 className={styles.title}>Entrar</h1>
 
-        <h1>Entrar</h1>
+                <form onSubmit={handleSubmit} className={styles.form}>
+                    <input
+                        type="email"
+                        placeholder="E-mail"
+                        value={email}
+                        onChange={(e) => setEmail(e.target.value)}
+                        required
+                        className={styles.input}
+                    />
 
-        <form onSubmit={handleSubmit}>
-            <input 
-                type="email" 
-                placeholder="E-mail"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                required
-            />
+                    <div className={styles.passwordField}>
+                        <input
+                            type={showPassword ? "text" : "password"}
+                            placeholder="Senha"
+                            value={password}
+                            onChange={(e) => setPassword(e.target.value)}
+                            required
+                            className={styles.input}
+                        />
+                        <button
+                            type="button"
+                            className={styles.togglePasswordButton}
+                            onClick={() => setShowPassword((prev) => !prev)}
+                            aria-label={showPassword ? "Ocultar senha" : "Mostrar senha"}
+                            disabled={isLoading}
+                        >
+                            {showPassword ? <AiOutlineEyeInvisible size={20} /> : <AiOutlineEye size={20} />}
+                        </button>
+                    </div>
 
-            <div className="input-with-icon">
-                <input 
-                    type={showPassword ? "text" : "password"}
-                    placeholder="Senha"
-                    value={password}
-                    onChange={(e) => setPassword(e.target.value)}
-                    required
-                />
+                    <button type="submit" className={styles.button} disabled={isLoading}>
+                        {isLoading ? "Entrando..." : "Login"}
+                    </button>
+                </form>
+
+                <Link to="/" className={styles.link}>
+                    Ainda não tem conta? Cadastre-se
+                </Link>
                 <button
                     type="button"
-                    className="toggle-password"
-                    onClick={() => setShowPassword((prev) => !prev)}
-                    aria-label={showPassword ? "Ocultar senha" : "Mostrar senha"}
+                    className={styles.backButton}
+                    onClick={() => navigate("/")}
                     disabled={isLoading}
                 >
-                    {showPassword ? <AiOutlineEyeInvisible size={20} /> : <AiOutlineEye size={20} />}
+                    Voltar
                 </button>
             </div>
-
-            <button type="submit" disabled={isLoading}>
-                {isLoading ? "Entrando..." : "Login"}
-            </button>
-        </form>
-        <div className="login-footer">
-            <Link to="/">Ainda não tem conta? Cadastre-se</Link>
-            <button
-                type="button"
-                onClick={() => navigate("/")}
-                disabled={isLoading}
-            >
-                Voltar
-            </button>
-        </div>
         </div>
     );
 }
-=======
-import { useNavigate } from "react-router-dom";
-import { useState } from "react";
-import { loginAPI } from "../../services/api/loginAPI";
-import { setCurrentPhaseIndex } from "../../store/gameState";
-import { Link } from "react-router-dom";
-import { setStudents } from "../../store/TeacherStudentsInfo";
-import styles from "../../assets/styles/css/login.module.css"; // ✅ Import CSS Modules
-import logo from "../../assets/images/logo-do-site.png";
-
-export default function Login() {
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const navigate = useNavigate();
-
-  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-    try {
-      const user = await loginAPI(email, password);
-      if (user.isStudent) {
-        setCurrentPhaseIndex(user.currentPhaseIndex);
-        navigate("/PlayerMenu");
-      } else {
-        setStudents(user.teacherStudents);
-        navigate("/TeacherMenu");
-      }
-    } catch (err: any) {
-      console.error("Erro no login:", err.message);
-    }
-  };
-
-  return (
-    <div className={styles.page}>
-      <div className={styles.loginContainer}>
-        <img src={logo} alt="Logo do Quebra-Cabeça do Autismo" className={styles.logo} />
-
-        <h1 className={styles.title}>Entrar</h1>
-
-        <form onSubmit={handleSubmit}>
-          <input
-            type="email"
-            placeholder="E-mail"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-            required
-            className={styles.input}
-          />
-
-          <input
-            type="password"
-            placeholder="Senha"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-            required
-            className={styles.input}
-          />
-
-          <button type="submit" className={styles.button}>Login</button>
-        </form>
-
-        <Link to="/" className={styles.link}>
-          Ainda não tem conta? Cadastre-se
-        </Link>
-      </div>
-    </div>
-  );
-}
->>>>>>> Arthur

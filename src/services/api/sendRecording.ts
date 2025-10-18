@@ -1,3 +1,4 @@
+import { isAxiosError } from "axios";
 import apiClient from "./apiClient";
 
 export default async function sendRecording(audioBlob: Blob): Promise<string> {
@@ -25,11 +26,28 @@ export default async function sendRecording(audioBlob: Blob): Promise<string> {
     );
     return "";
   } catch (error) {
+    if (isAxiosError(error)) {
+      const status = error.response?.status;
+      const data = error.response?.data;
+      const message =
+        typeof data === "string"
+          ? data
+          : data?.message ?? "Não foi possível processar o áudio.";
+
+      console.error(
+        `Erro em sendRecording: status ${status ?? "desconhecido"}`,
+        message
+      );
+
+      throw new Error(message);
+    }
+
     if (error instanceof Error) {
       console.error("Erro em sendRecording:", error.message);
-    } else {
-      console.error("Erro não esperado:", error);
+      throw error;
     }
-    throw error;
+
+    console.error("Erro não esperado:", error);
+    throw new Error("Não foi possível processar o áudio.");
   }
 }

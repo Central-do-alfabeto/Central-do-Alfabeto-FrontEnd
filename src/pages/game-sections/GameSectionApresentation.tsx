@@ -4,20 +4,22 @@ import { useNavigate } from "react-router-dom";
 import { playAudio } from "../../utils/playAudio";
 import { useEffect } from "react";
 import styles from "../../assets/styles/css/game-section-apresentation.module.css";
+import { useAudioRunning } from "../../state/useAudioRunning";
 
 export default function GameSectionApresentation() {
   const navigate = useNavigate();
+  const [, setAudioRunning] = useAudioRunning();
 
   useEffect(() => {
-    playAudio("AudioApresentation");
-  }, []);
+    playAudio("AudioApresentation", setAudioRunning);
+  }, [setAudioRunning]);
 
   return (
     <div className={styles.page}>
       <div className={styles.container}>
         <section
           className={styles.letter}
-          onClick={() => playAudio(`AuxLetter${Letters[currentPhaseIndex]}`, true)}
+          onClick={() => playAudio(`AuxLetter${Letters[currentPhaseIndex]}`, setAudioRunning, true)}
         >
           {Letters[currentPhaseIndex]}
         </section>

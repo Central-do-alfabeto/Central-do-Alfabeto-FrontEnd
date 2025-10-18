@@ -9,6 +9,7 @@ import { useAudioRunning } from "../../state/useAudioRunning";
 import { useShowText } from "../../state/useShowText";
 import useSectionRedirect from "../../hooks/useSectionRedirect";
 import { matchesExpectedSpeech } from "../../utils/speechUtils";
+import styles from "../../assets/styles/css/game-section-speech.module.css";
 
 export default function GameSectionSpeech() {
   const [canGoNext, setCanGoNext] = useState(false);
@@ -39,7 +40,9 @@ export default function GameSectionSpeech() {
       }
     } catch (error) {
       console.error("Falha ao processar áudio:", error);
-      incrementTotalErrors();
+      if (error instanceof Error) {
+        alert(error.message);
+      }
       setCanGoNext(false);
     }
   }
@@ -52,45 +55,73 @@ export default function GameSectionSpeech() {
   }, [showText, setAudioRunning, helperAudioName]); 
 
   return (
-    <div>
-      {showText && (
-        <p>Clique na letra e grave sua pronúncia corretamente para continuar! 🎤</p>
-      )}
+    <div className={styles.page}>
+      <div className={styles.container}>
+        {showText && (
+          <p className={styles.helperText}>
+            Clique na letra e grave sua pronúncia corretamente para continuar! 🎤
+          </p>
+        )}
 
-      <div
-        className="letra"
-        onClick={() =>
-          playAudio(
-            presentationAudioName,
-            setAudioRunning,
-            true
-          )
-        }
-      >
-        {letter}
+        <div
+          className={styles.letterDisplay}
+          onClick={() =>
+            playAudio(
+              presentationAudioName,
+              setAudioRunning,
+              true
+            )
+          }
+          role="button"
+          tabIndex={0}
+          onKeyDown={(event) => {
+            if (event.key === "Enter" || event.key === " ") {
+              event.preventDefault();
+              playAudio(
+                presentationAudioName,
+                setAudioRunning,
+                true
+              );
+            }
+          }}
+        >
+          {letter}
+        </div>
+
+        <div className={styles.buttonRow}>
+          <button
+            type="button"
+            id="startRecordingLetter"
+            className={styles.recordButton}
+            onClick={toggleRecording}
+            disabled={canGoNext || audioRunning}
+          >
+            <span aria-hidden="true">{isRecording ? "⏹️" : "🎙️"}</span>
+            <span>{isRecording ? " Parar" : " Gravar"}</span>
+          </button>
+
+          <button
+            type="button"
+            className={styles.nextButton}
+            disabled={!canGoNext || audioRunning}
+            onClick={() => redirect("GameSectionSpeech")}
+            aria-label="Ir para a próxima fase"
+          >
+            <span aria-hidden="true">➡️</span>
+            {showText && <span> Próxima fase</span>}
+          </button>
+
+          <button
+            type="button"
+            className={styles.returnButton}
+            onClick={() => navigate("/PlayerMenu")}
+            disabled={audioRunning}
+          >
+            <span aria-hidden="true">⬅️</span>
+            {showText && <span> Retornar</span>}
+          </button>
+        </div>
       </div>
-
-      {/* Botão Gravar (bloqueia se acertou ou se áudio está tocando) */}
-      <button
-        id="startRecordingLetter"
-        onClick={toggleRecording}
-        disabled={canGoNext || audioRunning}
-      >
-        {isRecording ? "⏹️ Parar" : "🎙️ Gravar"}
-      </button>
-
-      {/* Botão Próxima fase (desbloqueia apenas se acertou e áudio não está tocando) */}
-      <button
-        className="section2"
-        disabled={!canGoNext || audioRunning}
-        onClick={() => redirect("GameSectionSpeech")}
-      >
-        {showText && <div>Próxima fase</div>}
-      </button>
-
-      <button onClick={() => navigate("/PlayerMenu")} disabled={audioRunning}>
-        {showText && <div>Retornar</div>}
-      </button>
     </div>
   );
 }

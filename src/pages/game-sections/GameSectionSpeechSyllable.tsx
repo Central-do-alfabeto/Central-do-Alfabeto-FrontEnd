@@ -9,6 +9,7 @@ import { useAudioRunning } from "../../state/useAudioRunning";
 import { useShowText } from "../../state/useShowText";
 import useSectionRedirect from "../../hooks/useSectionRedirect";
 import { matchesExpectedSpeech } from "../../utils/speechUtils";
+import styles from "../../assets/styles/css/game-section-speech-syllable.module.css";
 
 export default function GameSectionSpeechSyllable() {
   const [canGoNextWords, setCanGoNextWords] = useState([false, false, false, false, false]);
@@ -48,7 +49,9 @@ export default function GameSectionSpeechSyllable() {
       }
     } catch (error) {
       console.error("Falha ao processar áudio:", error);
-      incrementTotalErrors();
+      if (error instanceof Error) {
+        alert(error.message);
+      }
       setCanGoNext(false);
     }
   }
@@ -61,40 +64,72 @@ export default function GameSectionSpeechSyllable() {
   }, [showText, setAudioRunning, helperAudioName, syllables]);
 
   return (
-    <div>
-      {showText && <p>Grave cada sílaba corretamente para continuar! 🎤</p>}
+    <div className={styles.page}>
+      <div className={styles.container}>
+        <form
+          className={styles.form}
+          onSubmit={(event) => event.preventDefault()}
+        >
+          {showText && (
+            <p className={styles.helperText}>Grave cada sílaba corretamente para continuar! 🎤</p>
+          )}
 
-      {syllables.map((syll, idx) => (
-        <div key={syll}>
-          <div onClick={() => playAudio(`silaba_${syll}`, setAudioRunning, true)}>
-            {syll}
-          </div>
+          {syllables.map((syll, idx) => (
+            <div className={styles.syllableGroup} key={syll}>
+              <div
+                className={styles.syllable}
+                onClick={() => playAudio(`silaba_${syll}`, setAudioRunning, true)}
+                role="button"
+                tabIndex={0}
+                onKeyDown={(event) => {
+                  if (event.key === "Enter" || event.key === " ") {
+                    event.preventDefault();
+                    playAudio(`silaba_${syll}`, setAudioRunning, true);
+                  }
+                }}
+              >
+                {syll}
+              </div>
+              <button
+                type="button"
+                className={styles.recordButton}
+                onClick={() => {
+                  toggleRecording();
+                  setClickedWord(syll);
+                }}
+                disabled={
+                  canGoNextWords[idx] ||
+                  (isRecording && clickedWord !== syll) ||
+                  audioRunning
+                }
+              >
+                <span aria-hidden="true">{isRecording && clickedWord === syll ? "⏹️" : "🎙️"}</span>
+                <span>{isRecording && clickedWord === syll ? " Parar" : " Gravar"}</span>
+              </button>
+            </div>
+          ))}
+
           <button
-            onClick={() => {
-              toggleRecording();
-              setClickedWord(syll);
-            }}
-            disabled={
-              canGoNextWords[idx] ||
-              (isRecording && clickedWord !== syll) ||
-              audioRunning
-            }
+            type="button"
+            className={styles.nextButton}
+            disabled={!canGoNext || audioRunning}
+            onClick={() => redirect("GameSectionSpeechSyllable")}
           >
-            {isRecording && clickedWord === syll ? "⏹️ Parar" : "🎙️ Gravar"}
+            <span aria-hidden="true">➡️</span>
+            {showText && <span> Próxima fase</span>}
           </button>
-        </div>
-      ))}
 
-      <button
-        disabled={!canGoNext || audioRunning}
-        onClick={() => redirect("GameSectionSpeechSyllable")}
-      >
-        {showText && <div>Próxima fase</div>}
-      </button>
-
-      <button onClick={() => navigate("/PlayerMenu")} disabled={audioRunning}>
-        {showText && <div>Retornar</div>}
-      </button>
+          <button
+            type="button"
+            className={styles.returnButton}
+            onClick={() => navigate("/PlayerMenu")}
+            disabled={audioRunning}
+          >
+            <span aria-hidden="true">⬅️</span>
+            {showText && <span> Retornar</span>}
+          </button>
+        </form>
+      </div>
     </div>
   );
 }

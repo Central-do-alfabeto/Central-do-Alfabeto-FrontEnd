@@ -9,33 +9,17 @@
   padding: 20px;
 }
 
-/* 📌 Container central */
+/* 🧭 Painel central */
 .container {
   background-color: var(--color-surface-soft);
-  border-radius: 16px;
-  box-shadow: 0px 6px 20px rgba(0, 0, 0, 0.1);
   padding: 40px 30px;
-  width: 100%;
-  max-width: 420px;
+  border-radius: 20px;
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.08);
   text-align: center;
-
-  opacity: 0;
-  transform: translateY(40px);
-  animation: slideUpFade 0.8s ease-out forwards;
+  max-width: 400px;
+  width: 100%;
+  animation: slideUpFade 0.6s ease-out;
   color: var(--color-text);
-}
-
-.form {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-}
-
-.helperText {
-  font-size: 16px;
-  color: var(--color-text);
-  opacity: 0.8;
-  margin-bottom: 10px;
 }
 
 /* ✨ Animação de entrada */
@@ -50,33 +34,38 @@
   }
 }
 
-/* 📝 Palavra */
-.wordLabel {
-  display: block;
-  font-size: 42px;
+/* 🔠 Letra principal */
+.letterDisplay {
+  font-size: 100px;
   font-weight: bold;
   color: var(--color-text);
-  margin: 20px 0 10px;
+  margin-bottom: 30px;
+  transition: transform 0.2s;
   cursor: pointer;
-  transition: transform 0.2s ease;
 }
 
-.wordLabel:hover {
+.letterDisplay:hover {
   transform: scale(1.1);
+}
+
+/* 🟠 Botões */
+.buttonRow {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+  margin-bottom: 20px;
 }
 
 /* 🎙️ Botão de gravação */
 .recordButton {
-  width: 100%;
-  padding: 14px;
-  font-size: 16px;
-  font-weight: bold;
-  background-color: #FFEFB4; /* amarelo pastel suave */
-  color: #333;
+  font-size: 18px;
+  padding: 12px 20px;
   border: none;
   border-radius: 10px;
   cursor: pointer;
-  margin-bottom: 18px;
+  font-weight: bold;
+  background-color: #ffefb5;
+  color: #4e4e4e;
   transition: background-color 0.3s ease, transform 0.2s ease;
   display: inline-flex;
   align-items: center;
@@ -85,29 +74,26 @@
 }
 
 .recordButton:hover:not(:disabled) {
-  background-color: #FFE387; /* amarelo mais vivo */
-  transform: scale(1.03);
+  background-color: #ffe38f;
+  transform: scale(1.05);
 }
 
 .recordButton:disabled {
-  background-color: #eeeeee;
+  background-color: #e0e0e0;
   color: #777;
   cursor: not-allowed;
 }
 
-/* ✅ Próxima fase */
+/* ✅ Botão próxima fase */
 .nextButton {
-  width: 100%;
-  padding: 14px;
-  font-size: 16px;
-  font-weight: bold;
-  background-color: var(--color-surface);
-  color: var(--color-on-surface);
+  font-size: 18px;
+  padding: 12px 20px;
   border: none;
   border-radius: 10px;
   cursor: pointer;
-  margin-top: 10px;
-  margin-bottom: 25px;
+  font-weight: bold;
+  background-color: var(--color-surface);
+  color: var(--color-on-surface);
   transition: background-color 0.3s ease, transform 0.2s ease;
   display: inline-flex;
   align-items: center;
@@ -117,7 +103,7 @@
 
 .nextButton:hover:not(:disabled) {
   background-color: var(--color-surface-hover);
-  transform: scale(1.03);
+  transform: scale(1.05);
 }
 
 .nextButton:disabled {
@@ -130,10 +116,9 @@
   background: none;
   border: none;
   color: var(--color-text);
-  font-size: 15px;
+  font-size: 16px;
   text-decoration: underline;
   cursor: pointer;
-  transition: opacity 0.2s ease;
   display: inline-flex;
   align-items: center;
   justify-content: center;
@@ -141,16 +126,29 @@
 }
 
 .returnButton:hover {
+  color: var(--color-text);
   opacity: 0.8;
+}
+
+.helperText {
+  font-size: 16px;
+  color: var(--color-text);
+  opacity: 0.8;
+  margin-bottom: 15px;
 }
 
 /* 📱 Responsivo */
 @media (max-width: 480px) {
-  .container {
-    padding: 30px 20px;
+  .letterDisplay {
+    font-size: 70px;
   }
 
-  .wordLabel {
-    font-size: 34px;
+  .buttonRow {
+    flex-direction: column;
+  }
+
+  .recordButton,
+  .nextButton {
+    width: 100%;
   }
 }

@@ -6,7 +6,9 @@ export function playAudio(
   setUseAudioRunning: Dispatch<SetStateAction<boolean>>,
   btnClicked: boolean = false
 ): void {
-  const audioPath = `/audio/audio_${name}.mp3`;
+  const baseUrl = import.meta.env.BASE_URL ?? "/";
+  const encodedName = encodeURIComponent(`${name}.mp3`).replace(/%20/g, " ");
+  const audioPath = `${baseUrl}audio/${encodedName}`;
   const audio = new Audio(audioPath);
 
   if (btnClicked) incrementTotalAudioReproductions();
@@ -23,11 +25,11 @@ export function playAudio(
     .play()
     .then(() => {
       setUseAudioRunning(true);
-      console.log(`Reproduzindo: audio_${name}.mp3`);
+      console.log(`Reproduzindo: ${audioPath}`);
     })
     .catch((err) => {
       setUseAudioRunning(false);
-      console.error("Erro ao reproduzir o áudio:", err);
+      console.error(`Erro ao reproduzir o áudio (${audioPath}):`, err);
     });
 }
 

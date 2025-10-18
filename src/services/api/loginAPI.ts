@@ -12,6 +12,7 @@ export type LoginResponse = {
     userId: number;
     isStudent: boolean;
     token: string;
+    role?: string;
     currentPhaseIndex?: number;
     teacherStudents?: TeacherStudentSummary[];
 };
@@ -25,6 +26,7 @@ export async function loginAPI(email: string, password: string): Promise<LoginRe
             isStudent: response.data.isStudent,
             token: response.data.token,
             currentPhaseIndex: response.data.currentPhaseIndex ?? undefined,
+            role: response.data.role ?? undefined,
             teacherStudents: response.data.studentSummaries as TeacherStudentSummary[] | undefined
         };
 
