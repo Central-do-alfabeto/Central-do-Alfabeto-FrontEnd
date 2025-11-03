@@ -1,0 +1,1 @@
+export { usePageColor as PageColor } from "./usePageColor";

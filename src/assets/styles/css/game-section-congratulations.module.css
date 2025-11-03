@@ -1,0 +1,94 @@
+/* 🌿 Fundo geral */
+.page {
+  background-color: var(--color-background);
+  min-height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 20px;
+  font-family: "Comic Sans MS", cursive, sans-serif;
+}
+
+/* 🧭 Container central */
+.container {
+  background-color: var(--color-surface-soft);
+  border-radius: 20px;
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.08);
+  padding: 40px 30px;
+  text-align: center;
+  max-width: 420px;
+  width: 100%;
+  animation: slideUpFade 0.6s ease-out;
+  color: var(--color-text);
+}
+
+@keyframes slideUpFade {
+  from {
+    opacity: 0;
+    transform: translateY(40px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.message {
+  font-size: 20px;
+  color: var(--color-text);
+  font-weight: bold;
+  margin-bottom: 24px;
+}
+
+.buttonRow {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.nextButton,
+.returnButton {
+  font-size: 18px;
+  padding: 12px 20px;
+  border-radius: 10px;
+  border: none;
+  cursor: pointer;
+  font-weight: bold;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  transition: background-color 0.3s ease, transform 0.2s ease;
+}
+
+.nextButton {
+  background-color: var(--color-surface);
+  color: var(--color-on-surface);
+}
+
+.nextButton:hover:not(:disabled) {
+  background-color: var(--color-surface-hover);
+  transform: scale(1.05);
+}
+
+.nextButton:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.returnButton {
+  background: none;
+  color: var(--color-text);
+  text-decoration: underline;
+}
+
+.returnButton:hover {
+  color: var(--color-text);
+  opacity: 0.8;
+}
+
+@media (max-width: 480px) {
+  .container {
+    padding: 30px 20px;
+  }
+}

@@ -1,0 +1,141 @@
+/* Reset básico */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+.cadastro-container .logo-img {
+  width: 120px; /* tamanho adequado e proporcional */
+  max-width: 60%;
+  margin-bottom: 25px;
+  margin-top: -10px;
+  display: block;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+body {
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  background-color: #b4f5b1;
+  min-height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 20px;
+}
+
+/* Container de cadastro */
+.cadastro-container {
+  background-color: #ffffff;
+  padding: 40px 30px;
+  border-radius: 20px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+  width: 100%;
+  max-width: 420px;
+  text-align: center;
+  animation: fadeIn 0.8s ease-in-out;
+}
+
+/* Animação de entrada */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Título */
+.cadastro-container h1 {
+  font-size: 30px;
+  color: #2e7d32;
+  margin-bottom: 30px;
+}
+
+/* Campos de entrada */
+.cadastro-container input[type="text"],
+.cadastro-container input[type="email"],
+.cadastro-container input[type="password"] {
+  width: 100%;
+  padding: 14px;
+  margin-bottom: 18px;
+  border: 2px solid #ccc;
+  border-radius: 10px;
+  font-size: 16px;
+  transition: border 0.3s, background-color 0.3s;
+}
+
+.cadastro-container input:focus {
+  outline: none;
+  border-color: #2e7d32;
+  background-color: #f0fff0;
+}
+
+/* Checkbox */
+.checkbox-wrapper {
+  margin-bottom: 20px;
+  text-align: left;
+  font-size: 15px;
+  color: #333;
+}
+
+.checkbox-wrapper label {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  cursor: pointer;
+}
+
+.checkbox-wrapper input[type="checkbox"] {
+  accent-color: #2e7d32;
+  transform: scale(1.2);
+}
+
+/* Botão */
+.cadastro-container button {
+  width: 100%;
+  padding: 14px;
+  background-color: #2e7d32;
+  color: white;
+  font-size: 18px;
+  font-weight: bold;
+  border: none;
+  border-radius: 10px;
+  cursor: pointer;
+  transition: background-color 0.3s, transform 0.2s;
+}
+
+.cadastro-container button:hover {
+  background-color: #1b5e20;
+  transform: scale(1.02);
+}
+
+/* Link de login */
+.cadastro-container a {
+  display: inline-block;
+  margin-top: 20px;
+  font-size: 14px;
+  color: #2e7d32;
+  text-decoration: none;
+  transition: color 0.3s;
+}
+
+.cadastro-container a:hover {
+  color: #1b5e20;
+  text-decoration: underline;
+}
+
+/* Responsivo */
+@media (max-width: 480px) {
+  .cadastro-container {
+    padding: 30px 20px;
+  }
+
+  .cadastro-container h1 {
+    font-size: 26px;
+  }
+}

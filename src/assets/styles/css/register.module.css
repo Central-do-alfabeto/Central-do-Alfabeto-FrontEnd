@@ -1,0 +1,205 @@
+/* 🌿 Container de página — cobre 100% da tela */
+.page {
+  width: 100vw;
+  height: 100vh;
+  min-height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 20px;
+}
+
+/* Fundo específico de acordo com o perfil */
+.bgAluno {
+  background-color: #c9f5ca; /* Verde suave */
+}
+
+.bgEducador {
+  background-color: #f8cccc; /* Vermelho rosado suave */
+}
+
+/* 🧭 Cartão central */
+.container {
+  background-color: #ffffff;
+  border-radius: 16px;
+  box-shadow: 0px 4px 18px rgba(0, 0, 0, 0.1);
+  padding: 48px 44px;
+  width: 100%;
+  max-width: 440px;
+  text-align: center;
+
+  /* ✨ Efeito de entrada */
+  opacity: 0;
+  transform: translateY(40px);
+  animation: slideUpFade 0.8s ease-out forwards;
+}
+
+/* 🎓 Logo — aumentada */
+.logo {
+  width: 130px;         /* antes: 90px */
+  margin-bottom: 25px;  /* dá mais respiro */
+}
+
+/* 📝 Título — maior e mais destacado */
+h1 {
+  font-size: 32px;      /* antes: 26px */
+  margin-bottom: 30px;
+  font-weight: 800;     /* título mais forte */
+  line-height: 1.2;
+}
+
+.form {
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+}
+
+/* Título por perfil */
+.aluno h1 {
+  color: #2e7d32;
+}
+
+.educador h1 {
+  color: #b32b2b;
+}
+
+/* ✍️ Inputs */
+.form input[type="text"],
+.form input[type="email"],
+.form input[type="password"] {
+  width: 100%;
+  padding: 16px 18px;
+  border: 1px solid #cccccc;
+  border-radius: 8px;
+  font-size: 15px;
+  box-sizing: border-box;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.form input:focus {
+  outline: none;
+  border-color: #4caf50;
+  box-shadow: 0 0 0 3px rgba(76, 175, 80, 0.2);
+}
+
+.passwordField {
+  position: relative;
+  width: 100%;
+}
+
+.togglePasswordButton {
+  position: absolute;
+  top: 50%;
+  right: 14px;
+  transform: translateY(-50%);
+  transform-origin: center;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  padding: 0;
+  border: none;
+  border-radius: 50%;
+  background: transparent;
+  color: #666666;
+  cursor: pointer;
+  line-height: 1;
+  transition: transform 0.18s ease, background-color 0.18s ease;
+}
+
+.togglePasswordButton:hover,
+.togglePasswordButton:focus-visible {
+  transform: translateY(-50%) scale(1.08);
+}
+
+.passwordField input {
+  padding-right: 54px;
+}
+
+.togglePasswordButton:disabled {
+  cursor: not-allowed;
+  opacity: 0.6;
+}
+
+.educador .togglePasswordButton:hover,
+.educador .togglePasswordButton:focus-visible {
+  background-color: rgba(179, 43, 43, 0.18);
+}
+
+.aluno .togglePasswordButton:hover,
+.aluno .togglePasswordButton:focus-visible {
+  background-color: rgba(46, 125, 50, 0.18);
+}
+
+/* 📌 Botões agrupados */
+.buttonGroup {
+  background: transparent;
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+  margin-top: 20px;
+}
+
+.buttonGroup button {
+  width: 100%;
+  padding: 14px;
+  font-size: 16px;
+  transition: transform 0.18s ease, color 0.18s ease, background-color 0.18s ease;
+  border: none;
+  border-radius: 8px;
+  color: #333333;
+}
+/* 🟢 Botão aluno */
+.aluno .buttonGroup button[type="submit"] {
+  background-color: #2e7d32;
+  color: white;
+}
+.aluno .buttonGroup button[type="submit"]:hover {
+  background-color: #256628;
+}
+
+/* ❤️ Botão educador */
+.educador .buttonGroup button[type="submit"] {
+  background-color: #b32b2b;
+  color: white;
+}
+.educador .buttonGroup button[type="submit"]:hover {
+  background-color: #961f1f;
+}
+
+/* 🔙 Botão Voltar */
+.buttonGroup button[type="button"] {
+  background-color: #eeeeee;
+  color: #333;
+}
+.buttonGroup button[type="button"]:hover {
+  background-color: #d6d6d6;
+}
+
+/* ✨ Keyframes da animação */
+@keyframes slideUpFade {
+  from {
+    opacity: 0;
+    transform: translateY(40px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* 📱 Responsivo */
+@media (max-width: 480px) {
+  .container {
+    padding: 36px 24px;
+  }
+
+  .logo {
+    width: 90px;
+  }
+
+  h1 {
+    font-size: 24px;
+  }
+}

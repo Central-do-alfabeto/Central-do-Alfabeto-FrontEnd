@@ -1,0 +1,149 @@
+/* 🌿 Fundo geral */
+.page {
+  background-color: var(--color-background, #f0f6fd);
+  min-height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-family: "Comic Sans MS", cursive, sans-serif;
+  padding: 20px;
+}
+
+/* 📌 Container central (relativo p/ botões inferiores) */
+.container {
+  position: relative;
+  background-color: var(--color-surface-soft);
+  border-radius: 20px;
+  box-shadow: 0 8px 20px rgba(0,0,0,0.1);
+  padding: 80px 60px 140px;  /* espaço extra embaixo pros botões fixos */
+  width: 100%;
+  max-width: 1220px;
+  min-height: 450px;
+  min-width: 900px;
+  text-align: center;
+  color: var(--color-text);
+  opacity: 0;
+  transform: translateY(40px);
+  animation: slideUpFade 0.6s ease-out forwards;
+}
+
+@keyframes slideUpFade {
+  from { opacity: 0; transform: translateY(40px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+/* Form */
+.form {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.helperText {
+  font-size: 20px;
+  color: var(--color-text);
+  opacity: 0.9;
+  margin-bottom: 36px;
+}
+
+/* 🔠 LINHA de sílabas (cada bloco tem sílaba + botão) */
+.syllableRow {
+  margin-top: 120px;
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  gap: 40px;          /* espaçamento entre blocos */
+  flex-wrap: wrap;    /* quebra linha em telas menores */
+  margin-bottom: 60px;
+  max-width: 100%;
+}
+
+/* 🧩 Cada bloco */
+.syllableBlock {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 14px;          /* espaço entre a sílaba e o botão amarelo */
+}
+
+/* 🔠 Sílaba (título grande clicável) */
+.syllable {
+  font-size: 48px;
+  font-weight: bold;
+  color: var(--color-text);
+  cursor: pointer;
+  transition: transform 0.2s ease;
+}
+.syllable:hover { transform: scale(1.08); }
+
+/* 🎙️ Botão Gravar (amarelo) — não ocupa 100% */
+.recordButton {
+  padding: 16px 26px;
+  font-size: 18px;
+  font-weight: bold;
+  background-color: #f1c40f;
+  color: #2c3e50;
+  border: none;
+  border-radius: 14px;
+  cursor: pointer;
+  transition: background-color 0.3s ease, transform 0.2s ease;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  box-shadow: 0 6px 14px rgba(0,0,0,0.08);
+}
+.recordButton:hover:not(:disabled) { background-color: #d4ac0d; transform: scale(1.05); }
+.recordButton:disabled { opacity: 0.6; cursor: not-allowed; }
+
+/* 🎛️ Navegação inferior dentro do container */
+:is(.nextButton, .returnButton) {
+  position: absolute;  /* relativo ao .container */
+  bottom: 32px;
+  border: none;
+  border-radius: 12px;
+  padding: 18px 28px;
+  font-size: 20px;
+  font-weight: bold;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  cursor: pointer;
+  transition: transform 0.2s ease, background-color 0.3s ease;
+  box-shadow: 0 6px 16px rgba(0,0,0,0.08);
+}
+:is(.nextButton, .returnButton):disabled { opacity: 0.6; cursor: not-allowed; }
+
+/* 🟢 Próxima — canto inferior direito */
+.nextButton {
+  right: 40px;
+  background-color: #2ecc71;
+  color: #fff;
+}
+.nextButton:hover:not(:disabled) { background-color: #27ae60; transform: translateY(-2px); }
+
+/* 🔴 Retornar — canto inferior esquerdo */
+.returnButton {
+  left: 40px;
+  background-color: #e74c3c;
+  color: #fff;
+}
+.returnButton:hover:not(:disabled) { background-color: #c0392b; transform: translateY(-2px); }
+
+/* 📱 Responsivo */
+@media (max-width: 1024px) {
+  .container { padding: 64px 24px 120px; max-width: 100%; min-width: auto; }
+  .syllableRow { gap: 28px; margin-bottom: 48px; }
+  .syllable { font-size: 40px; }
+  .recordButton { font-size: 16px; padding: 14px 22px; }
+  :is(.nextButton, .returnButton) { font-size: 18px; padding: 16px 22px; bottom: 24px; }
+  .nextButton { right: 20px; }
+  .returnButton { left: 20px; }
+}
+
+@media (max-width: 600px) {
+  .syllableRow { flex-direction: column; gap: 22px; }
+  .syllable { font-size: 34px; }
+  .recordButton { font-size: 15px; padding: 12px 18px; }
+}
