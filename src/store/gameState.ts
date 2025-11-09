@@ -53,3 +53,15 @@ export function resetTotalValues() {
   setSessionNumber("TotalErrors", TotalErrors);
   setSessionNumber("TotalAudioReproductions", TotalAudioReproductions);
 }
+
+// inGameFlow
+export let inGameFlow: boolean = getSessionBoolean("inGameFlow", false);
+export function setInGameFlow(value: boolean) {
+  inGameFlow = value;
+  sessionStorage.setItem("inGameFlow", value.toString());
+}
+
+function getSessionBoolean(key: string, defaultValue: boolean): boolean {
+  const stored = sessionStorage.getItem(key);
+  return stored !== null ? stored === "true" : defaultValue;
+}

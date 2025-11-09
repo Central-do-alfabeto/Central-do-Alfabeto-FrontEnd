@@ -1,7 +1,7 @@
 import { useEffect } from "react";
 import { playAudio } from "../../utils/playAudio";
 import { useNavigate } from "react-router-dom";
-import { setCurrentPhaseIndex, resetTotalValues, currentPhaseIndex } from "../../store/gameState";
+import { setCurrentPhaseIndex, resetTotalValues, currentPhaseIndex, setInGameFlow } from "../../store/gameState";
 import { useAudioRunning } from "../../state/useAudioRunning";
 import { useShowText } from "../../state/useShowText";
 import { playerDataUpdate } from "../../services/api/playerDataUpdate";
@@ -55,7 +55,10 @@ export default function GameSectionCongratulations() {
           <button
             type="button"
             className={styles.returnButton}
-            onClick={() => navigate("/PlayerMenu")}
+            onClick={() => {
+              setInGameFlow(false);
+              navigate("/PlayerMenu");
+            }}
             disabled={audioRunning}
           >
             <span aria-hidden="true">⬅️</span>

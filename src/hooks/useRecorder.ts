@@ -1,4 +1,5 @@
 import { useRef, useState } from "react";
+import { convertWebMToWAV } from "../utils/audioUtils";
 
 export default function useRecorder(onStopCallback: (audioBlob: Blob) => void) {
   const [isRecording, setIsRecording] = useState(false);
@@ -29,12 +30,13 @@ export default function useRecorder(onStopCallback: (audioBlob: Blob) => void) {
           }
         };
 
-        mediaRecorder.onstop = () => {
+        mediaRecorder.onstop = async () => {
           try {
-            const audioBlob = new Blob(audioChunksRef.current, {
-              type: "audio/webm",
+            const webmBlob = new Blob(audioChunksRef.current, {
+              type: "audio/webm;codecs=opus",
             });
-            onStopCallback(audioBlob);
+            const wavBlob = await convertWebMToWAV(webmBlob);
+            onStopCallback(wavBlob);
           } finally {
             releaseStream();
           }

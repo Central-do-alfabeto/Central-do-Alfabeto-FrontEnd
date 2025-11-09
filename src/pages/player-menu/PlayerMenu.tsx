@@ -2,7 +2,7 @@ import { useLayoutEffect } from "react";
 import { playAudio } from "../../utils/playAudio";
 import { useNavigate } from "react-router-dom";
 import { useAudioRunning } from "../../state/useAudioRunning";
-import { currentPhaseIndex } from "../../store/gameState";
+import { currentPhaseIndex, setInGameFlow } from "../../store/gameState";
 import styles from "../../assets/styles/css/menu.module.css";
 import soundIcon from "../../assets/images/sound-icon.png";
 import settingsIcon from "../../assets/images/settings-icon.png";
@@ -53,6 +53,7 @@ export default function PlayerMenu() {
                 <div className={styles.startButton}>
                     <button
                         onClick={() => {
+                            setInGameFlow(true);
                             if (currentPhaseIndex === 0) {
                                 navigate("/FirstPresentationSection");
                             } else {

@@ -12,6 +12,8 @@ import GameConfig from '../../pages/game-configurations/GameConfig';
 import GameSectionCongratulations from '../../pages/game-sections/GameSectionCongratulations';
 import GameSectionPresentation from '../../pages/game-sections/GameSectionPresentation';
 import FirstPresentationSection from '../../pages/first-presentation-section/FirstPresentationSection';
+import ProtectedRoute from '../ProtectedRoute';
+import ProgressProtectedRoute from '../ProgressProtectedRoute';
 
 export function Router() {
   return (
@@ -19,17 +21,57 @@ export function Router() {
       <Routes>
         <Route path="/" element={<Index/>}/>
         <Route path="/Login" element={<Login/>}/>
-        <Route path="/PlayerMenu" element={<PlayerMenu/>}/>
         <Route path="/Register" element={<Register/>}/>
-        <Route path="/TeacherMenu" element={<TeacherMenu/>}/>
-        <Route path="/GameSectionPresentation" element={<GameSectionPresentation/>}/>
-        <Route path="/GameSectionSpeech" element={<GameSectionSpeech/>}/>
-        <Route path="/GameSectionMultipleChoice" element={<GameSectionMultipleChoice/>}/>
-        <Route path="/GameSectionSpeechSyllable" element={<GameSectionSpeechSyllable/>}/>
-        <Route path="/GameSectionFinal" element={<GameSectionFinal/>}/>
-        <Route path="/GameSectionCongratulations" element={<GameSectionCongratulations/>}/>
-        <Route path="/GameConfig" element={<GameConfig/>}/>
-        <Route path="/FirstPresentationSection" element={<FirstPresentationSection/>}/>
+        <Route path="/PlayerMenu" element={
+          <ProtectedRoute allowedRoles={['STUDENT']}>
+            <PlayerMenu/>
+          </ProtectedRoute>
+        }/>
+        <Route path="/TeacherMenu" element={
+          <ProtectedRoute allowedRoles={['EDUCATOR']}>
+            <TeacherMenu/>
+          </ProtectedRoute>
+        }/>
+        <Route path="/GameConfig" element={
+          <ProtectedRoute allowedRoles={['STUDENT']}>
+            <GameConfig/>
+          </ProtectedRoute>
+        }/>
+        <Route path="/FirstPresentationSection" element={
+          <ProgressProtectedRoute>
+            <FirstPresentationSection/>
+          </ProgressProtectedRoute>
+        }/>
+        <Route path="/GameSectionPresentation" element={
+          <ProgressProtectedRoute>
+            <GameSectionPresentation/>
+          </ProgressProtectedRoute>
+        }/>
+        <Route path="/GameSectionSpeech" element={
+          <ProgressProtectedRoute>
+            <GameSectionSpeech/>
+          </ProgressProtectedRoute>
+        }/>
+        <Route path="/GameSectionMultipleChoice" element={
+          <ProgressProtectedRoute>
+            <GameSectionMultipleChoice/>
+          </ProgressProtectedRoute>
+        }/>
+        <Route path="/GameSectionSpeechSyllable" element={
+          <ProgressProtectedRoute>
+            <GameSectionSpeechSyllable/>
+          </ProgressProtectedRoute>
+        }/>
+        <Route path="/GameSectionFinal" element={
+          <ProgressProtectedRoute>
+            <GameSectionFinal/>
+          </ProgressProtectedRoute>
+        }/>
+        <Route path="/GameSectionCongratulations" element={
+          <ProgressProtectedRoute>
+            <GameSectionCongratulations/>
+          </ProgressProtectedRoute>
+        }/>
       </Routes>
     </BrowserRouter>
   );
