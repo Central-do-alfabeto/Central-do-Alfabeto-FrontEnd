@@ -23,8 +23,6 @@ export default function GameSectionSpeech() {
   
   const presentationAudioName = `essa_letra_${letter}_alfabeto`; 
   
-  const helperAudioName = `Helper${currentPhaseIndex}`;
-
   // Callback para tratar o resultado do back-end
   async function handleResult(audioBlob: Blob) {
     try {
@@ -36,7 +34,7 @@ export default function GameSectionSpeech() {
       } else {
         incrementTotalErrors();
         setCanGoNext(false);
-        playAudio(`Helper${currentPhaseIndex}`, setAudioRunning, true);
+        playAudio("resposta_errada", setAudioRunning, true);
       }
     } catch (error) {
       console.error("Falha ao processar áudio:", error);
@@ -52,7 +50,7 @@ export default function GameSectionSpeech() {
     if (!showText) {
       playAudio("repita_letra_mostrada", setAudioRunning);
     }
-  }, [showText, setAudioRunning, helperAudioName]); 
+  }, [showText, setAudioRunning]); 
 
   return (
     <div className={styles.page}>

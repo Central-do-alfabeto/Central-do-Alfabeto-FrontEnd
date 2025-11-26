@@ -37,6 +37,8 @@ export default function useRecorder(onStopCallback: (audioBlob: Blob) => void) {
             });
             const wavBlob = await convertWebMToWAV(webmBlob);
             onStopCallback(wavBlob);
+          } catch (error) {
+            console.error("Falha ao preparar o áudio para envio:", error);
           } finally {
             releaseStream();
           }
