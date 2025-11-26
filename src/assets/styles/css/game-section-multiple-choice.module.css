@@ -1,6 +1,6 @@
 /* 🌿 Fundo geral */
 .page {
-  background-color: #c9f5ca; /* Fundo verde pastel suave (mesmo das outras telas) */
+  background-color: var(--color-background, #f0f6fd);
   min-height: 100vh;
   display: flex;
   justify-content: center;
@@ -11,138 +11,119 @@
 
 /* 🧭 Container central */
 .container {
-  background-color: #ffffff;
-  padding: 40px 30px;
+  position: relative;
+  background-color: var(--color-surface-soft);
+  padding: 80px 60px 140px; /* espaço extra para respiro */
   border-radius: 20px;
   box-shadow: 0 8px 20px rgba(0, 0, 0, 0.08);
   text-align: center;
-  max-width: 450px;
+  max-width: 820px;
+  min-width: 1220px;
   width: 100%;
+  min-height: 500px;
   animation: slideUpFade 0.6s ease-out;
+  color: var(--color-text);
 }
 
-/* ✨ Animação de entrada suave */
 @keyframes slideUpFade {
-  from {
-    opacity: 0;
-    transform: translateY(40px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
+  from { opacity: 0; transform: translateY(40px); }
+  to { opacity: 1; transform: translateY(0); }
 }
 
 /* 📝 Título */
 .title {
-  font-size: 28px;
+  font-size: 70px;
   font-weight: bold;
-  color: #2e7d32;
-  margin-bottom: 20px;
+  color: var(--color-text);
+  margin-bottom: 100px;
+  margin-top: -20px;
 }
-
-/* 🔊 Botão de repetir som */
-.repeat-button {
-  background-color: #6fcf74; /* verde mais vivo */
+/* 🔊 Botão de repetir som — maior e centralizado */
+.repeatButton {
+  background-color: #f1c40f;
+  color: #2c3e50;
   border: none;
-  padding: 12px 20px;
-  border-radius: 10px;
+  padding: 20px 40px; /* botão maior */
+  border-radius: 14px;
   cursor: pointer;
-  font-size: 16px;
+  font-size: 20px;
   font-weight: bold;
-  color: white;
   transition: background-color 0.3s ease, transform 0.2s ease;
-  margin-bottom: 25px; /* ✅ espaçamento maior */
-  width: 100%;
+  margin: 0 auto 60px; /* 👈 mais espaçamento entre o botão amarelo e os azuis */
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
 }
+.repeatButton:hover { background-color: #d4ac0d; transform: scale(1.05); }
+.repeatButton:disabled { opacity: 0.6; cursor: not-allowed; }
 
-.repeat-button:hover {
-  background-color: #5cb562;
-  transform: scale(1.03);
-}
-
-/* 🅰️ Botões de opções */
+/* 🅰️ Opções — lado a lado e bem espaçadas */
 .options {
   display: flex;
+  flex-wrap: wrap;
   justify-content: center;
-  flex-direction: column;
-  gap: 15px; /* ✅ espaçamento entre letras */
-  margin-bottom: 25px;
+  gap: 50px; /* 👈 espaçamento entre os botões azuis */
+  margin: 0 auto 24px;
+  max-width: 800px;
 }
+.optionButton {
+  font-size: 26px;
+  padding: 18px 30px;
+  background-color: #5dade2;
+  color: #fff;
+  border: none;
+  border-radius: 16px;
+  cursor: pointer;
+  transition: transform 0.15s ease, filter 0.2s ease;
+  min-width: 80px;
+}
+.optionButton:hover { filter: brightness(0.95); transform: scale(1.06); }
+.optionButton:disabled { opacity: 0.6; cursor: not-allowed; }
 
-.option-button {
-  font-size: 22px;
-  padding: 12px 20px;
-  background-color: #e2f7e4; /* verde pastel mais visível */
-  color: #2e7d32;
-  border: 2px solid #9bd3a1;
+/* 🎛️ Botões inferiores (Retornar / Próxima) */
+:is(.nextButton, .returnButton) {
+  border: none;
   border-radius: 12px;
-  cursor: pointer;
-  transition: background-color 0.3s ease, transform 0.2s ease;
-  width: 100%;
-}
-
-.option-button:hover {
-  background-color: #c7edcb; /* tom mais vivo no hover */
-  transform: scale(1.05);
-}
-
-.option-button:disabled {
-  opacity: 0.6;
-  cursor: not-allowed;
-}
-
-/* ✅ Próxima fase */
-.next-button {
-  font-size: 18px;
-  padding: 12px 20px;
-  border: none;
-  border-radius: 10px;
-  cursor: pointer;
+  padding: 18px 28px;
+  font-size: 20px;
   font-weight: bold;
-  background-color: #2e7d32;
-  color: white;
-  transition: background-color 0.3s ease, transform 0.2s ease;
-  margin-bottom: 10px;
-  width: 100%;
-}
-
-.next-button:hover {
-  background-color: #256628;
-  transform: scale(1.05);
-}
-
-.next-button:disabled {
-  background-color: #d8edd9;
-  color: #777;
-  cursor: not-allowed;
-}
-
-/* 🔙 Botão retornar */
-.return-button {
-  background: none;
-  border: none;
-  color: #2e7d32;
-  font-size: 16px;
-  text-decoration: underline;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
   cursor: pointer;
+  transition: transform 0.2s ease, background-color 0.3s ease;
+  box-shadow: 0 6px 16px rgba(0,0,0,0.08);
+  position: absolute;
+  bottom: 32px;
 }
+:is(.nextButton, .returnButton):disabled { opacity: 0.6; cursor: not-allowed; }
 
-.return-button:hover {
-  color: #2e7d32; /* Sem mudança de cor no hover */
+/* 🟢 Próxima (canto inferior direito) */
+.nextButton {
+  right: 40px;
+  background-color: #2ecc71;
+  color: #fff;
 }
+.nextButton:hover:not(:disabled) { background-color: #27ae60; transform: translateY(-2px); }
+
+/* 🔴 Retornar (canto inferior esquerdo) */
+.returnButton {
+  left: 40px;
+  background-color: #e74c3c;
+  color: #fff;
+}
+.returnButton:hover:not(:disabled) { background-color: #c0392b; transform: translateY(-2px); }
 
 /* 📱 Responsivo */
-@media (max-width: 480px) {
-  .title {
-    font-size: 22px;
-  }
-
-  .option-button {
-    font-size: 18px;
-  }
-
-  .container {
-    padding: 30px 20px;
-  }
+@media (max-width: 1220px) {
+  .container { min-width: auto; max-width: 100%; padding: 64px 24px 120px; }
+  .title { font-size: 38px; margin-bottom: 40px; }
+  .repeatButton { font-size: 18px; padding: 16px 28px; margin-bottom: 50px; }
+  .options { gap: 40px; }
+  .optionButton { font-size: 22px; padding: 14px 24px; min-width: 70px; }
+  :is(.nextButton, .returnButton) { font-size: 18px; padding: 16px 22px; bottom: 24px; }
+  .nextButton { right: 20px; }
+  .returnButton { left: 20px; }
 }

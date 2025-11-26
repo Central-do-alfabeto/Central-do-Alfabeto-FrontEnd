@@ -1,24 +1,37 @@
-import React, { useEffect, useState } from "react";
+import { useMemo } from "react";
+import { useNavigate } from "react-router-dom";
+import { usePageColor } from "../../state/usePageColor";
+import { paletasDisponiveis, type PaletaDisponivel } from "../../store/paletaCores";
+import { useShowText } from "../../state/useShowText";
 import styles from "../../assets/styles/css/gameConfig.module.css";
+import { clearAuthSession } from "../../store/auth";
+import { resetTotalValues, setPlayerID, syncCurrentPhaseIndex } from "../../store/gameState";
 
-// Tipagem correta
-type PaletaCores = "azul" | "verde" | "vermelho" | "amarelo";
+export default function Config() {
+  const [paleta, setPaleta] = usePageColor();
+  const [showText, setShowText] = useShowText();
+  const navigate = useNavigate();
 
-// Paleta de cores suaves
-const paletasDisponiveis: Record<PaletaCores, string> = {
-  azul: "#b3d9ff",     // azul pastel suave
-  verde: "#c8e6c9",    // verde pastel suave
-  vermelho: "#ffcdd2", // vermelho rosado pastel
-  amarelo: "#fff9c4",  // amarelo claro pastel
-};
+  const paletaSelecionada = useMemo<PaletaDisponivel>(
+    () =>
+      (Object.keys(paletasDisponiveis) as PaletaDisponivel[]).find(
+        (key) => paletasDisponiveis[key] === paleta
+      ) ?? "azul",
+    [paleta]
+  );
 
-const GameConfig: React.FC = () => {
-  const [paleta, setPaleta] = useState<PaletaCores>("azul");
+  const handleLogout = () => {
+    clearAuthSession();
+    setPlayerID(0);
+    syncCurrentPhaseIndex(0);
+    resetTotalValues();
+    sessionStorage.removeItem("homeAudioPlayed");
+    navigate("/");
+  };
 
-  // Atualiza a cor de fundo da página
-  useEffect(() => {
-    document.body.style.backgroundColor = paletasDisponiveis[paleta];
-  }, [paleta]);
+  const handleGoBack = () => {
+    navigate("/PlayerMenu");
+  };
 
   return (
     <div className={styles.page}>
@@ -27,27 +40,40 @@ const GameConfig: React.FC = () => {
           <h1>⚙️ Configurações</h1>
 
           <div className={styles.configItem}>
-            <label htmlFor="paleta-select">Cor da página:</label>
+            <label htmlFor="paleta-select">Paleta das telas:</label>
             <select
               id="paleta-select"
-              value={paleta}
-              onChange={(e) => setPaleta(e.target.value as PaletaCores)}
+              value={paletaSelecionada}
+              onChange={(e) => setPaleta(e.target.value as PaletaDisponivel)}
             >
-              {Object.keys(paletasDisponiveis).map((cor) => (
-                <option key={cor} value={cor}>
-                  {cor}
+              {Object.keys(paletasDisponiveis).map((nome) => (
+                <option key={nome} value={nome}>
+                  {nome.charAt(0).toUpperCase() + nome.slice(1)}
                 </option>
               ))}
             </select>
           </div>
 
-          <button onClick={() => alert(`Cor selecionada: ${paleta}`)}>
-            Salvar Alterações
-          </button>
+          <div className={styles.configItem}>
+            <label>
+              <input
+                type="checkbox"
+                checked={showText}
+                onChange={(e) => setShowText(e.target.checked)}
+              />
+              Exibir texto
+            </label>
+          </div>
+
+          <div className={styles.configItem}>
+            <button onClick={handleGoBack}>Voltar</button>
+          </div>
+
+          <div className={styles.configItem}>
+            <button className={styles.logoutButton} onClick={handleLogout}>Sair da conta</button>
+          </div>
         </div>
       </div>
     </div>
   );
-};
-
-export default GameConfig;
+}

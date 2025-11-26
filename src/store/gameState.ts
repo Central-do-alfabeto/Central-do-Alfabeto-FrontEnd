@@ -1,22 +1,55 @@
-export let currentPhaseIndex: number = 0;
-export let PlayerID: number = 0;
+// gameState.ts
+import { updatePlayerMetadata } from "./auth";
 
+// Função auxiliar para ler do sessionStorage ou usar valor padrão
+function getSessionNumber(key: string, defaultValue: number = 0): number {
+  const stored = sessionStorage.getItem(key);
+  return stored !== null ? Number(stored) : defaultValue;
+}
+
+// Função auxiliar para salvar no sessionStorage
+function setSessionNumber(key: string, value: number) {
+  sessionStorage.setItem(key, value.toString());
+}
+
+// currentPhaseIndex
+export let currentPhaseIndex: number = getSessionNumber("currentPhaseIndex", 0);
 export function setCurrentPhaseIndex(value: number) {
-    currentPhaseIndex += value;
+  currentPhaseIndex += value;
+  setSessionNumber("currentPhaseIndex", currentPhaseIndex);
+  updatePlayerMetadata({ currentPhaseIndex });
 }
 
+export function syncCurrentPhaseIndex(value: number) {
+  currentPhaseIndex = value;
+  setSessionNumber("currentPhaseIndex", currentPhaseIndex);
+  updatePlayerMetadata({ currentPhaseIndex });
+}
+
+// PlayerID
+export let PlayerID: number = getSessionNumber("PlayerID", 0);
 export function setPlayerID(value: number) {
-    PlayerID = value;
+  PlayerID = value;
+  setSessionNumber("PlayerID", PlayerID);
 }
 
-export const TotalErrors = Array(50).fill(0);
-
+// TotalErrors
+export let TotalErrors: number = getSessionNumber("TotalErrors", 0);
 export function incrementTotalErrors() {
-    TotalErrors[currentPhaseIndex] += 1;
-}  
+  TotalErrors += 1;
+  setSessionNumber("TotalErrors", TotalErrors);
+}
 
-export const TotalAudioReproductions = Array(50).fill(0);
-
+// TotalAudioReproductions
+export let TotalAudioReproductions: number = getSessionNumber("TotalAudioReproductions", 0);
 export function incrementTotalAudioReproductions() {
-    TotalAudioReproductions[currentPhaseIndex] += 1;
+  TotalAudioReproductions += 1;
+  setSessionNumber("TotalAudioReproductions", TotalAudioReproductions);
+}
+
+export function resetTotalValues() {
+  TotalAudioReproductions = 0;
+  TotalErrors = 0;
+  setSessionNumber("TotalErrors", TotalErrors);
+  setSessionNumber("TotalAudioReproductions", TotalAudioReproductions);
 }

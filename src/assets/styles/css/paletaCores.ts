@@ -1,5 +1,5 @@
 export const paletasDisponiveis = {
-  clara: "#ffffff",
-  escura: "#222222",
-  verde: "#b2ffb2"
+  azul: "#e3f2fd",
+  vermelho: "#ffebee",
+  verde: "#e8f5e9",
 };

@@ -5,72 +5,125 @@ import { playAudio } from "../../utils/playAudio";
 import { useNavigate } from "react-router-dom";
 import useRecorder from "../../hooks/useRecorder";
 import sendRecording from "../../services/api/sendRecording";
-import "../../assets/styles/css/game-section-speech.css";
+import { useAudioRunning } from "../../state/useAudioRunning";
+import { useShowText } from "../../state/useShowText";
+import useSectionRedirect from "../../hooks/useSectionRedirect";
+import { matchesExpectedSpeech } from "../../utils/speechUtils";
+import styles from "../../assets/styles/css/game-section-speech.module.css";
 
 export default function GameSectionSpeech() {
   const [canGoNext, setCanGoNext] = useState(false);
   const { isRecording, toggleRecording } = useRecorder(handleResult);
   const navigate = useNavigate();
+  const [audioRunning, setAudioRunning] = useAudioRunning();
+  const [showText] = useShowText();
+  const { redirect } = useSectionRedirect();
 
+  const letter = Letters[currentPhaseIndex];
+  
+  const presentationAudioName = `essa_letra_${letter}_alfabeto`; 
+  
+  const helperAudioName = `Helper${currentPhaseIndex}`;
+
+  // Callback para tratar o resultado do back-end
   async function handleResult(audioBlob: Blob) {
-    const result = await sendRecording(audioBlob);
-    if (result === Letters[currentPhaseIndex]) {
-      setCanGoNext(true);
-    } else {
-      incrementTotalErrors();
+    try {
+      const transcript = await sendRecording(audioBlob);
+      const expected = Letters[currentPhaseIndex];
+
+      if (matchesExpectedSpeech(transcript, expected)) {
+        setCanGoNext(true);
+      } else {
+        incrementTotalErrors();
+        setCanGoNext(false);
+        playAudio(`Helper${currentPhaseIndex}`, setAudioRunning, true);
+      }
+    } catch (error) {
+      console.error("Falha ao processar áudio:", error);
+      if (error instanceof Error) {
+        alert(error.message);
+      }
       setCanGoNext(false);
-      playAudio(`Helper${currentPhaseIndex}`);
     }
   }
 
   useEffect(() => {
     setCanGoNext(false);
-    playAudio("Section1");
-  }, []);
+    if (!showText) {
+      playAudio("repita_letra_mostrada", setAudioRunning);
+    }
+  }, [showText, setAudioRunning, helperAudioName]); 
 
   return (
-    <div className="speech-page">
-      {/* Ícones no canto superior direito */}
-      <div className="menu-icons">
-        <button onClick={() => playAudio(`AuxLetter${Letters[currentPhaseIndex]}`, true)}>
-          <img src="/src/assets/images/sound-icon.png" alt="Som" />
-        </button>
-        <button onClick={() => navigate("/GameConfig")}>
-          <img src="/src/assets/images/settings-icon.png" alt="Configurações" />
-        </button>
-      </div>
+    <div className={styles.page}>
+      <div className={styles.container}>
+        {showText && (
+          <p className={styles.helperText}>
+            Clique na letra e grave sua pronúncia corretamente para continuar! 🎤
+          </p>
+        )}
 
-      {/* Painel central */}
-      <div className="speech-container">
         <div
-          className="letter-display"
-          onClick={() => playAudio(`AuxLetter${Letters[currentPhaseIndex]}`, true)}
+          className={styles.letterDisplay}
+          onClick={() =>
+            playAudio(
+              presentationAudioName,
+              setAudioRunning,
+              true
+            )
+          }
+          role="button"
+          tabIndex={0}
+          onKeyDown={(event) => {
+            if (event.key === "Enter" || event.key === " ") {
+              event.preventDefault();
+              playAudio(
+                presentationAudioName,
+                setAudioRunning,
+                true
+              );
+            }
+          }}
         >
-          {Letters[currentPhaseIndex]}
+          {letter}
         </div>
 
-        <div className="button-row">
-          <button
-            className="record-button"
-            id="startRecordingLetter"
-            onClick={toggleRecording}
-            disabled={canGoNext}
-          >
-            {isRecording ? "⏹️ Parar" : "🎙️ Gravar"}
-          </button>
+        <div className={styles.buttonRow}>
+           <div className={styles.recordButtonContainer}>
+              <button
+                type="button"
+                id="startRecordingLetter"
+                className={styles.recordButton}
+                onClick={toggleRecording}
+                disabled={canGoNext || audioRunning}
+              >
+                <span aria-hidden="true">{isRecording ? "⏹️" : "🎙️"}</span>
+                <span>{isRecording ? " Parar" : " Gravar"}</span>
+              </button>
+          </div>
+          <div className={styles.ButtonContainer}>
+            <button
+              type="button"
+              className={styles.returnButton}
+              onClick={() => navigate("/PlayerMenu")}
+              disabled={audioRunning}
+            >
+              <span aria-hidden="true">⬅️</span>
+              {showText && <span> Retornar</span>}
+            </button>
 
-          <button
-            className="next-button"
-            disabled={!canGoNext}
-            onClick={() => navigate("/Section2")}
-          >
-            Próxima fase
-          </button>
+            <button
+              type="button"
+              className={styles.nextButton}
+              disabled={!canGoNext || audioRunning}
+              onClick={() => redirect("GameSectionSpeech")}
+              aria-label="Ir para a próxima fase"
+            >
+              <span aria-hidden="true">➡️</span>
+              {showText && <span> Próxima fase</span>}
+            </button>
+          </div>
         </div>
-
-        <button className="return-button" onClick={() => navigate("/PlayerMenu")}>
-          Voltar ao menu
-        </button>
       </div>
     </div>
   );

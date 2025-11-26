@@ -1,17 +1,41 @@
-import axios from 'axios';
+import apiClient from "./apiClient";
 
-export async function loginAPI(email: string, password: string) {
+export type TeacherStudentSummary = {
+    studentId: number;
+    fullName: string;
+    currentPhaseIndex: number;
+    numberOfErrorsByPhase?: Record<number, number>;
+    numberOfSoundRepeatsByPhase?: Record<number, number>;
+};
+
+export type LoginResponse = {
+    userId: number;
+    isStudent: boolean;
+    token: string;
+    role?: string;
+    currentPhaseIndex?: number;
+    teacherStudents?: TeacherStudentSummary[];
+};
+
+export async function loginAPI(email: string, password: string): Promise<LoginResponse> {
     try {
-        const response = await axios.post(`${import.meta.env.VITE_API_URL}/auth/login`, { email, password });
+        const response = await apiClient.post(`/auth/login`, { email, password });
 
-    return {
-        name: response.data.user.name,
-        isStudent: response.data.user.isStudent,
-        currentPhaseIndex: response.data.user.currentPhaseIndex || undefined,
-        teacherStudents: response.data.usar.teacherStudents || undefined
-    };
-    
-    } catch (error: any) {
-        throw new Error(error.response?.data || "Erro no login");
+        return {
+            userId: response.data.userId,
+            isStudent: response.data.isStudent,
+            token: response.data.token,
+            currentPhaseIndex: response.data.currentPhaseIndex ?? undefined,
+            role: response.data.role ?? undefined,
+            teacherStudents: response.data.studentSummaries as TeacherStudentSummary[] | undefined
+        };
+
+    } catch (error) {
+        if (error instanceof Error) {
+            console.error("Erro em loginAPI:", error.message);
+        } else {
+            console.error("Erro não esperado:", error);
+        }
+        throw error;
     }
 }

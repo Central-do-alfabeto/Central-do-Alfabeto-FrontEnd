@@ -1,46 +1,70 @@
 import { useLayoutEffect } from "react";
 import { playAudio } from "../../utils/playAudio";
 import { useNavigate } from "react-router-dom";
-import styles from "../../assets/styles/css/menu.module.css"; // ✅ agora usando CSS Modules
+import { useAudioRunning } from "../../state/useAudioRunning";
+import { currentPhaseIndex } from "../../store/gameState";
+import styles from "../../assets/styles/css/menu.module.css";
+import soundIcon from "../../assets/images/sound-icon.png";
+import settingsIcon from "../../assets/images/settings-icon.png";
 
 export default function PlayerMenu() {
-  const audioPathName: string = 'Menu';
-  const navigate = useNavigate();
+    const navigate = useNavigate();
+    const [audioRunning, setAudioRunning] = useAudioRunning();
 
-  useLayoutEffect(() => {
-    playAudio(audioPathName);
-  }, []);
+    useLayoutEffect(() => {
+        const hasPlayed = sessionStorage.getItem("homeAudioPlayed") === "true";
 
-  return (
-    <div className={styles.pageBackground}>
-      <div className={styles.container}>
+        if (!hasPlayed) {
+            playAudio("tela_inicial", setAudioRunning);
+            sessionStorage.setItem("homeAudioPlayed", "true");
+        }
+    }, [setAudioRunning]);
 
-        <div className={styles.menuIcons}>
-          <button className={styles.icon} onClick={() => playAudio(audioPathName)}>
-            <img 
-              src="/src/assets/images/sound-icon.png"
-              alt="som"
-              loading="lazy"
-              decoding="async"
-            />
-          </button>
-          <button className={styles.icon} onClick={() => navigate('/GameConfig')}>
-            <img 
-              src="/src/assets/images/settings-icon.png"
-              alt="configurações"
-              loading="lazy"
-              decoding="async"
-            />
-          </button>
+    return (
+        <div className={styles.pageBackground}>
+            <div className={styles.container}>
+                    <div className={styles.menuIcons}>
+                        <button
+                            className={styles.menuButton}
+                            onClick={() => playAudio("tela_inicial", setAudioRunning, true)}
+                            disabled={audioRunning}
+                        >
+                            <img
+                                src={soundIcon}
+                                alt="Reproduzir áudio do menu"
+                                loading="lazy"
+                                decoding="async"
+                            />
+                        </button>
+                        <button
+                            className={styles.menuButton}
+                            onClick={() => navigate("/GameConfig")}
+                            disabled={audioRunning}
+                        >
+                            <img
+                                src={settingsIcon}
+                                alt="Abrir configurações"
+                                loading="lazy"
+                                decoding="async"
+                            />
+                        </button>
+                    </div>
+
+                <div className={styles.startButton}>
+                    <button
+                        onClick={() => {
+                            if (currentPhaseIndex === 0) {
+                                navigate("/FirstPresentationSection");
+                            } else {
+                                navigate("/GameSectionPresentation");
+                            }
+                        }}
+                        disabled={audioRunning}
+                    >
+                        INICIAR
+                    </button>
+                </div>
+            </div>
         </div>
-
-        <div className={styles.startButton}>
-          <button onClick={() => navigate('/GameSectionApresentation')}>
-            INICIAR
-          </button>
-        </div>
-
-      </div>
-    </div>
-  );
+    );
 }
