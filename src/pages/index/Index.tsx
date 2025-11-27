@@ -66,62 +66,7 @@ export default function Index() {
                 </button>
             </div>
 
-            <div className={styles.linhaLogin}>
-                <button
-                    className={`${styles.button} ${styles.botaoLogin}`}
-                    onClick={() => navigate("/GameSectionSpeech")}
-                >
-                    Sessão1
-                </button>
-            </div>
-            <div className={styles.linhaLogin}>
-                <button
-                    className={`${styles.button} ${styles.botaoLogin}`}
-                    onClick={() => navigate("/GameSectionMultipleChoice")}
-                >
-                    Sessão2
-                </button>
-            </div>
-            <div className={styles.linhaLogin}>
-                <button
-                    className={`${styles.button} ${styles.botaoLogin}`}
-                    onClick={() => navigate("/GameSectionFinal")}
-                >
-                    Sessão3
-                </button>
-            </div>
-            <div className={styles.linhaLogin}>
-                <button
-                    className={`${styles.button} ${styles.botaoLogin}`}
-                    onClick={() => navigate("/GameSectionSpeechSyllable")}
-                >
-                    Sessão4
-                </button>
-            </div>
-            <div className={styles.linhaLogin}>
-                <button
-                    className={`${styles.button} ${styles.botaoLogin}`}
-                    onClick={() => navigate("/GameSectionPresentation")}
-                >
-                    Sessão5
-                </button>
-            </div>
-            <div className={styles.linhaLogin}>
-                <button
-                    className={`${styles.button} ${styles.botaoLogin}`}
-                    onClick={() => navigate("/PlayerMenu")}
-                >
-                    PlayerMenu
-                </button>
-            </div>
-            <div className={styles.linhaLogin}>
-                <button
-                    className={`${styles.button} ${styles.botaoLogin}`}
-                    onClick={() => navigate("/GameConfig")}
-                >
-                    Config
-                </button>
-            </div>
+            
         </div>
     );
 }
