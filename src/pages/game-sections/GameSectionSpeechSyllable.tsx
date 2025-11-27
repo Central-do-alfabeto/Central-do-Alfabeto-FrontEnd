@@ -1,7 +1,7 @@
 import { Letters } from "../../store/gameConstants";
 import { currentPhaseIndex, incrementTotalErrors } from "../../store/gameState";
 import { playAudio } from "../../utils/playAudio";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
 import useRecorder from "../../hooks/useRecorder";
 import { useNavigate } from "react-router-dom";
 import sendRecording from "../../services/api/sendRecording";
@@ -9,6 +9,7 @@ import { useAudioRunning } from "../../state/useAudioRunning";
 import { useShowText } from "../../state/useShowText";
 import useSectionRedirect from "../../hooks/useSectionRedirect";
 import { matchesExpectedSpeech } from "../../utils/speechUtils";
+import useOneShotAudio from "../../hooks/useOneShotAudio";
 import styles from "../../assets/styles/css/game-section-speech-syllable.module.css";
 
 export default function GameSectionSpeechSyllable() {
@@ -22,8 +23,11 @@ export default function GameSectionSpeechSyllable() {
   const { redirect } = useSectionRedirect();
 
   const letter = Letters[currentPhaseIndex];
-  const syllables = ["a", "e", "i", "o", "u"].map((v) => `${letter}${v}`);
-  const helperAudioName = `Helper${currentPhaseIndex}_GameSectionSpeechSyllable`; // COMENTÁRIO DO BRIAN: Precisa de um áudio de erro aqui
+  const syllables = useMemo(
+    () => ["a", "e", "i", "o", "u"].map((v) => `${letter}${v}`),
+    [letter]
+  );
+  const firstSyllableAudio = syllables.length > 0 ? `silaba_${syllables[0]}` : null;
 
   async function handleResult(audioBlob: Blob) {
     try {
@@ -58,10 +62,10 @@ export default function GameSectionSpeechSyllable() {
 
   useEffect(() => {
     setCanGoNext(false);
-    if (!showText) {
-      playAudio(`silaba_${syllables[0]}`, setAudioRunning);
-    }
-  }, [showText, setAudioRunning, helperAudioName, syllables]);
+    setCanGoNextWords(Array(syllables.length).fill(false));
+  }, [syllables]);
+
+  useOneShotAudio(!showText, firstSyllableAudio, setAudioRunning);
 
   return (
     <div className={styles.page}>

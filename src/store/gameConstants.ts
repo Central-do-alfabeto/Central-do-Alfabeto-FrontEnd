@@ -24,7 +24,7 @@ const createWord = (word: string, pronunciations: string[] = []): WordPronunciat
 
 export const Words: WordSet[] = [
     {
-        word1: createWord("Ae"),
+        word1: createWord("Ae", ["Ai", "A"]),
         word2: createWord("Ea"),
         word3: createWord("Ee"),
     },

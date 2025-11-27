@@ -11,7 +11,7 @@ type PlayerMetadata = {
 export type AuthSession = {
   token: string;
   role: UserRole;
-  userId: number;
+  userId: string;
   playerMeta?: PlayerMetadata;
 };
 
@@ -91,7 +91,7 @@ export function getAuthRole(): UserRole | null {
   return stored?.role ?? null;
 }
 
-export function getAuthUserId(): number | null {
+export function getAuthUserId(): string | null {
   const stored = parseStoredSession();
   return stored?.userId ?? null;
 }

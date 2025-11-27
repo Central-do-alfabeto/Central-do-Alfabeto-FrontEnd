@@ -7,6 +7,7 @@ import optionsForPhase from "../../utils/randomLetterGenerator";
 import { useAudioRunning } from "../../state/useAudioRunning";
 import { useShowText } from "../../state/useShowText";
 import useSectionRedirect from "../../hooks/useSectionRedirect";
+import useOneShotAudio from "../../hooks/useOneShotAudio";
 import styles from "../../assets/styles/css/game-section-multiple-choice.module.css";
 
 export default function GameSectionMultipleChoice() {
@@ -22,11 +23,9 @@ export default function GameSectionMultipleChoice() {
   useEffect(() => {
     setOptions(optionsForPhase());
     setCanGoNext(false);
+  }, []);
 
-    if (!showText) {
-      playAudio(audioName, setAudioRunning); // COMENTÁRIO DO BRIAN: Precisamos gravar os áudios dessa sessão de determinar qual a letra correta
-    }
-  }, [showText, setAudioRunning, audioName]);
+  useOneShotAudio(!showText, audioName, setAudioRunning);
 
   const handleClick = (value: string) => {
     if (value === Letters[currentPhaseIndex]) {

@@ -1,19 +1,72 @@
 // gameState.ts
-import { updatePlayerMetadata } from "./auth";
+import { getAuthSession, updatePlayerMetadata } from "./auth";
 
-// Função auxiliar para ler do sessionStorage ou usar valor padrão
-function getSessionNumber(key: string, defaultValue: number = 0): number {
-  const stored = sessionStorage.getItem(key);
-  return stored !== null ? Number(stored) : defaultValue;
-}
+const persistedSession = getAuthSession();
 
-// Função auxiliar para salvar no sessionStorage
 function setSessionNumber(key: string, value: number) {
   sessionStorage.setItem(key, value.toString());
 }
 
+function getSessionNumber(
+  key: string,
+  defaultValue: number = 0,
+  fallback?: () => number | null | undefined
+): number {
+  const stored = sessionStorage.getItem(key);
+  if (stored !== null) {
+    const parsed = Number(stored);
+    if (!Number.isNaN(parsed)) {
+      return parsed;
+    }
+  }
+
+  if (fallback) {
+    const candidate = fallback();
+    if (typeof candidate === "number" && !Number.isNaN(candidate)) {
+      setSessionNumber(key, candidate);
+      return candidate;
+    }
+  }
+
+  return defaultValue;
+}
+
+function getSessionString(key: string): string | null {
+  return sessionStorage.getItem(key);
+}
+
+function setSessionString(key: string, value: string | null) {
+  if (value === null) {
+    sessionStorage.removeItem(key);
+    return;
+  }
+
+  sessionStorage.setItem(key, value);
+}
+
+export function clearPlayerSessionState() {
+  currentPhaseIndex = 0;
+  sessionStorage.removeItem("currentPhaseIndex");
+
+  PlayerID = null;
+  sessionStorage.removeItem("PlayerID");
+
+  TotalErrors = 0;
+  sessionStorage.removeItem("TotalErrors");
+
+  TotalAudioReproductions = 0;
+  sessionStorage.removeItem("TotalAudioReproductions");
+
+  inGameFlow = false;
+  sessionStorage.removeItem("inGameFlow");
+}
+
 // currentPhaseIndex
-export let currentPhaseIndex: number = getSessionNumber("currentPhaseIndex", 0);
+export let currentPhaseIndex: number = getSessionNumber(
+  "currentPhaseIndex",
+  0,
+  () => persistedSession?.playerMeta?.currentPhaseIndex
+);
 export function setCurrentPhaseIndex(value: number) {
   currentPhaseIndex += value;
   setSessionNumber("currentPhaseIndex", currentPhaseIndex);
@@ -27,10 +80,14 @@ export function syncCurrentPhaseIndex(value: number) {
 }
 
 // PlayerID
-export let PlayerID: number = getSessionNumber("PlayerID", 0);
-export function setPlayerID(value: number) {
+export let PlayerID: string | null = getSessionString("PlayerID") ??
+  (persistedSession?.role === "STUDENT" ? persistedSession.userId : null);
+if (PlayerID !== null) {
+  setSessionString("PlayerID", PlayerID);
+}
+export function setPlayerID(value: string | null) {
   PlayerID = value;
-  setSessionNumber("PlayerID", PlayerID);
+  setSessionString("PlayerID", PlayerID);
 }
 
 // TotalErrors

@@ -14,9 +14,8 @@ export default function Index() {
             setPlayerID(session.userId);
 
             const storedPhase = session.playerMeta?.currentPhaseIndex;
-            if (typeof storedPhase === "number" && !Number.isNaN(storedPhase)) {
-                syncCurrentPhaseIndex(storedPhase);
-            }
+            const phaseToSync = typeof storedPhase === "number" && !Number.isNaN(storedPhase) ? storedPhase : 0;
+            syncCurrentPhaseIndex(phaseToSync);
 
             navigate("/PlayerMenu");
             return;

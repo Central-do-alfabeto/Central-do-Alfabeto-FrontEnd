@@ -10,6 +10,7 @@ import { useAudioRunning } from "../../state/useAudioRunning";
 import { useShowText } from "../../state/useShowText";
 import useSectionRedirect from "../../hooks/useSectionRedirect";
 import styles from "../../assets/styles/css/game-section-final.module.css";
+import useOneShotAudio from "../../hooks/useOneShotAudio";
 
 export default function GameSectionFinal() {
   const [canGoNextWord1, setCanGoNext1] = useState(false);
@@ -61,24 +62,14 @@ export default function GameSectionFinal() {
       );
 
       if (isMatch) {
-        let nextWord1 = canGoNextWord1;
-        let nextWord2 = canGoNextWord2;
-        let nextWord3 = canGoNextWord3;
+        const updatedWord1 = currentSelectedKey === "word1" ? true : canGoNextWord1;
+        const updatedWord2 = currentSelectedKey === "word2" ? true : canGoNextWord2;
+        const updatedWord3 = currentSelectedKey === "word3" ? true : canGoNextWord3;
 
-        if (currentSelectedKey === "word1") {
-          nextWord1 = true;
-          setCanGoNext1(true);
-        }
-        if (currentSelectedKey === "word2") {
-          nextWord2 = true;
-          setCanGoNext2(true);
-        }
-        if (currentSelectedKey === "word3") {
-          nextWord3 = true;
-          setCanGoNext3(true);
-        }
-
-        setCanGoNext(nextWord1 && nextWord2 && nextWord3);
+        setCanGoNext1(updatedWord1);
+        setCanGoNext2(updatedWord2);
+        setCanGoNext3(updatedWord3);
+        setCanGoNext(updatedWord1 && updatedWord2 && updatedWord3);
         playAudio("resposta_correta", setAudioRunning, true);
       } else {
         playAudio("resposta_errada", setAudioRunning, true);
@@ -95,10 +86,9 @@ export default function GameSectionFinal() {
 
   useEffect(() => {
     setCanGoNext(false);
-    if (!showText) {
-      playAudio('repita_palavra_mostrada', setAudioRunning);
-    }
-  }, [showText, setAudioRunning]);
+  }, [currentPhaseIndex]);
+
+  useOneShotAudio(!showText, "repita_palavra_mostrada", setAudioRunning);
 
   return (
     <div className={styles.page}>
@@ -218,7 +208,7 @@ export default function GameSectionFinal() {
             type="button"
             className={styles.nextButton}
             disabled={!canGoNext || audioRunning}
-            onClick={() => redirect('/GameSectionFinal')}
+            onClick={() => redirect("GameSectionFinal")}
           >
             <span aria-hidden="true">➡️</span>
             {showText && <span> Próxima fase</span>}

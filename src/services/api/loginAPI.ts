@@ -1,7 +1,7 @@
 import apiClient from "./apiClient";
 
 export type TeacherStudentSummary = {
-    studentId: number;
+    studentId: string;
     fullName: string;
     currentPhaseIndex: number;
     numberOfErrorsByPhase?: Record<number, number>;
@@ -9,7 +9,7 @@ export type TeacherStudentSummary = {
 };
 
 export type LoginResponse = {
-    userId: number;
+    userId: string;
     isStudent: boolean;
     token: string;
     role?: string;

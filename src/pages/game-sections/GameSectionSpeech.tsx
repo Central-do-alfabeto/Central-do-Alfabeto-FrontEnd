@@ -9,6 +9,7 @@ import { useAudioRunning } from "../../state/useAudioRunning";
 import { useShowText } from "../../state/useShowText";
 import useSectionRedirect from "../../hooks/useSectionRedirect";
 import { matchesExpectedSpeech } from "../../utils/speechUtils";
+import useOneShotAudio from "../../hooks/useOneShotAudio";
 import styles from "../../assets/styles/css/game-section-speech.module.css";
 
 export default function GameSectionSpeech() {
@@ -29,6 +30,13 @@ export default function GameSectionSpeech() {
       const transcript = await sendRecording(audioBlob);
       const expected = Letters[currentPhaseIndex];
 
+      console.info(
+        "Transcrição recebida pelo Vosk (GameSectionSpeech):",
+        transcript,
+        "| Letra esperada:",
+        expected
+      );
+
       if (matchesExpectedSpeech(transcript, expected)) {
         setCanGoNext(true);
         playAudio("resposta_correta", setAudioRunning, true);
@@ -48,10 +56,9 @@ export default function GameSectionSpeech() {
 
   useEffect(() => {
     setCanGoNext(false);
-    if (!showText) {
-      playAudio("repita_letra_mostrada", setAudioRunning);
-    }
-  }, [showText, setAudioRunning]); 
+  }, [currentPhaseIndex]);
+
+  useOneShotAudio(!showText, "repita_letra_mostrada", setAudioRunning);
 
   return (
     <div className={styles.page}>

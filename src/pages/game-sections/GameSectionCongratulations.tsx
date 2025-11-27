@@ -1,5 +1,4 @@
-import { useEffect, useRef } from "react";
-import { playAudio } from "../../utils/playAudio";
+import { useEffect, useMemo, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import {
   setCurrentPhaseIndex,
@@ -14,6 +13,7 @@ import { useShowText } from "../../state/useShowText";
 import { playerDataUpdate } from "../../services/api/playerDataUpdate";
 import { Letters } from "../../store/gameConstants"; 
 import styles from "../../assets/styles/css/game-section-congratulations.module.css";
+import useOneShotAudio from "../../hooks/useOneShotAudio";
 
 export default function GameSectionCongratulations() {
   const [showText] = useShowText();
@@ -21,21 +21,24 @@ export default function GameSectionCongratulations() {
   const navigate = useNavigate();
   const hasSyncedProgress = useRef(false);
   
-  // 1. Definição da letra e construção do nome do áudio
-  const completedLetter = Letters[currentPhaseIndex]; 
-  const congratulationAudioName = `Parabens_aprendeu_${completedLetter}`;
-  const nextPhaseIndex = currentPhaseIndex + 1;
+  // 1. Captura o índice inicial para evitar reavaliações após o incremento
+  const initialPhaseIndexRef = useRef(currentPhaseIndex);
+  const completedLetter = useMemo(
+    () => Letters[initialPhaseIndexRef.current],
+    []
+  );
+
+  const congratulationAudioName = useMemo(
+    () => `Parabens_aprendeu_${completedLetter}`,
+    [completedLetter]
+  );
+
+  const nextPhaseIndex = initialPhaseIndexRef.current + 1;
   const errorsSnapshot = TotalErrors;
   const audioSnapshot = TotalAudioReproductions;
 
 
-  useEffect(() => {
-    if (!showText) {
-      // 2. Toca o áudio de parabéns
-      playAudio(congratulationAudioName, setAudioRunning);
-    }
-  // 3. Adiciona o nome do áudio às dependências
-  }, [showText, setAudioRunning, congratulationAudioName]); 
+  useOneShotAudio(!showText, congratulationAudioName, setAudioRunning);
 
   useEffect(() => {
     if (hasSyncedProgress.current) {

@@ -22,7 +22,7 @@ export default function Config() {
 
   const handleLogout = () => {
     clearAuthSession();
-    setPlayerID(0);
+    setPlayerID(null);
     syncCurrentPhaseIndex(0);
     resetTotalValues();
     sessionStorage.removeItem("homeAudioPlayed");

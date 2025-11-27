@@ -1,7 +1,7 @@
 import { useNavigate, Link } from "react-router-dom";
 import { useState } from "react";
 import { loginAPI } from "../../services/api/loginAPI";
-import { setPlayerID, syncCurrentPhaseIndex } from "../../store/gameState";
+import { clearPlayerSessionState, setPlayerID, syncCurrentPhaseIndex } from "../../store/gameState";
 import { setStudents } from "../../store/TeacherStudentsInfo";
 import { setAuthSession } from "../../store/auth";
 import { AiOutlineEye, AiOutlineEyeInvisible } from "react-icons/ai";
@@ -16,7 +16,7 @@ const resolveRole = (role?: string, fallbackIsStudent?: boolean): "STUDENT" | "E
         return "EDUCATOR";
     }
 
-    if (normalized === "aluno" || normalized === "student" || normalized === "estudante") {
+    if (normalized === "aluno" || normalized === "student" || normalized === "estudante" || normalized === "player") {
         return "STUDENT";
     }
 
@@ -43,6 +43,13 @@ export default function Login() {
             const user = await loginAPI(email, password);
             const role = resolveRole(user.role, user.isStudent);
             const isStudent = role === "STUDENT";
+            const resolvedPhaseIndex = isStudent && typeof user.currentPhaseIndex === "number"
+                ? user.currentPhaseIndex
+                : 0;
+
+            if (isStudent) {
+                clearPlayerSessionState();
+            }
 
             setAuthSession({
                 token: user.token,
@@ -50,7 +57,7 @@ export default function Login() {
                 userId: user.userId,
                 playerMeta: isStudent
                     ? {
-                        currentPhaseIndex: typeof user.currentPhaseIndex === "number" ? user.currentPhaseIndex : undefined,
+                        currentPhaseIndex: resolvedPhaseIndex,
                         email,
                     }
                     : undefined,
@@ -58,9 +65,7 @@ export default function Login() {
 
             if (isStudent) {
                 setPlayerID(user.userId);
-                if (typeof user.currentPhaseIndex === "number") {
-                    syncCurrentPhaseIndex(user.currentPhaseIndex);
-                }
+                syncCurrentPhaseIndex(resolvedPhaseIndex);
                 navigate("/PlayerMenu");  // Redireciona ao menu do aluno
             } else {
                 setStudents(Array.isArray(user.teacherStudents) ? user.teacherStudents : []);

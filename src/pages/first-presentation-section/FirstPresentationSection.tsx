@@ -1,8 +1,7 @@
-import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { playAudio } from "../../utils/playAudio";
 import { useAudioRunning } from "../../state/useAudioRunning";
 import { useShowText } from "../../state/useShowText";
+import useOneShotAudio from "../../hooks/useOneShotAudio";
 import styles from "../../assets/styles/css/first-presentation-section.module.css";
 
 export default function FirstPresentationSection() {
@@ -10,11 +9,7 @@ export default function FirstPresentationSection() {
   const [showText] = useShowText();
   const navigate = useNavigate();
 
-  useEffect(() => {
-    if (!showText) {
-      playAudio("introdução", setAudioRunning);
-    }
-  }, [showText, setAudioRunning]);
+  useOneShotAudio(!showText, "introdução", setAudioRunning);
 
   return (
     <section className={styles.page}>
