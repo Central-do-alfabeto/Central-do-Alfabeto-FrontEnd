@@ -42,15 +42,6 @@ export default function FirstPresentationSection() {
             <span aria-hidden="true">⬅️</span>
             <span> Ir para o menu do aluno</span>
           </button>
-          <button
-            type="button"
-            className={styles.primaryButton}
-            disabled={audioRunning}
-            onClick={() => navigate("/GameSectionPresentation")}
-          >
-            <span> Continuar apresentação</span>
-            <span aria-hidden="true">➡️</span>
-          </button>
 
         </div>
       </div>

@@ -17,19 +17,21 @@ export default function GameSectionMultipleChoice() {
   const [audioRunning, setAudioRunning] = useAudioRunning();
   const [showText] = useShowText();
   const { redirect } = useSectionRedirect();
+  const audioName = `MultiplaEscolha${Letters[currentPhaseIndex]}`;
 
   useEffect(() => {
     setOptions(optionsForPhase());
     setCanGoNext(false);
 
     if (!showText) {
-      playAudio("Section2", setAudioRunning); // COMENTÁRIO DO BRIAN: Precisamos gravar os áudios dessa sessão de determinar qual a letra correta
+      playAudio(audioName, setAudioRunning); // COMENTÁRIO DO BRIAN: Precisamos gravar os áudios dessa sessão de determinar qual a letra correta
     }
-  }, [showText, setAudioRunning]);
+  }, [showText, setAudioRunning, audioName]);
 
   const handleClick = (value: string) => {
     if (value === Letters[currentPhaseIndex]) {
       setCanGoNext(true);
+      playAudio("resposta_correta", setAudioRunning, true);
     } else {
       wrongAnswer();
     }
@@ -37,7 +39,7 @@ export default function GameSectionMultipleChoice() {
 
   function wrongAnswer() {
     incrementTotalErrors();
-    playAudio("Section2WrongAnswer", setAudioRunning, true); // COMENTÁRIO DO BRIAN: Precisa de um áudio de resposta errada pra isso aqui também
+    playAudio("resposta_errada", setAudioRunning, true); // COMENTÁRIO DO BRIAN: Precisa de um áudio de resposta errada pra isso aqui também
   }
 
   return (
@@ -52,7 +54,7 @@ export default function GameSectionMultipleChoice() {
         <button
           className={styles.repeatButton}
           title="Reproduzir som da fase"
-          onClick={() => playAudio("Section2", setAudioRunning, true)}
+          onClick={() => playAudio(audioName, setAudioRunning, true)}
           disabled={audioRunning}
         >
           <span aria-hidden="true">▶️</span>

@@ -79,15 +79,6 @@ export default function GameSectionPresentation() {
                         <span aria-hidden="true">⬅️</span>
                         {showText && <span> Voltar ao menu</span>}
                     </button>
-                    <button
-                        type="button"
-                        className={styles.nextButton}
-                        onClick={() => redirect("GameSectionPresentation")}
-                        disabled={audioRunning}
-                    >
-                        <span aria-hidden="true">➡️</span>
-                        {showText && <span> Próxima sessão</span>}
-                    </button>
                 </div>
             </div>
         </div>

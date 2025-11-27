@@ -15,10 +15,9 @@
   background-color: var(--color-surface-soft);
   border-radius: 20px;
   box-shadow: 0 8px 20px rgba(0,0,0,0.08);
-  padding: 80px 60px 140px;
-  width: 100%;
-  max-width: 1220px;
-  min-height: 450px;
+  padding: 56px 40px 120px;
+  width: min(92vw, 880px);
+  min-height: 420px;
   text-align: center;
   color: var(--color-text);
   animation: slideUpFade 0.6s ease-out;
@@ -31,10 +30,10 @@
 
 /* ✨ Texto de ajuda */
 .helperText {
-  font-size: 22px;
+  font-size: 21px;
   color: var(--color-text);
   opacity: 0.9;
-  margin-bottom: 60px;
+  margin-bottom: 32px;
 }
 
 /* 🔠 Linha de palavras e botões */
@@ -42,10 +41,9 @@
   display: flex;
   justify-content: center;
   align-items: flex-start;
-  gap: 80px;               /* espaçamento entre blocos */
+  gap: 48px;               /* espaçamento entre blocos */
   flex-wrap: wrap;         /* quebra linha se a tela for menor */
-  margin-bottom: 60px;     /* espaço antes dos botões inferiores */
-  margin-top: 120px;
+  margin: 48px 0;
 }
 
 /* 🧩 Cada bloco (palavra + botão) */
@@ -58,7 +56,7 @@
 
 /* 📝 Palavra */
 .wordLabel {
-  font-size: 48px;
+  font-size: 44px;
   font-weight: bold;
   color: var(--color-text);
   cursor: pointer;
@@ -71,10 +69,10 @@
   background-color: #f1c40f;
   color: #2c3e50;
   font-weight: bold;
-  font-size: 20px;
+  font-size: 18px;
   border: none;
   border-radius: 14px;
-  padding: 18px 32px;
+  padding: 16px 28px;
   cursor: pointer;
   box-shadow: 0 6px 14px rgba(0,0,0,0.08);
   transition: background-color 0.3s ease, transform 0.2s ease;
@@ -92,11 +90,11 @@
 /* 🟢 Próxima e 🔴 Retornar */
 :is(.nextButton, .returnButton) {
   position: absolute;
-  bottom: 32px;
+  bottom: 24px;
   border: none;
   border-radius: 12px;
-  padding: 18px 28px;
-  font-size: 20px;
+  padding: 18px 26px;
+  font-size: 19px;
   font-weight: bold;
   display: inline-flex;
   align-items: center;
@@ -109,28 +107,31 @@
 :is(.nextButton, .returnButton):disabled { opacity: 0.6; cursor: not-allowed; }
 
 .nextButton {
-  right: 40px;
+  right: 28px;
   background-color: #2ecc71;
   color: #fff;
 }
 .nextButton:hover:not(:disabled) { background-color: #27ae60; transform: translateY(-2px); }
 
 .returnButton {
-  left: 40px;
+  left: 28px;
   background-color: #e74c3c;
   color: #fff;
 }
 .returnButton:hover:not(:disabled) { background-color: #c0392b; transform: translateY(-2px); }
 
 /* 📱 Responsivo */
-@media (max-width: 1024px) {
-  .container { padding: 64px 24px 120px; }
-  .wordRow { gap: 50px; }
+@media (max-width: 900px) {
+  .container { padding: 48px 24px 100px; }
+  .wordRow { gap: 32px; }
   .wordLabel { font-size: 38px; }
-  .recordButton { font-size: 18px; padding: 16px 26px; }
+  .recordButton { font-size: 17px; padding: 14px 24px; }
+  :is(.nextButton, .returnButton) { font-size: 17px; padding: 16px 22px; bottom: 20px; }
+  .nextButton { right: 20px; }
+  .returnButton { left: 20px; }
 }
 @media (max-width: 600px) {
-  .wordRow { flex-direction: column; gap: 32px; }
+  .wordRow { flex-direction: column; gap: 24px; }
   .wordLabel { font-size: 32px; }
-  .recordButton { font-size: 16px; padding: 14px 20px; }
+  .recordButton { font-size: 16px; padding: 12px 20px; }
 }
