@@ -66,49 +66,56 @@ export default function GameSectionSpeechSyllable() {
   return (
     <div className={styles.page}>
       <div className={styles.container}>
-        <form
-          className={styles.form}
-          onSubmit={(event) => event.preventDefault()}
-        >
+        <form className={styles.form} onSubmit={(e) => e.preventDefault()}>
           {showText && (
-            <p className={styles.helperText}>Grave cada sílaba corretamente para continuar! 🎤</p>
+            <p className={styles.helperText}>
+              Grave cada sílaba corretamente para continuar! 🎤
+            </p>
           )}
 
-          {syllables.map((syll, idx) => (
-            <div className={styles.syllableGroup} key={syll}>
-              <div
-                className={styles.syllable}
-                onClick={() => playAudio(`silaba_${syll}`, setAudioRunning, true)}
-                role="button"
-                tabIndex={0}
-                onKeyDown={(event) => {
-                  if (event.key === "Enter" || event.key === " ") {
-                    event.preventDefault();
-                    playAudio(`silaba_${syll}`, setAudioRunning, true);
-                  }
-                }}
-              >
-                {syll}
-              </div>
-              <button
-                type="button"
-                className={styles.recordButton}
-                onClick={() => {
-                  toggleRecording();
-                  setClickedWord(syll);
-                }}
-                disabled={
-                  canGoNextWords[idx] ||
-                  (isRecording && clickedWord !== syll) ||
-                  audioRunning
-                }
-              >
-                <span aria-hidden="true">{isRecording && clickedWord === syll ? "⏹️" : "🎙️"}</span>
-                <span>{isRecording && clickedWord === syll ? " Parar" : " Gravar"}</span>
-              </button>
-            </div>
-          ))}
+          {/* ⬇️ LINHA HORIZONTAL DE BLOCOS (sílaba + botão) */}
+          <div className={styles.syllableRow}>
+            {syllables.map((syll, idx) => (
+              <div className={styles.syllableBlock} key={syll}>
+                <div
+                  className={styles.syllable}
+                  onClick={() => playAudio(`silaba_${syll}`, setAudioRunning, true)}
+                  role="button"
+                  tabIndex={0}
+                  onKeyDown={(event) => {
+                    if (event.key === "Enter" || event.key === " ") {
+                      event.preventDefault();
+                      playAudio(`silaba_${syll}`, setAudioRunning, true);
+                    }
+                  }}
+                >
+                  {syll}
+                </div>
 
+                <button
+                  type="button"
+                  className={styles.recordButton}
+                  onClick={() => {
+                    toggleRecording();
+                    setClickedWord(syll);
+                  }}
+                  disabled={
+                    canGoNextWords[idx] ||
+                    (isRecording && clickedWord !== syll) ||
+                    audioRunning
+                  }
+                >
+                  <span aria-hidden="true">
+                    {isRecording && clickedWord === syll ? "⏹️" : "🎙️"}
+                  </span>
+                  <span>{isRecording && clickedWord === syll ? " Parar" : " Gravar"}</span>
+                </button>
+              </div>
+            ))}
+          </div>
+          {/* ⬆️ FIM DA LINHA */}
+
+          {/* Navegação inferior dentro do container */}
           <button
             type="button"
             className={styles.nextButton}

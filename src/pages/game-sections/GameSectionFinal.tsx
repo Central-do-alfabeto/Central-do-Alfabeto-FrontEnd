@@ -1,9 +1,10 @@
 import useRecorder from "../../hooks/useRecorder";
-import { Words } from "../../store/gameConstants";
+import { Words, type WordKey } from "../../store/gameConstants";
 import { currentPhaseIndex, incrementTotalErrors } from "../../store/gameState";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import sendRecording from "../../services/api/sendRecording";
 import { playAudio } from "../../utils/playAudio";
+import { matchesExpectedSpeech } from "../../utils/speechUtils";
 import { useNavigate } from "react-router-dom";
 import { useAudioRunning } from "../../state/useAudioRunning";
 import { useShowText } from "../../state/useShowText";
@@ -15,35 +16,75 @@ export default function GameSectionFinal() {
   const [canGoNextWord2, setCanGoNext2] = useState(false);
   const [canGoNextWord3, setCanGoNext3] = useState(false);
   const [canGoNext, setCanGoNext] = useState(false);
-  const [clickedWord, setClickedWord] = useState("");
+  const [selectedWordKey, setSelectedWordKey] = useState<WordKey | null>(null);
+  const selectedWordKeyRef = useRef<WordKey | null>(null);
   const [audioRunning, setAudioRunning] = useAudioRunning();
   const [showText] = useShowText();
   const { isRecording, toggleRecording } = useRecorder(handleResult);
   const { redirect } = useSectionRedirect();
   const navigate = useNavigate();
 
-  const word1 = Words[currentPhaseIndex].word1;
-  const word2 = Words[currentPhaseIndex].word2;
-  const word3 = Words[currentPhaseIndex].word3;
+  const currentWordsSet = Words[currentPhaseIndex - 1];
+  const word1 = currentWordsSet.word1;
+  const word2 = currentWordsSet.word2;
+  const word3 = currentWordsSet.word3;
+
+  const setRecordingTarget = (key: WordKey) => {
+    selectedWordKeyRef.current = key;
+    setSelectedWordKey(key);
+  };
 
   async function handleResult(audioBlob: Blob) {
     try {
-      const result = await sendRecording(audioBlob);
+      const transcript = await sendRecording(audioBlob);
+      const currentSelectedKey = selectedWordKeyRef.current;
+      const currentSelectedWord = currentSelectedKey
+        ? currentWordsSet[currentSelectedKey]
+        : null;
 
-      if (result === clickedWord) {
-        if (clickedWord === word1) setCanGoNext1(true);
-        if (clickedWord === word2) setCanGoNext2(true);
-        if (clickedWord === word3) setCanGoNext3(true);
-      } else {
-        playAudio(`Helper${currentPhaseIndex}`, setAudioRunning, true); // COMENTÁRIO DO BRIAN: Precisa de um áudio de erro aqui
-        incrementTotalErrors();
+      console.info(
+        "Transcrição recebida pelo Vosk:",
+        transcript,
+        "| Palavra esperada:",
+        currentSelectedWord?.word ?? "(não selecionada)"
+      );
+
+      if (!currentSelectedKey || !currentSelectedWord) {
+        console.warn("Nenhuma palavra selecionada para validação.");
+        return;
       }
 
-      setCanGoNext(
-        (clickedWord === word1 ? true : canGoNextWord1) &&
-        (clickedWord === word2 ? true : canGoNextWord2) &&
-        (clickedWord === word3 ? true : canGoNextWord3)
+      const isMatch = matchesExpectedSpeech(
+        transcript,
+        currentSelectedWord.word,
+        currentSelectedWord.pronunciations
       );
+
+      if (isMatch) {
+        let nextWord1 = canGoNextWord1;
+        let nextWord2 = canGoNextWord2;
+        let nextWord3 = canGoNextWord3;
+
+        if (currentSelectedKey === "word1") {
+          nextWord1 = true;
+          setCanGoNext1(true);
+        }
+        if (currentSelectedKey === "word2") {
+          nextWord2 = true;
+          setCanGoNext2(true);
+        }
+        if (currentSelectedKey === "word3") {
+          nextWord3 = true;
+          setCanGoNext3(true);
+        }
+
+        setCanGoNext(nextWord1 && nextWord2 && nextWord3);
+        playAudio("resposta_correta", setAudioRunning, true);
+      } else {
+        playAudio("resposta_errada", setAudioRunning, true);
+        incrementTotalErrors();
+        setCanGoNext(canGoNextWord1 && canGoNextWord2 && canGoNextWord3);
+      }
     } catch (error) {
       console.error("Falha ao processar áudio:", error);
       if (error instanceof Error) {
@@ -62,85 +103,116 @@ export default function GameSectionFinal() {
   return (
     <div className={styles.page}>
       <div className={styles.container}>
-        <form
-          className={styles.form}
-          onSubmit={(event) => event.preventDefault()}
-        >
+        <form className={styles.form} onSubmit={(e) => e.preventDefault()}>
           {showText && (
-            <p className={styles.helperText}>Grave cada palavra corretamente para continuar! 🎯</p>
+            <p className={styles.helperText}>
+              Grave cada palavra corretamente para continuar! 🎯
+            </p>
           )}
 
-          <label
-            className={styles.wordLabel}
-            onClick={() => playAudio(`palavra_${word1}`, setAudioRunning, true)}
-            role="button"
-            tabIndex={0}
-            onKeyDown={(event) => {
-              if (event.key === "Enter" || event.key === " ") {
-                event.preventDefault();
-                playAudio(`palavra_${word1}`, setAudioRunning, true);
-              }
-            }}
-          >
-            {word1}
-          </label>
-          <button
-            type="button"
-            id="startRecordingWord1"
-            className={styles.recordButton}
-            onClick={() => { toggleRecording(); setClickedWord(word1); }}
-            disabled={canGoNextWord1 || (isRecording && clickedWord !== word1) || audioRunning}
-          >
-            {isRecording && clickedWord === word1 ? "⏹️ Parar" : "🎙️ Gravar"}
-          </button>
+          <div className={styles.wordRow}>
+            {/* Bloco 1 */}
+            <div className={styles.wordBlock}>
+              <label
+                className={styles.wordLabel}
+                onClick={() => playAudio(`palavra_${word1.word}`, setAudioRunning, true)}
+                role="button"
+                tabIndex={0}
+                onKeyDown={(event) => {
+                  if (event.key === "Enter" || event.key === " ") {
+                    event.preventDefault();
+                    playAudio(`palavra_${word1.word}`, setAudioRunning, true);
+                  }
+                }}
+              >
+                {word1.word}
+              </label>
+              <button
+                type="button"
+                id="startRecordingWord1"
+                className={styles.recordButton}
+                onClick={() => {
+                  setRecordingTarget("word1");
+                  toggleRecording();
+                }}
+                disabled={
+                  canGoNextWord1 ||
+                  (isRecording && selectedWordKey !== "word1") ||
+                  audioRunning
+                }
+              >
+                {isRecording && selectedWordKey === "word1" ? "⏹️ Parar" : "🎙️ Gravar"}
+              </button>
+            </div>
 
-          <label
-            className={styles.wordLabel}
-            onClick={() => playAudio(`palavra_${word2}`, setAudioRunning, true)}
-            role="button"
-            tabIndex={0}
-            onKeyDown={(event) => {
-              if (event.key === "Enter" || event.key === " ") {
-                event.preventDefault();
-                playAudio(`palavra_${word2}`, setAudioRunning, true);
-              }
-            }}
-          >
-            {word2}
-          </label>
-          <button
-            type="button"
-            id="startRecordingWord2"
-            className={styles.recordButton}
-            onClick={() => { toggleRecording(); setClickedWord(word2); }}
-            disabled={canGoNextWord2 || (isRecording && clickedWord !== word2) || audioRunning}
-          >
-            {isRecording && clickedWord === word2 ? "⏹️ Parar" : "🎙️ Gravar"}
-          </button>
+            {/* Bloco 2 */}
+            <div className={styles.wordBlock}>
+              <label
+                className={styles.wordLabel}
+                onClick={() => playAudio(`palavra_${word2.word}`, setAudioRunning, true)}
+                role="button"
+                tabIndex={0}
+                onKeyDown={(event) => {
+                  if (event.key === "Enter" || event.key === " ") {
+                    event.preventDefault();
+                    playAudio(`palavra_${word2.word}`, setAudioRunning, true);
+                  }
+                }}
+              >
+                {word2.word}
+              </label>
+              <button
+                type="button"
+                id="startRecordingWord2"
+                className={styles.recordButton}
+                onClick={() => {
+                  setRecordingTarget("word2");
+                  toggleRecording();
+                }}
+                disabled={
+                  canGoNextWord2 ||
+                  (isRecording && selectedWordKey !== "word2") ||
+                  audioRunning
+                }
+              >
+                {isRecording && selectedWordKey === "word2" ? "⏹️ Parar" : "🎙️ Gravar"}
+              </button>
+            </div>
 
-          <label
-            className={styles.wordLabel}
-            onClick={() => playAudio(`palavra_${word3}`, setAudioRunning, true)}
-            role="button"
-            tabIndex={0}
-            onKeyDown={(event) => {
-              if (event.key === "Enter" || event.key === " ") {
-                event.preventDefault();
-                playAudio(`palavra_${word3}`, setAudioRunning, true);
-              }
-            }}
-          >
-            {word3}
-          </label>
-          <button
-            type="button"
-            id="startRecordingWord3"
-            className={styles.recordButton}
-            onClick={() => { toggleRecording(); setClickedWord(word3); }}
-            disabled={canGoNextWord3 || (isRecording && clickedWord !== word3) || audioRunning}
-          >
-            {isRecording && clickedWord === word3 ? "⏹️ Parar" : "🎙️ Gravar"}
-          </button>
+            {/* Bloco 3 */}
+            <div className={styles.wordBlock}>
+              <label
+                className={styles.wordLabel}
+                onClick={() => playAudio(`palavra_${word3.word}`, setAudioRunning, true)}
+                role="button"
+                tabIndex={0}
+                onKeyDown={(event) => {
+                  if (event.key === "Enter" || event.key === " ") {
+                    event.preventDefault();
+                    playAudio(`palavra_${word3.word}`, setAudioRunning, true);
+                  }
+                }}
+              >
+                {word3.word}
+              </label>
+              <button
+                type="button"
+                id="startRecordingWord3"
+                className={styles.recordButton}
+                onClick={() => {
+                  setRecordingTarget("word3");
+                  toggleRecording();
+                }}
+                disabled={
+                  canGoNextWord3 ||
+                  (isRecording && selectedWordKey !== "word3") ||
+                  audioRunning
+                }
+              >
+                {isRecording && selectedWordKey === "word3" ? "⏹️ Parar" : "🎙️ Gravar"}
+              </button>
+            </div>
+          </div>
 
           <button
             type="button"

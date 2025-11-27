@@ -22,7 +22,7 @@ export default function GameSectionSpeech() {
   const letter = Letters[currentPhaseIndex];
   
   const presentationAudioName = `essa_letra_${letter}_alfabeto`; 
-  
+
   // Callback para tratar o resultado do back-end
   async function handleResult(audioBlob: Blob) {
     try {
@@ -31,6 +31,7 @@ export default function GameSectionSpeech() {
 
       if (matchesExpectedSpeech(transcript, expected)) {
         setCanGoNext(true);
+        playAudio("resposta_correta", setAudioRunning, true);
       } else {
         incrementTotalErrors();
         setCanGoNext(false);
@@ -87,37 +88,40 @@ export default function GameSectionSpeech() {
         </div>
 
         <div className={styles.buttonRow}>
-          <button
-            type="button"
-            id="startRecordingLetter"
-            className={styles.recordButton}
-            onClick={toggleRecording}
-            disabled={canGoNext || audioRunning}
-          >
-            <span aria-hidden="true">{isRecording ? "⏹️" : "🎙️"}</span>
-            <span>{isRecording ? " Parar" : " Gravar"}</span>
-          </button>
+           <div className={styles.recordButtonContainer}>
+              <button
+                type="button"
+                id="startRecordingLetter"
+                className={styles.recordButton}
+                onClick={toggleRecording}
+                disabled={canGoNext || audioRunning}
+              >
+                <span aria-hidden="true">{isRecording ? "⏹️" : "🎙️"}</span>
+                <span>{isRecording ? " Parar" : " Gravar"}</span>
+              </button>
+          </div>
+          <div className={styles.ButtonContainer}>
+            <button
+              type="button"
+              className={styles.returnButton}
+              onClick={() => navigate("/PlayerMenu")}
+              disabled={audioRunning}
+            >
+              <span aria-hidden="true">⬅️</span>
+              {showText && <span> Retornar</span>}
+            </button>
 
-          <button
-            type="button"
-            className={styles.nextButton}
-            disabled={!canGoNext || audioRunning}
-            onClick={() => redirect("GameSectionSpeech")}
-            aria-label="Ir para a próxima fase"
-          >
-            <span aria-hidden="true">➡️</span>
-            {showText && <span> Próxima fase</span>}
-          </button>
-
-          <button
-            type="button"
-            className={styles.returnButton}
-            onClick={() => navigate("/PlayerMenu")}
-            disabled={audioRunning}
-          >
-            <span aria-hidden="true">⬅️</span>
-            {showText && <span> Retornar</span>}
-          </button>
+            <button
+              type="button"
+              className={styles.nextButton}
+              disabled={!canGoNext || audioRunning}
+              onClick={() => redirect("GameSectionSpeech")}
+              aria-label="Ir para a próxima fase"
+            >
+              <span aria-hidden="true">➡️</span>
+              {showText && <span> Próxima fase</span>}
+            </button>
+          </div>
         </div>
       </div>
     </div>
