@@ -22,7 +22,7 @@ export default function GameSectionSpeechSyllable() {
   const [showText] = useShowText();
   const { redirect } = useSectionRedirect();
 
-  const letter = Letters[currentPhaseIndex];
+  const letter = Letters[currentPhaseIndex].letter;
   const syllables = useMemo(
     () => ["a", "e", "i", "o", "u"].map((v) => `${letter}${v}`),
     [letter]
@@ -47,14 +47,16 @@ export default function GameSectionSpeechSyllable() {
         setCanGoNext(false);
         playAudio(
           `Helper${currentPhaseIndex}_GameSectionSpeechSyllable`,
-          setAudioRunning,
-          true
+          setAudioRunning
         );
       }
     } catch (error) {
       console.error("Falha ao processar áudio:", error);
       if (error instanceof Error) {
-        alert(error.message);
+        const friendlyMessage = error.message?.trim()
+          ? error.message
+          : "Não foi possível processar o áudio. Tente novamente.";
+        alert(friendlyMessage);
       }
       setCanGoNext(false);
     }
@@ -83,12 +85,20 @@ export default function GameSectionSpeechSyllable() {
               <div className={styles.syllableBlock} key={syll}>
                 <div
                   className={styles.syllable}
-                  onClick={() => playAudio(`silaba_${syll}`, setAudioRunning, true)}
+                  onClick={() => {
+                    if (audioRunning) {
+                      return;
+                    }
+                    playAudio(`silaba_${syll}`, setAudioRunning, true);
+                  }}
                   role="button"
                   tabIndex={0}
                   onKeyDown={(event) => {
                     if (event.key === "Enter" || event.key === " ") {
                       event.preventDefault();
+                      if (audioRunning) {
+                        return;
+                      }
                       playAudio(`silaba_${syll}`, setAudioRunning, true);
                     }
                   }}

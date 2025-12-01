@@ -28,6 +28,7 @@ export default function Login() {
     const [password, setPassword] = useState("");
     const [showPassword, setShowPassword] = useState(false);
     const [isLoading, setIsLoading] = useState(false);
+    const [keepConnected, setKeepConnected] = useState(false);
     const navigate = useNavigate();
 
     const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
@@ -51,17 +52,22 @@ export default function Login() {
                 clearPlayerSessionState();
             }
 
-            setAuthSession({
-                token: user.token,
-                role,
-                userId: user.userId,
-                playerMeta: isStudent
-                    ? {
-                        currentPhaseIndex: resolvedPhaseIndex,
-                        email,
-                    }
-                    : undefined,
-            });
+            setAuthSession(
+                {
+                    token: user.token,
+                    role,
+                    userId: user.userId,
+                    playerMeta: isStudent
+                        ? {
+                            currentPhaseIndex: resolvedPhaseIndex,
+                            email,
+                        }
+                        : undefined,
+                },
+                {
+                    persistent: keepConnected,
+                }
+            );
 
             if (isStudent) {
                 setPlayerID(user.userId);
@@ -69,7 +75,7 @@ export default function Login() {
                 navigate("/PlayerMenu");  // Redireciona ao menu do aluno
             } else {
                 setStudents(Array.isArray(user.teacherStudents) ? user.teacherStudents : []);
-                navigate("/TeacherMenu");  // Redireciona ao menu do educador
+                navigate("/EducatorDashboard");  // Redireciona ao painel do educador
             }
 
         } catch (e: unknown) {
@@ -116,6 +122,16 @@ export default function Login() {
                             {showPassword ? <AiOutlineEyeInvisible size={20} /> : <AiOutlineEye size={20} />}
                         </button>
                     </div>
+
+                    <label className={styles.keepConnected}>
+                        <input
+                            type="checkbox"
+                            checked={keepConnected}
+                            onChange={(event) => setKeepConnected(event.target.checked)}
+                            disabled={isLoading}
+                        />
+                        <span>Manter conectado</span>
+                    </label>
 
                     <button type="submit" className={styles.button} disabled={isLoading}>
                         {isLoading ? "Entrando..." : "Login"}

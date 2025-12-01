@@ -70,23 +70,26 @@ export default function GameSectionFinal() {
         setCanGoNext2(updatedWord2);
         setCanGoNext3(updatedWord3);
         setCanGoNext(updatedWord1 && updatedWord2 && updatedWord3);
-        playAudio("resposta_correta", setAudioRunning, true);
+        playAudio("resposta_correta", setAudioRunning);
       } else {
-        playAudio("resposta_errada", setAudioRunning, true);
+        playAudio("resposta_errada", setAudioRunning);
         incrementTotalErrors();
         setCanGoNext(canGoNextWord1 && canGoNextWord2 && canGoNextWord3);
       }
     } catch (error) {
       console.error("Falha ao processar áudio:", error);
       if (error instanceof Error) {
-        alert(error.message);
+        const friendlyMessage = error.message?.trim()
+          ? error.message
+          : "Não foi possível processar o áudio. Tente novamente.";
+        alert(friendlyMessage);
       }
     }
   }
 
   useEffect(() => {
     setCanGoNext(false);
-  }, [currentPhaseIndex]);
+  }, [word1.word, word2.word, word3.word]);
 
   useOneShotAudio(!showText, "repita_palavra_mostrada", setAudioRunning);
 
@@ -105,10 +108,18 @@ export default function GameSectionFinal() {
             <div className={styles.wordBlock}>
               <label
                 className={styles.wordLabel}
-                onClick={() => playAudio(`palavra_${word1.word}`, setAudioRunning, true)}
+                onClick={() => {
+                  if (audioRunning) {
+                    return;
+                  }
+                  playAudio(`palavra_${word1.word}`, setAudioRunning, true);
+                }}
                 role="button"
                 tabIndex={0}
                 onKeyDown={(event) => {
+                  if (audioRunning) {
+                    return;
+                  }
                   if (event.key === "Enter" || event.key === " ") {
                     event.preventDefault();
                     playAudio(`palavra_${word1.word}`, setAudioRunning, true);
@@ -139,10 +150,18 @@ export default function GameSectionFinal() {
             <div className={styles.wordBlock}>
               <label
                 className={styles.wordLabel}
-                onClick={() => playAudio(`palavra_${word2.word}`, setAudioRunning, true)}
+                onClick={() => {
+                  if (audioRunning) {
+                    return;
+                  }
+                  playAudio(`palavra_${word2.word}`, setAudioRunning, true);
+                }}
                 role="button"
                 tabIndex={0}
                 onKeyDown={(event) => {
+                  if (audioRunning) {
+                    return;
+                  }
                   if (event.key === "Enter" || event.key === " ") {
                     event.preventDefault();
                     playAudio(`palavra_${word2.word}`, setAudioRunning, true);
@@ -173,10 +192,18 @@ export default function GameSectionFinal() {
             <div className={styles.wordBlock}>
               <label
                 className={styles.wordLabel}
-                onClick={() => playAudio(`palavra_${word3.word}`, setAudioRunning, true)}
+                onClick={() => {
+                  if (audioRunning) {
+                    return;
+                  }
+                  playAudio(`palavra_${word3.word}`, setAudioRunning, true);
+                }}
                 role="button"
                 tabIndex={0}
                 onKeyDown={(event) => {
+                  if (audioRunning) {
+                    return;
+                  }
                   if (event.key === "Enter" || event.key === " ") {
                     event.preventDefault();
                     playAudio(`palavra_${word3.word}`, setAudioRunning, true);

@@ -8,7 +8,7 @@ import { useAudioRunning } from "../../state/useAudioRunning";
 
 export default function GameSectionApresentation() {
   const navigate = useNavigate();
-  const [, setAudioRunning] = useAudioRunning();
+  const [audioRunning, setAudioRunning] = useAudioRunning();
 
   useEffect(() => {
     playAudio("AudioApresentation", setAudioRunning);
@@ -19,9 +19,14 @@ export default function GameSectionApresentation() {
       <div className={styles.container}>
         <section
           className={styles.letter}
-          onClick={() => playAudio(`AuxLetter${Letters[currentPhaseIndex]}`, setAudioRunning, true)}
+          onClick={() => {
+            if (audioRunning) {
+              return;
+            }
+            playAudio(`AuxLetter${Letters[currentPhaseIndex].letter}`, setAudioRunning, true);
+          }}
         >
-          {Letters[currentPhaseIndex]}
+          {Letters[currentPhaseIndex].letter}
         </section>
 
         <button

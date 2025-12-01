@@ -22,7 +22,7 @@ export default function Index() {
         }
 
         if (session?.role === "EDUCATOR") {
-            navigate("/TeacherMenu");
+            navigate("/EducatorDashboard");
             return;
         }
 

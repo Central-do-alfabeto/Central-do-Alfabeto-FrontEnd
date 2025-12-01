@@ -7,30 +7,53 @@ export function playAudio(
   btnClicked: boolean = false
 ): void {
   const baseUrl = import.meta.env.BASE_URL ?? "/";
-  const encodedName = encodeURIComponent(`${name}.mp3`).replace(/%20/g, " ");
-  const audioPath = `${baseUrl}audio/${encodedName}`;
-  const audio = new Audio(audioPath);
 
   if (btnClicked) incrementTotalAudioReproductions();
 
-  audio.addEventListener(
-    "ended",
-    () => {
-      setUseAudioRunning(false);
-    },
-    { once: true }
-  );
+  const buildAudio = (rawName: string) => {
+    const encodedName = encodeURIComponent(`${rawName}.mp3`).replace(/%20/g, " ");
+    const audioPath = `${baseUrl}audio/${encodedName}`;
+    const audio = new Audio(audioPath);
 
-  audio
-    .play()
-    .then(() => {
-      setUseAudioRunning(true);
-      console.log(`Reproduzindo: ${audioPath}`);
-    })
-    .catch((err) => {
-      setUseAudioRunning(false);
-      console.error(`Erro ao reproduzir o áudio (${audioPath}):`, err);
-    });
+    audio.addEventListener(
+      "ended",
+      () => {
+        setUseAudioRunning(false);
+      },
+      { once: true }
+    );
+
+    return { audio, audioPath };
+  };
+
+  const attemptPlay = (rawName: string, isFallback: boolean) => {
+    const { audio, audioPath } = buildAudio(rawName);
+
+    audio
+      .play()
+      .then(() => {
+        setUseAudioRunning(true);
+        console.log(`Reproduzindo: ${audioPath}`);
+      })
+      .catch((err) => {
+        setUseAudioRunning(false);
+
+        const lowerName = rawName.toLowerCase();
+        const canRetry = !isFallback && rawName !== lowerName;
+
+        if (canRetry) {
+          console.warn(
+            `Reprodução falhou para ${audioPath}. Tentando com nome em minúsculas (${lowerName}).`
+          );
+          attemptPlay(lowerName, true);
+          return;
+        }
+
+        console.error(`Erro ao reproduzir o áudio (${audioPath}):`, err);
+      });
+  };
+
+  attemptPlay(name, false);
 }
 
 

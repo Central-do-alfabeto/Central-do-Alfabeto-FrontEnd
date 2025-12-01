@@ -8,8 +8,8 @@ import {
 
 export type PlayerProgressPayload = {
     currentPhaseIndex: number;
-    numberOfErrors: number;
-    numberOfSoundRepeats: number;
+    errorsData: number;
+    soundRepeatsData: number;
 };
 
 export async function playerDataUpdate(payload?: PlayerProgressPayload) {
@@ -21,8 +21,8 @@ export async function playerDataUpdate(payload?: PlayerProgressPayload) {
     try {
         const payloadToSend: PlayerProgressPayload = payload ?? {
             currentPhaseIndex,
-            numberOfErrors: TotalErrors,
-            numberOfSoundRepeats: TotalAudioReproductions,
+            errorsData: TotalErrors,
+            soundRepeatsData: TotalAudioReproductions,
         };
 
         await apiClient.put(`/players/${PlayerID}/updateProgress`, payloadToSend);

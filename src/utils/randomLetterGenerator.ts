@@ -9,11 +9,11 @@ function rand(min: number, max: number) {
 
 function getRandomLetter() {
     const index = rand(0, Letters.length - 1);
-    return Letters[index];
+    return Letters[index].letter;
 }
 
 export default function optionsForPhase(total = 4) {
-    const correctLeter = Letters[currentPhaseIndex];
+    const correctLeter = Letters[currentPhaseIndex].letter;
     const result = new Set([correctLeter]);
     while (result.size < total) {
     result.add(getRandomLetter());

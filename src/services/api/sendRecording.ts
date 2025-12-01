@@ -1,14 +1,16 @@
 import { isAxiosError } from "axios";
 import apiClient from "./apiClient";
+import { getAuthToken } from "../../store/auth";
 
 export default async function sendRecording(audioBlob: Blob): Promise<string> {
   const formData = new FormData();
   formData.append("audioFile", audioBlob, "recording.wav");
 
   try {
+    const token = getAuthToken();
     const response = await apiClient.post(`/audio/transcribe`, formData, {
       headers: {
-        "Content-Type": "multipart/form-data",
+        ...(token ? { Authorization: `Bearer ${token}` } : {}),
       },
     });
 
@@ -29,10 +31,14 @@ export default async function sendRecording(audioBlob: Blob): Promise<string> {
     if (isAxiosError(error)) {
       const status = error.response?.status;
       const data = error.response?.data;
+      const fallbackMessage = status === 401 || status === 403
+        ? "Sessão expirada ou sem permissão para transcrever áudio. Faça login novamente."
+        : "Não foi possível processar o áudio.";
+
       const message =
         typeof data === "string"
-          ? data
-          : data?.message ?? "Não foi possível processar o áudio.";
+          ? data || fallbackMessage
+          : data?.message || fallbackMessage;
 
       console.error(
         `Erro em sendRecording: status ${status ?? "desconhecido"}`,

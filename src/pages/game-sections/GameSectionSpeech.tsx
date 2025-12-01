@@ -20,35 +20,42 @@ export default function GameSectionSpeech() {
   const [showText] = useShowText();
   const { redirect } = useSectionRedirect();
 
-  const letter = Letters[currentPhaseIndex];
-  
+  const activeLetter = Letters[currentPhaseIndex];
+  const letter = activeLetter.letter;
+  const acceptedPronunciations = activeLetter.pronunciations;
+
   const presentationAudioName = `essa_letra_${letter}_alfabeto`; 
 
   // Callback para tratar o resultado do back-end
   async function handleResult(audioBlob: Blob) {
     try {
       const transcript = await sendRecording(audioBlob);
-      const expected = Letters[currentPhaseIndex];
+      const expected = letter;
 
       console.info(
         "Transcrição recebida pelo Vosk (GameSectionSpeech):",
         transcript,
         "| Letra esperada:",
-        expected
+        expected,
+        "| Pronúncias aceitas:",
+        acceptedPronunciations
       );
 
-      if (matchesExpectedSpeech(transcript, expected)) {
+      if (matchesExpectedSpeech(transcript, expected, acceptedPronunciations)) {
         setCanGoNext(true);
-        playAudio("resposta_correta", setAudioRunning, true);
+        playAudio("resposta_correta", setAudioRunning);
       } else {
         incrementTotalErrors();
         setCanGoNext(false);
-        playAudio("resposta_errada", setAudioRunning, true);
+        playAudio("resposta_errada", setAudioRunning);
       }
     } catch (error) {
       console.error("Falha ao processar áudio:", error);
       if (error instanceof Error) {
-        alert(error.message);
+        const friendlyMessage = error.message?.trim()
+          ? error.message
+          : "Não foi possível processar o áudio. Tente novamente.";
+        alert(friendlyMessage);
       }
       setCanGoNext(false);
     }
@@ -71,18 +78,24 @@ export default function GameSectionSpeech() {
 
         <div
           className={styles.letterDisplay}
-          onClick={() =>
+          onClick={() => {
+            if (audioRunning) {
+              return;
+            }
             playAudio(
               presentationAudioName,
               setAudioRunning,
               true
-            )
-          }
+            );
+          }}
           role="button"
           tabIndex={0}
           onKeyDown={(event) => {
             if (event.key === "Enter" || event.key === " ") {
               event.preventDefault();
+              if (audioRunning) {
+                return;
+              }
               playAudio(
                 presentationAudioName,
                 setAudioRunning,

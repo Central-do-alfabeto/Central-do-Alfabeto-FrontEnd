@@ -1,5 +1,4 @@
 const AUTH_SESSION_KEY = "auth.session.v1";
-const DEFAULT_SESSION_TTL_MS = 1000 * 60 * 60 * 24 * 7; // 7 dias
 
 export type UserRole = "STUDENT" | "EDUCATOR";
 
@@ -17,57 +16,90 @@ export type AuthSession = {
 
 type PersistedAuthSession = AuthSession & {
   createdAt: number;
-  expiresAt: number;
+  expiresAt: number | null;
   version: number;
+  persistent: boolean;
 };
 
-function parseStoredSession(): PersistedAuthSession | null {
-  const raw = localStorage.getItem(AUTH_SESSION_KEY);
+type PersistOptions = {
+  persistent?: boolean;
+  ttlMs?: number;
+};
+
+function readStoredSession(storage: Storage): PersistedAuthSession | null {
+  const raw = storage.getItem(AUTH_SESSION_KEY);
   if (!raw) {
     return null;
   }
 
   try {
-    const parsed = JSON.parse(raw) as PersistedAuthSession;
+    const parsed = JSON.parse(raw) as PersistedAuthSession & Partial<{ persistent: boolean }>;
 
     if (typeof parsed !== "object" || parsed === null) {
       throw new Error("Parsed session is not an object");
     }
 
-    if (typeof parsed.expiresAt !== "number" || Date.now() > parsed.expiresAt) {
-      clearAuthSession();
+    const expiresAtValue = parsed.expiresAt ?? null;
+    if (expiresAtValue !== null && typeof expiresAtValue === "number" && Date.now() > expiresAtValue) {
+      storage.removeItem(AUTH_SESSION_KEY);
       return null;
     }
 
-    return parsed;
+    const persistent = typeof parsed.persistent === "boolean" ? parsed.persistent : storage === localStorage;
+
+    return {
+      ...parsed,
+      expiresAt: expiresAtValue,
+      persistent,
+    };
   } catch (error) {
     console.warn("Falha ao ler sessão armazenada. Limpando cache.", error);
-    clearAuthSession();
+    storage.removeItem(AUTH_SESSION_KEY);
     return null;
   }
 }
 
-function writePersistedSession(session: PersistedAuthSession) {
-  localStorage.setItem(AUTH_SESSION_KEY, JSON.stringify(session));
+function parseStoredSession(): PersistedAuthSession | null {
+  const sessionScoped = readStoredSession(sessionStorage);
+  if (sessionScoped) {
+    return sessionScoped;
+  }
+
+  return readStoredSession(localStorage);
 }
 
-function persistSession(session: AuthSession, ttlMs?: number) {
+function saveSession(payload: PersistedAuthSession) {
+  const targetStorage = payload.persistent ? localStorage : sessionStorage;
+  const otherStorage = payload.persistent ? sessionStorage : localStorage;
+
+  targetStorage.setItem(AUTH_SESSION_KEY, JSON.stringify(payload));
+  otherStorage.removeItem(AUTH_SESSION_KEY);
+}
+
+function persistSession(session: AuthSession, options?: PersistOptions) {
   const now = Date.now();
+  const persistent = options?.persistent ?? false;
+  const expiresAt = persistent
+    ? (typeof options?.ttlMs === "number" ? now + options.ttlMs : null)
+    : null;
+
   const payload: PersistedAuthSession = {
     ...session,
     createdAt: now,
-    expiresAt: now + (ttlMs ?? DEFAULT_SESSION_TTL_MS),
-    version: 1,
+    expiresAt,
+    version: 2,
+    persistent,
   };
 
-  writePersistedSession(payload);
+  saveSession(payload);
 }
 
-export function setAuthSession(session: AuthSession, ttlMs?: number) {
-  persistSession(session, ttlMs);
+export function setAuthSession(session: AuthSession, options?: PersistOptions) {
+  persistSession(session, options);
 }
 
 export function clearAuthSession() {
+  sessionStorage.removeItem(AUTH_SESSION_KEY);
   localStorage.removeItem(AUTH_SESSION_KEY);
 }
 
@@ -110,5 +142,5 @@ export function updatePlayerMetadata(partial: PlayerMetadata) {
     },
   };
 
-  writePersistedSession(updated);
+  saveSession(updated);
 }

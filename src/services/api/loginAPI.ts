@@ -1,11 +1,11 @@
 import apiClient from "./apiClient";
 
 export type TeacherStudentSummary = {
-    studentId: string;
+    id: string;
     fullName: string;
     currentPhaseIndex: number;
-    numberOfErrorsByPhase?: Record<number, number>;
-    numberOfSoundRepeatsByPhase?: Record<number, number>;
+    errorsDataJson?: number | null;
+    soundRepeatsDataJson?: number | null;
 };
 
 export type LoginResponse = {

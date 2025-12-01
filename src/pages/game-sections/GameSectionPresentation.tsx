@@ -15,7 +15,8 @@ export default function GameSectionPresentation() {
     const { redirect } = useSectionRedirect();
 
     // 1. Definição da letra e construção do nome do áudio
-    const letter = Letters[currentPhaseIndex];
+    const activeLetter = Letters[currentPhaseIndex];
+    const letter = activeLetter.letter;
     const presentationAudioName = `essa_letra_${letter}_alfabeto`;
 
     useOneShotAudio(!showText, presentationAudioName, setAudioRunning);
@@ -31,18 +32,24 @@ export default function GameSectionPresentation() {
 
                 <section
                     className={styles.letterDisplay}
-                    onClick={() =>
+                    onClick={() => {
+                        if (audioRunning) {
+                            return;
+                        }
                         playAudio(
                             presentationAudioName,
                             setAudioRunning,
                             true
-                        )
-                    }
+                        );
+                    }}
                     role="button"
                     tabIndex={0}
                     onKeyDown={(event) => {
                         if (event.key === "Enter" || event.key === " ") {
                             event.preventDefault();
+                            if (audioRunning) {
+                                return;
+                            }
                             playAudio(
                                 presentationAudioName,
                                 setAudioRunning,

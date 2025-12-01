@@ -3,7 +3,7 @@ import Login from '../../pages/login/Login'
 import Index from '../../pages/index/Index';
 import PlayerMenu from '../../pages/player-menu/PlayerMenu';
 import Register from '../../pages/register/Register';
-import TeacherMenu from '../../pages/teacher-menu/TeacherMenu';
+import EducatorDashboard from '../../pages/educator-dashboard/EducatorDashboard';
 import GameSectionSpeech from '../../pages/game-sections/GameSectionSpeech';
 import GameSectionMultipleChoice from '../../pages/game-sections/GameSectionMultipleChoice';
 import GameSectionFinal from '../../pages/game-sections/GameSectionFinal';
@@ -27,9 +27,9 @@ export function Router() {
             <PlayerMenu/>
           </ProtectedRoute>
         }/>
-        <Route path="/TeacherMenu" element={
+        <Route path="/EducatorDashboard" element={
           <ProtectedRoute allowedRoles={['EDUCATOR']}>
-            <TeacherMenu/>
+            <EducatorDashboard/>
           </ProtectedRoute>
         }/>
         <Route path="/GameConfig" element={

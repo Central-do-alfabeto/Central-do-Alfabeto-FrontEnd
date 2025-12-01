@@ -1,7 +1,40 @@
-export const Letters = [
-    "A", "E", "I", "O", "U", "B", "C", "D", "F", "G",
-    "H", "J", "K", "L", "M", "N", "P", "Q", "R", "S",
-    "T","V", "W", "X", "Y", "Z"
+export type LetterPronunciation = {
+    letter: string;
+    pronunciations: string[];
+};
+
+const createLetter = (letter: string, pronunciations: string[] = []): LetterPronunciation => ({
+    letter,
+    pronunciations,
+});
+
+export const Letters: LetterPronunciation[] = [
+    createLetter("A", ["Á", "Â", "Ã", "AH"]),
+    createLetter("E", ["É", "Ê", "EH"]),
+    createLetter("I", ["E", "IH"]),
+    createLetter("O", ["Ó", "Ô", "OH"]),
+    createLetter("U", ["Ú", "UH"]),
+    createLetter("B", ["BÊ", "BE", "BÉ"]),
+    createLetter("C", ["CÊ", "CE", "CÉ"]),
+    createLetter("D", ["DÊ", "DE", "DÉ"]),
+    createLetter("F", ["ÉFE", "EFE"]),
+    createLetter("G", ["GÊ", "GE"]),
+    createLetter("H", ["AGÁ", "HA", "HÁ"]),
+    createLetter("J", ["JOTA"]),
+    createLetter("K", ["KÁ", "CÁ"]),
+    createLetter("L", ["ELE"]),
+    createLetter("M", ["EME"]),
+    createLetter("N", ["ENE"]),
+    createLetter("P", ["PÊ", "PE", "PÉ"]),
+    createLetter("Q", ["QUÊ", "QUE"]),
+    createLetter("R", ["ERRE", "ERE"]),
+    createLetter("S", ["ESSE", "ECE"]),
+    createLetter("T", ["TÊ", "TE", "TÉ"]),
+    createLetter("V", ["VÊ", "VE", "VÉ"]),
+    createLetter("W", ["DÁBLIO", "DABLIU", "DOUBLE U"]),
+    createLetter("X", ["XIS", "CHIS"]),
+    createLetter("Y", ["ÍPSILON", "IPSILON", "YPSILON"]),
+    createLetter("Z", ["ZÊ", "ZE", "ZÉ"]),
 ];
 
 export type WordPronunciation = {
@@ -30,13 +63,13 @@ export const Words: WordSet[] = [
     },
     {
         word1: createWord("Ai"),
-        word2: createWord("Ei"),
-        word3: createWord("Ia"),
+        word2: createWord("Ei", ["E"]),
+        word3: createWord("Ia", ["E a"]),
     },
     {
         word1: createWord("Oi"),
         word2: createWord("Ioio", ["e ou", "e olhou", "e ou e o", "e o"]),
-        word3: createWord("Oie", ["oi e"]),
+        word3: createWord("Oie", ["oi e", "oi"]),
     },
     {
         word1: createWord("Eu"),

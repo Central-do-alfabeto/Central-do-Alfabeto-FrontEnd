@@ -24,7 +24,7 @@ export default function GameSectionCongratulations() {
   // 1. Captura o índice inicial para evitar reavaliações após o incremento
   const initialPhaseIndexRef = useRef(currentPhaseIndex);
   const completedLetter = useMemo(
-    () => Letters[initialPhaseIndexRef.current],
+    () => Letters[initialPhaseIndexRef.current].letter,
     []
   );
 
@@ -33,10 +33,9 @@ export default function GameSectionCongratulations() {
     [completedLetter]
   );
 
-  const nextPhaseIndex = initialPhaseIndexRef.current + 1;
+  const completedPhaseIndex = initialPhaseIndexRef.current;
   const errorsSnapshot = TotalErrors;
   const audioSnapshot = TotalAudioReproductions;
-
 
   useOneShotAudio(!showText, congratulationAudioName, setAudioRunning);
 
@@ -50,15 +49,14 @@ export default function GameSectionCongratulations() {
       let phaseIncrementApplied = false;
 
       try {
-        setCurrentPhaseIndex(1);
-        phaseIncrementApplied = true;
-
         await playerDataUpdate({
-          currentPhaseIndex: nextPhaseIndex,
-          numberOfErrors: errorsSnapshot,
-          numberOfSoundRepeats: audioSnapshot,
+          currentPhaseIndex: completedPhaseIndex,
+          errorsData: errorsSnapshot,
+          soundRepeatsData: audioSnapshot,
         });
 
+        setCurrentPhaseIndex(1);
+        phaseIncrementApplied = true;
         resetTotalValues();
       } catch (error) {
         console.error("Falha ao sincronizar progresso do jogador:", error);
@@ -69,7 +67,7 @@ export default function GameSectionCongratulations() {
     };
 
     void syncProgress();
-  }, [audioSnapshot, errorsSnapshot, nextPhaseIndex]);
+  }, [audioSnapshot, completedPhaseIndex, errorsSnapshot]);
 
   return (
     <div className={styles.page}>
