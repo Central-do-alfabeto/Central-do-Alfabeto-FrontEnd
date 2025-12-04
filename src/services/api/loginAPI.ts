@@ -15,6 +15,8 @@ export type LoginResponse = {
     role?: string;
     currentPhaseIndex?: number;
     teacherStudents?: TeacherStudentSummary[];
+    userName?: string;
+    email?: string;
 };
 
 export async function loginAPI(email: string, password: string): Promise<LoginResponse> {
@@ -27,7 +29,9 @@ export async function loginAPI(email: string, password: string): Promise<LoginRe
             token: response.data.token,
             currentPhaseIndex: response.data.currentPhaseIndex ?? undefined,
             role: response.data.role ?? undefined,
-            teacherStudents: response.data.studentSummaries as TeacherStudentSummary[] | undefined
+            teacherStudents: response.data.studentSummaries as TeacherStudentSummary[] | undefined,
+            userName: response.data.userName ?? undefined,
+            email: response.data.email ?? undefined,
         };
 
     } catch (error) {

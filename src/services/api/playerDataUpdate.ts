@@ -1,3 +1,4 @@
+import { isAxiosError } from "axios";
 import apiClient from "./apiClient";
 import {
     currentPhaseIndex,
@@ -25,8 +26,13 @@ export async function playerDataUpdate(payload?: PlayerProgressPayload) {
             soundRepeatsData: TotalAudioReproductions,
         };
 
-        await apiClient.put(`/players/${PlayerID}/updateProgress`, payloadToSend);
+        await apiClient.post(`/players/${PlayerID}/progress`, payloadToSend);
     } catch (error) {
+        if (isAxiosError(error) && error.response?.status === 409) {
+            console.warn("Progresso já registrado para esta fase; ignorando novo POST.");
+            return;
+        }
+
         if (error instanceof Error) {
             console.error("Erro em playerDataUpdate:", error.message);
         } else {

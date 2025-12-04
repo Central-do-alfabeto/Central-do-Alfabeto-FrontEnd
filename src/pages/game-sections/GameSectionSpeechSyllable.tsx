@@ -1,7 +1,7 @@
 import { Letters } from "../../store/gameConstants";
 import { currentPhaseIndex, incrementTotalErrors } from "../../store/gameState";
 import { playAudio } from "../../utils/playAudio";
-import { useState, useEffect, useMemo } from "react";
+import { useState, useEffect, useMemo, useRef } from "react";
 import useRecorder from "../../hooks/useRecorder";
 import { useNavigate } from "react-router-dom";
 import sendRecording from "../../services/api/sendRecording";
@@ -16,6 +16,7 @@ export default function GameSectionSpeechSyllable() {
   const [canGoNextWords, setCanGoNextWords] = useState([false, false, false, false, false]);
   const [canGoNext, setCanGoNext] = useState(false);
   const [clickedWord, setClickedWord] = useState("");
+  const clickedWordRef = useRef<string>("");
   const { isRecording, toggleRecording } = useRecorder(handleResult);
   const navigate = useNavigate();
   const [audioRunning, setAudioRunning] = useAudioRunning();
@@ -32,9 +33,10 @@ export default function GameSectionSpeechSyllable() {
   async function handleResult(audioBlob: Blob) {
     try {
       const transcript = await sendRecording(audioBlob);
-      const idx = syllables.indexOf(clickedWord);
+      const targetSyllable = clickedWordRef.current;
+      const idx = syllables.indexOf(targetSyllable);
 
-      if (idx !== -1 && matchesExpectedSpeech(transcript, clickedWord)) {
+      if (idx !== -1 && matchesExpectedSpeech(transcript, targetSyllable)) {
         setCanGoNextWords((prev) => {
           const updated = [...prev];
           updated[idx] = true;
@@ -42,13 +44,14 @@ export default function GameSectionSpeechSyllable() {
           setCanGoNext(allDone);
           return updated;
         });
+        playAudio("resposta_correta", setAudioRunning);
+        clickedWordRef.current = "";
+        setClickedWord("");
       } else {
         incrementTotalErrors();
-        setCanGoNext(false);
-        playAudio(
-          `Helper${currentPhaseIndex}_GameSectionSpeechSyllable`,
-          setAudioRunning
-        );
+        const allDone = canGoNextWords.every(Boolean);
+        setCanGoNext(allDone);
+        playAudio("resposta_errada", setAudioRunning);
       }
     } catch (error) {
       console.error("Falha ao processar áudio:", error);
@@ -58,13 +61,16 @@ export default function GameSectionSpeechSyllable() {
           : "Não foi possível processar o áudio. Tente novamente.";
         alert(friendlyMessage);
       }
-      setCanGoNext(false);
+      const allDone = canGoNextWords.every(Boolean);
+      setCanGoNext(allDone);
     }
   }
 
   useEffect(() => {
     setCanGoNext(false);
     setCanGoNextWords(Array(syllables.length).fill(false));
+    clickedWordRef.current = "";
+    setClickedWord("");
   }, [syllables]);
 
   useOneShotAudio(!showText, firstSyllableAudio, setAudioRunning);
@@ -110,8 +116,9 @@ export default function GameSectionSpeechSyllable() {
                   type="button"
                   className={styles.recordButton}
                   onClick={() => {
-                    toggleRecording();
+                    clickedWordRef.current = syll;
                     setClickedWord(syll);
+                    toggleRecording();
                   }}
                   disabled={
                     canGoNextWords[idx] ||

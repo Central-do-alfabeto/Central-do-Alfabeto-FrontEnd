@@ -63,6 +63,10 @@ export default function Login() {
                             email,
                         }
                         : undefined,
+                    profile: {
+                        name: user.userName ?? undefined,
+                        email: user.email ?? email,
+                    },
                 },
                 {
                     persistent: keepConnected,

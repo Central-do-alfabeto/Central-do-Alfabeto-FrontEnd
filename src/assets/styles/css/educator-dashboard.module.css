@@ -2,8 +2,8 @@
   display: flex;
   flex-direction: column;
   min-height: 100vh;
-  background: linear-gradient(135deg, #f0f9ff 0%, #d6f5d6 100%);
-  color: #1b3b32;
+  background: linear-gradient(135deg, #ffe5e5 0%, #f8cccc 100%);
+  color: #5f1b1b;
 }
 
 .header {
@@ -12,7 +12,7 @@
   justify-content: space-between;
   padding: 1rem 2rem;
   background-color: #ffffff;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.08);
+  box-shadow: 0 2px 6px rgba(179, 43, 43, 0.12);
 }
 
 .logo {
@@ -22,7 +22,7 @@
 
 .logoutButton {
   border: none;
-  background-color: #ff6b6b;
+  background-color: #b32b2b;
   color: #ffffff;
   padding: 0.6rem 1.5rem;
   border-radius: 999px;
@@ -32,7 +32,7 @@
 }
 
 .logoutButton:hover {
-  background-color: #ff5252;
+  background-color: #961f1f;
 }
 
 .layout {
@@ -44,10 +44,11 @@
 
 .sidebar {
   width: 280px;
-  background-color: rgba(255, 255, 255, 0.9);
+  background-color: rgba(255, 255, 255, 0.92);
   border-radius: 16px;
   padding: 1.5rem;
-  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 6px 18px rgba(179, 43, 43, 0.15);
+  border: 1px solid rgba(179, 43, 43, 0.12);
   display: flex;
   flex-direction: column;
   gap: 1.5rem;
@@ -67,23 +68,24 @@
 .sidebarTitle {
   font-size: 1.25rem;
   font-weight: 700;
-  color: #205c3b;
+  color: #b32b2b;
 }
 
 .addStudentButton {
   border: none;
-  background-color: #1fa86a;
+  background-color: #b32b2b;
   color: #ffffff;
   padding: 0.75rem 1rem;
   border-radius: 12px;
   font-weight: 600;
   cursor: pointer;
-  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  transition: transform 0.2s ease, box-shadow 0.2s ease, background-color 0.2s ease;
 }
 
 .addStudentButton:hover {
   transform: translateY(-1px);
-  box-shadow: 0 4px 10px rgba(31, 168, 106, 0.3);
+  box-shadow: 0 4px 12px rgba(179, 43, 43, 0.28);
+  background-color: #961f1f;
 }
 
 .studentList {
@@ -99,49 +101,148 @@
 .studentButton {
   width: 80%;
   min-height: 42px;
-  border: none;
   border-radius: 12px;
+  border: 1px solid rgba(179, 43, 43, 0.18);
   background-color: #ffffff;
-  color: #205c3b;
+  color: #5f1b1b;
   font-weight: 600;
   cursor: pointer;
-  box-shadow: 0 3px 8px rgba(0, 0, 0, 0.08);
-  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  box-shadow: 0 3px 10px rgba(179, 43, 43, 0.15);
+  transition: transform 0.2s ease, box-shadow 0.2s ease, background-color 0.2s ease;
 }
 
 .studentButton:hover {
   transform: translateY(-2px);
-  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.12);
+  box-shadow: 0 6px 14px rgba(150, 31, 31, 0.25);
+}
+
+.studentButtonActive {
+  background-color: #b32b2b;
+  color: #ffffff;
+  box-shadow: 0 6px 16px rgba(179, 43, 43, 0.35);
+}
+
+.studentButton:disabled {
+  opacity: 0.7;
+  cursor: wait;
 }
 
 .feedback {
   font-size: 0.95rem;
-  color: #2f695d;
+  color: #7a3232;
   text-align: center;
 }
 
 .error {
-  color: #c0392b;
+  color: #961f1f;
   font-weight: 600;
   text-align: center;
 }
 
 .mainContent {
   flex: 1;
-  background-color: rgba(255, 255, 255, 0.75);
+  background-color: rgba(255, 255, 255, 0.88);
   border-radius: 20px;
-  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.08);
+  box-shadow: 0 6px 18px rgba(179, 43, 43, 0.15);
   padding: 2rem;
   display: flex;
-  align-items: center;
-  justify-content: center;
+  flex-direction: column;
+  gap: 1.5rem;
+  overflow: hidden;
 }
 
 .placeholder {
   font-size: 1.1rem;
   font-weight: 500;
-  color: #35715f;
+  color: #7a3232;
   text-align: center;
+  margin: auto;
+}
+
+.detailsContainer {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+  height: 100%;
+}
+
+.studentHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 1rem;
+  background: linear-gradient(135deg, rgba(243, 198, 198, 0.65), rgba(255, 226, 226, 0.8));
+  border-radius: 18px;
+  padding: 1.5rem;
+  box-shadow: 0 4px 14px rgba(179, 43, 43, 0.18);
+}
+
+.studentName {
+  margin: 0;
+  font-size: 1.4rem;
+  font-weight: 700;
+  color: #b32b2b;
+}
+
+.studentMeta {
+  margin: 0.35rem 0 0;
+  color: #7a3232;
+  font-weight: 500;
+}
+
+.studentMeta span {
+  font-weight: 700;
+}
+
+.loadingNotice {
+  align-self: center;
+  font-size: 0.9rem;
+  color: #7a3232;
+  font-weight: 600;
+}
+
+.snapshotsSection {
+  flex: 1;
+  background-color: rgba(255, 255, 255, 0.95);
+  border-radius: 18px;
+  padding: 1.25rem;
+  box-shadow: inset 0 0 0 1px rgba(179, 43, 43, 0.12);
+  overflow: auto;
+}
+
+.snapshotsTable {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.snapshotsTable thead th {
+  text-align: left;
+  padding: 0.75rem 0.9rem;
+  background-color: #f3c6c6;
+  color: #5f1b1b;
+  font-weight: 700;
+  font-size: 0.95rem;
+}
+
+.snapshotsTable tbody td {
+  padding: 0.7rem 0.9rem;
+  border-top: 1px solid rgba(150, 31, 31, 0.18);
+  color: #6b2929;
+  font-size: 0.95rem;
+}
+
+.snapshotsTable tbody tr:nth-child(even) {
+  background-color: rgba(243, 198, 198, 0.35);
+}
+
+.errorPanel {
+  background-color: #ffe3e3;
+  color: #961f1f;
+  border-radius: 18px;
+  padding: 1.5rem;
+  text-align: center;
+  font-weight: 600;
+  box-shadow: 0 6px 18px rgba(179, 43, 43, 0.2);
 }
 
 .modalOverlay {
@@ -164,7 +265,7 @@
   padding: 2rem;
   width: 100%;
   max-width: 420px;
-  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.2);
+  box-shadow: 0 8px 24px rgba(150, 31, 31, 0.26);
   display: flex;
   flex-direction: column;
   gap: 1.5rem;
@@ -173,7 +274,7 @@
 .modalTitle {
   font-size: 1.4rem;
   font-weight: 700;
-  color: #1b5e20;
+  color: #b32b2b;
 }
 
 .modalForm {
@@ -186,26 +287,26 @@
   display: flex;
   flex-direction: column;
   gap: 0.5rem;
-  color: #205c3b;
+  color: #7a3232;
   font-weight: 600;
 }
 
 .modalField input {
   padding: 0.75rem;
   border-radius: 12px;
-  border: 1px solid #a9d8c1;
+  border: 1px solid rgba(179, 43, 43, 0.25);
   font-size: 1rem;
-  transition: border-color 0.2s ease;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
 }
 
 .modalField input:focus {
-  border-color: #1fa86a;
+  border-color: #b32b2b;
   outline: none;
-  box-shadow: 0 0 0 3px rgba(31, 168, 106, 0.2);
+  box-shadow: 0 0 0 3px rgba(179, 43, 43, 0.18);
 }
 
 .modalError {
-  color: #c0392b;
+  color: #961f1f;
   font-weight: 600;
   text-align: center;
 }
@@ -223,17 +324,18 @@
   padding: 0.7rem 1.4rem;
   font-weight: 600;
   cursor: pointer;
-  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  transition: transform 0.2s ease, box-shadow 0.2s ease, background-color 0.2s ease;
 }
 
 .modalPrimaryButton {
-  background-color: #1fa86a;
+  background-color: #b32b2b;
   color: #ffffff;
 }
 
 .modalPrimaryButton:hover:not(:disabled) {
   transform: translateY(-1px);
-  box-shadow: 0 4px 12px rgba(31, 168, 106, 0.3);
+  box-shadow: 0 4px 12px rgba(179, 43, 43, 0.28);
+  background-color: #961f1f;
 }
 
 .modalPrimaryButton:disabled {
@@ -242,11 +344,11 @@
 }
 
 .modalSecondaryButton {
-  background-color: #e3f1ea;
-  color: #205c3b;
+  background-color: #fde1e1;
+  color: #7a3232;
 }
 
 .modalSecondaryButton:hover {
   transform: translateY(-1px);
-  box-shadow: 0 4px 12px rgba(32, 92, 59, 0.15);
+  box-shadow: 0 4px 12px rgba(179, 43, 43, 0.18);
 }

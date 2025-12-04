@@ -43,8 +43,6 @@ export default function Register() {
 
     try {
       await registerAPI(email, password, sanitizedNome, role);
-
-      alert("Cadastro concluído!");
       navigate("/"); // redireciona para tela inicial
     } catch (error: unknown) {
       if (error instanceof Error) {

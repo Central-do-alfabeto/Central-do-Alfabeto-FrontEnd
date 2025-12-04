@@ -4,13 +4,14 @@ import { usePageColor } from "../../state/usePageColor";
 import { paletasDisponiveis, type PaletaDisponivel } from "../../store/paletaCores";
 import { useShowText } from "../../state/useShowText";
 import styles from "../../assets/styles/css/gameConfig.module.css";
-import { clearAuthSession } from "../../store/auth";
+import { clearAuthSession, getAuthProfile } from "../../store/auth";
 import { resetTotalValues, setPlayerID, syncCurrentPhaseIndex } from "../../store/gameState";
 
 export default function Config() {
   const [paleta, setPaleta] = usePageColor();
   const [showText, setShowText] = useShowText();
   const navigate = useNavigate();
+  const profile = getAuthProfile();
 
   const paletaSelecionada = useMemo<PaletaDisponivel>(
     () =>
@@ -38,6 +39,16 @@ export default function Config() {
       <div className={styles.centralContainer}>
         <div className={styles.configContainer}>
           <h1>⚙️ Configurações</h1>
+
+          {(profile?.name || profile?.email) && (
+            <div className={styles.profileInfo}>
+              <strong>Conta logada</strong>
+              {profile?.name && <p>{profile.name}</p>}
+              {profile?.email && (
+                <p className={styles.profileEmail}>{profile.email}</p>
+              )}
+            </div>
+          )}
 
           <div className={styles.configItem}>
             <label htmlFor="paleta-select">Paleta das telas:</label>

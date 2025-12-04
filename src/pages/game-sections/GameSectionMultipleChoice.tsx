@@ -20,7 +20,7 @@ export default function GameSectionMultipleChoice() {
   const { redirect } = useSectionRedirect();
   const activeLetter = Letters[currentPhaseIndex];
   const currentLetter = activeLetter.letter;
-  const audioName = `MultiplaEscolha${currentLetter}`;
+  const audioName = `selecione_letra_${currentLetter}`;
 
   useEffect(() => {
     setOptions(optionsForPhase());
@@ -49,8 +49,6 @@ export default function GameSectionMultipleChoice() {
         {showText && (
           <p className={styles.helperText}>Escolha a letra correta para continuar! 📝</p>
         )}
-
-        <h1 className={styles.title}>Fase {currentPhaseIndex}</h1>
 
         <button
           className={styles.repeatButton}

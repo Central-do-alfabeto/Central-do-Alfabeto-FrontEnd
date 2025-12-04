@@ -7,11 +7,17 @@ type PlayerMetadata = {
   email?: string;
 };
 
+type UserProfile = {
+  name?: string;
+  email?: string;
+};
+
 export type AuthSession = {
   token: string;
   role: UserRole;
   userId: string;
   playerMeta?: PlayerMetadata;
+  profile?: UserProfile;
 };
 
 type PersistedAuthSession = AuthSession & {
@@ -87,7 +93,7 @@ function persistSession(session: AuthSession, options?: PersistOptions) {
     ...session,
     createdAt: now,
     expiresAt,
-    version: 2,
+    version: 3,
     persistent,
   };
 
@@ -109,8 +115,8 @@ export function getAuthSession(): AuthSession | null {
     return null;
   }
 
-  const { token, role, userId, playerMeta } = stored;
-  return { token, role, userId, playerMeta };
+  const { token, role, userId, playerMeta, profile } = stored;
+  return { token, role, userId, playerMeta, profile };
 }
 
 export function getAuthToken(): string | null {
@@ -143,4 +149,9 @@ export function updatePlayerMetadata(partial: PlayerMetadata) {
   };
 
   saveSession(updated);
+}
+
+export function getAuthProfile(): UserProfile | null {
+  const stored = parseStoredSession();
+  return stored?.profile ?? null;
 }

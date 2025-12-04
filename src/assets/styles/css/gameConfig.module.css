@@ -28,6 +28,31 @@
   text-align: center;
 }
 
+.profileInfo {
+  margin-bottom: 1.5rem;
+  padding: 1rem;
+  border-radius: 12px;
+  background-color: var(--color-surface);
+  color: var(--color-on-surface);
+  text-align: left;
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.08);
+}
+
+.profileInfo strong {
+  display: block;
+  font-size: 0.8rem;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  margin-bottom: 0.3rem;
+  color: var(--color-text);
+}
+
+.profileEmail {
+  font-size: 0.95rem;
+  color: rgba(0, 0, 0, 0.75);
+  word-break: break-word;
+}
+
 /* ✨ Animação de entrada */
 @keyframes fadeUp {
   from {

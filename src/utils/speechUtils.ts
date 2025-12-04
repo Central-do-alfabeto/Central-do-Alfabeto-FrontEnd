@@ -1,3 +1,4 @@
+import { isAutoSpeechAutoPassEnabled } from "./debugFlags";
 function stripAccents(value: string): string {
   return value.normalize("NFD").replace(/[\u0300-\u036f]/g, "");
 }
@@ -62,6 +63,10 @@ export function matchesExpectedSpeech(
   expected: string,
   acceptedPronunciations: string[] = []
 ): boolean {
+  if (isAutoSpeechAutoPassEnabled()) {
+    return true;
+  }
+
   const candidates = [expected, ...acceptedPronunciations];
   const normalizedTranscriptSentence = normalizeSentence(transcript);
   const transcriptTokens = tokenizeSpeechText(transcript);
