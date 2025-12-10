@@ -1,1 +1,1 @@
-Olá!
+Este é o front-end do projeto Central do Alfabeto, desenvolvido para a matéria de Atividades de Extensão 2 do curso de ADS (Análise e Desenvolvimento de Sistemas) do IFSP-CJO por Brian, Tiago, Luiz Henrique e Arthur.
