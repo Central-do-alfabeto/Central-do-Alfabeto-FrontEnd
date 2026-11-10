@@ -1,9 +1,12 @@
 import { Router } from './routes/private/router';
+import ErrorBoundary from './components/ErrorBoundary';
 
 export default function App() {
   return (
     <div className="app">
-      <Router />
+      <ErrorBoundary>
+        <Router />
+      </ErrorBoundary>
     </div>
   );
 }

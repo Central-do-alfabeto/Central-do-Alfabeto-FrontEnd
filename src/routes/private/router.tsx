@@ -13,6 +13,7 @@ import GameSectionCongratulations from '../../pages/game-sections/GameSectionCon
 import GameSectionPresentation from '../../pages/game-sections/GameSectionPresentation';
 import FirstPresentationSection from '../../pages/first-presentation-section/FirstPresentationSection';
 import GameComplete from '../../pages/game-complete/GameComplete';
+import NotFound from '../../pages/not-found/NotFound';
 import ProtectedRoute from '../ProtectedRoute';
 import ProgressProtectedRoute from '../ProgressProtectedRoute';
 
@@ -78,6 +79,7 @@ export function Router() {
             <GameComplete/>
           </ProtectedRoute>
         }/>
+        <Route path="*" element={<NotFound/>}/>
       </Routes>
     </BrowserRouter>
   );
