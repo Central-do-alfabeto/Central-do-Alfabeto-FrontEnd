@@ -1,11 +1,11 @@
 import useRecorder from "../../hooks/useRecorder";
-import { Words, type WordKey } from "../../store/gameConstants";
+import { getWordSetForPhase, type WordKey, type WordSet } from "../../store/gameConstants";
 import { currentPhaseIndex, incrementTotalErrors } from "../../store/gameState";
 import { useState, useEffect, useRef } from "react";
 import sendRecording from "../../services/api/sendRecording";
 import { playAudio } from "../../utils/playAudio";
 import { matchesExpectedSpeech } from "../../utils/speechUtils";
-import { useNavigate } from "react-router-dom";
+import { Navigate, useNavigate } from "react-router-dom";
 import { useAudioRunning } from "../../state/useAudioRunning";
 import { useShowText } from "../../state/useShowText";
 import useSectionRedirect from "../../hooks/useSectionRedirect";
@@ -13,6 +13,17 @@ import styles from "../../assets/styles/css/game-section-final.module.css";
 import useOneShotAudio from "../../hooks/useOneShotAudio";
 
 export default function GameSectionFinal() {
+  const wordSet = getWordSetForPhase(currentPhaseIndex);
+
+  // Sem conjunto de palavras para a fase atual: volta ao menu em vez de quebrar a tela.
+  if (!wordSet) {
+    return <Navigate to="/PlayerMenu" replace />;
+  }
+
+  return <GameSectionFinalContent currentWordsSet={wordSet} />;
+}
+
+function GameSectionFinalContent({ currentWordsSet }: { currentWordsSet: WordSet }) {
   const [canGoNextWord1, setCanGoNext1] = useState(false);
   const [canGoNextWord2, setCanGoNext2] = useState(false);
   const [canGoNextWord3, setCanGoNext3] = useState(false);
@@ -25,7 +36,6 @@ export default function GameSectionFinal() {
   const { redirect } = useSectionRedirect();
   const navigate = useNavigate();
 
-  const currentWordsSet = Words[currentPhaseIndex - 1];
   const word1 = currentWordsSet.word1;
   const word2 = currentWordsSet.word2;
   const word3 = currentWordsSet.word3;
