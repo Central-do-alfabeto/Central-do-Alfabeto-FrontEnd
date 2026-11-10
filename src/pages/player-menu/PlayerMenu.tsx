@@ -3,6 +3,7 @@ import { playAudio } from "../../utils/playAudio";
 import { useNavigate } from "react-router-dom";
 import { useAudioRunning } from "../../state/useAudioRunning";
 import { currentPhaseIndex, setInGameFlow } from "../../store/gameState";
+import { getStartRoute } from "../../utils/phaseFlow";
 import styles from "../../assets/styles/css/menu.module.css";
 import soundIcon from "../../assets/images/sound-icon.png";
 import settingsIcon from "../../assets/images/settings-icon.png";
@@ -54,11 +55,7 @@ export default function PlayerMenu() {
                     <button
                         onClick={() => {
                             setInGameFlow(true);
-                            if (currentPhaseIndex === 0) {
-                                navigate("/FirstPresentationSection");
-                            } else {
-                                navigate("/GameSectionPresentation");
-                            }
+                            navigate(getStartRoute(currentPhaseIndex));
                         }}
                         disabled={audioRunning}
                     >

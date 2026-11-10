@@ -14,6 +14,7 @@ import { playerDataUpdate } from "../../services/api/playerDataUpdate";
 import { Letters } from "../../store/gameConstants"; 
 import styles from "../../assets/styles/css/game-section-congratulations.module.css";
 import useOneShotAudio from "../../hooks/useOneShotAudio";
+import { getRouteAfterPhase } from "../../utils/phaseFlow";
 
 export default function GameSectionCongratulations() {
   const [showText] = useShowText();
@@ -82,7 +83,7 @@ export default function GameSectionCongratulations() {
           <button
             type="button"
             className={styles.nextButton}
-            onClick={() => navigate("/GameSectionPresentation")}
+            onClick={() => navigate(getRouteAfterPhase(completedPhaseIndex))}
             disabled={audioRunning}
           >
             <span aria-hidden="true">➡️</span>

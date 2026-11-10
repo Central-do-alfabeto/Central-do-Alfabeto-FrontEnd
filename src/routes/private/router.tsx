@@ -12,6 +12,7 @@ import GameConfig from '../../pages/game-configurations/GameConfig';
 import GameSectionCongratulations from '../../pages/game-sections/GameSectionCongratulations';
 import GameSectionPresentation from '../../pages/game-sections/GameSectionPresentation';
 import FirstPresentationSection from '../../pages/first-presentation-section/FirstPresentationSection';
+import GameComplete from '../../pages/game-complete/GameComplete';
 import ProtectedRoute from '../ProtectedRoute';
 import ProgressProtectedRoute from '../ProgressProtectedRoute';
 
@@ -71,6 +72,11 @@ export function Router() {
           <ProgressProtectedRoute>
             <GameSectionCongratulations/>
           </ProgressProtectedRoute>
+        }/>
+        <Route path="/GameComplete" element={
+          <ProtectedRoute allowedRoles={['STUDENT']}>
+            <GameComplete/>
+          </ProtectedRoute>
         }/>
       </Routes>
     </BrowserRouter>
