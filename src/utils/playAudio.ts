@@ -1,158 +1,169 @@
 import { incrementTotalAudioReproductions } from "../store/gameState";
 import type { Dispatch, SetStateAction } from "react";
 
-export function playAudio(
-  name: string,
-  setUseAudioRunning: Dispatch<SetStateAction<boolean>>,
-  btnClicked: boolean = false
-): void {
-  const baseUrl = import.meta.env.BASE_URL ?? "/";
+/**
+ * Único ponto de reprodução de áudio do jogo.
+ *
+ * Ordem de tentativas para um nome de áudio:
+ * 1. arquivo `public/audio/<nome>.mp3`;
+ * 2. o mesmo arquivo com o nome em minúsculas (vários arquivos usam esse padrão);
+ * 3. síntese de voz do navegador (`speechSynthesis`, pt-BR) lendo o texto equivalente,
+ *    usada quando o arquivo não existe ou não carrega.
+ *
+ * Se o navegador bloquear a reprodução automática (falta de gesto do usuário), não há
+ * fallback: a síntese de voz sofreria o mesmo bloqueio.
+ */
 
-  if (btnClicked) incrementTotalAudioReproductions();
+const SPEECH_LANG = "pt-BR";
 
-  const buildAudio = (rawName: string) => {
-    const encodedName = encodeURIComponent(`${rawName}.mp3`).replace(/%20/g, " ");
-    const audioPath = `${baseUrl}audio/${encodedName}`;
-    const audio = new Audio(audioPath);
+const FIXED_TEXTS: Record<string, string> = {
+  tela_inicial: "Bem-vindo à Central do Alfabeto! Aperte iniciar para jogar.",
+  introdução: "Bem-vindo à Central do Alfabeto! Vamos aprender as letras do alfabeto juntos.",
+  resposta_correta: "Muito bem!",
+  resposta_errada: "Tente de novo.",
+  repita_letra_mostrada: "Repita a letra mostrada.",
+  repita_palavra_mostrada: "Repita as palavras mostradas.",
+  fim_de_jogo: "Parabéns! Você aprendeu todas as letras do alfabeto!",
+  silabas_com_2_vogais: "Sílabas com duas vogais.",
+  silabas_com_3_vogais: "Sílabas com três vogais.",
+  aperte_verde_ou_vermelho: "Aperte o botão verde ou o vermelho.",
+};
 
-    audio.addEventListener(
-      "ended",
-      () => {
-        setUseAudioRunning(false);
-      },
-      { once: true }
-    );
+/** Texto lido pela síntese de voz quando o arquivo de áudio não está disponível. */
+export function getSpokenText(audioName: string): string {
+  const fixed = FIXED_TEXTS[audioName];
+  if (fixed) return fixed;
 
-    return { audio, audioPath };
-  };
+  const presentation = /^essa_letra_(.+)_alfabeto$/i.exec(audioName);
+  if (presentation) return `Esta é a letra ${presentation[1]}.`;
 
-  const attemptPlay = (rawName: string, isFallback: boolean) => {
-    const { audio, audioPath } = buildAudio(rawName);
+  const congratulations = /^parabens_aprendeu_(.+)$/i.exec(audioName);
+  if (congratulations) return `Parabéns! Você aprendeu a letra ${congratulations[1]}!`;
 
-    audio
-      .play()
-      .then(() => {
-        setUseAudioRunning(true);
-        console.log(`Reproduzindo: ${audioPath}`);
-      })
-      .catch((err) => {
-        setUseAudioRunning(false);
+  const selectLetter = /^selecione_letra_(.+)$/i.exec(audioName);
+  if (selectLetter) return `Selecione a letra ${selectLetter[1]}.`;
 
-        const lowerName = rawName.toLowerCase();
-        const canRetry = !isFallback && rawName !== lowerName;
+  const selectWord = /^selecione_palavra_(.+)$/i.exec(audioName);
+  if (selectWord) return `Selecione a palavra ${selectWord[1]}.`;
 
-        if (canRetry) {
-          console.warn(
-            `Reprodução falhou para ${audioPath}. Tentando com nome em minúsculas (${lowerName}).`
-          );
-          attemptPlay(lowerName, true);
-          return;
-        }
+  const word = /^palavra_(.+)$/i.exec(audioName);
+  if (word) return word[1];
 
-        console.error(`Erro ao reproduzir o áudio (${audioPath}):`, err);
-      });
-  };
+  const syllable = /^silaba_(.+)$/i.exec(audioName);
+  if (syllable) return syllable[1].toLowerCase();
 
-  attemptPlay(name, false);
+  return audioName.replace(/_/g, " ");
 }
 
+type SetRunning = Dispatch<SetStateAction<boolean>>;
+type FileResult = "played" | "blocked" | "missing";
 
-// import { incrementTotalAudioReproductions } from "../store/gameState";
-// import type { Dispatch, SetStateAction } from "react";
+function buildAudioPath(name: string): string {
+  const baseUrl = import.meta.env.BASE_URL ?? "/";
+  const encodedName = encodeURIComponent(`${name}.mp3`).replace(/%20/g, " ");
+  return `${baseUrl}audio/${encodedName}`;
+}
 
-// /**
-//  * Versão simples: corrigida para usar mp3, caminho público correto e tratamento de Promise.
-//  * Mantém assinatura void para compatibilidade com seu uso atual.
-//  */
-// export function playAudio(
-//   name: string,
-//   setUseAudioRunning: Dispatch<SetStateAction<boolean>>,
-//   btnClicked: boolean = false
-// ): void {
-//   const audioPath = `/audio/audio_${name}.mp3`; // arquivos em public/ são servidos a partir da raiz
-//   const audio = new Audio(audioPath);
+/** Tenta tocar um arquivo. "missing" cobre 404, formato inválido e qualquer falha de carregamento. */
+function tryPlayFile(name: string, setRunning: SetRunning): Promise<FileResult> {
+  return new Promise((resolve) => {
+    let settled = false;
+    let started = false;
+    const finish = (result: FileResult) => {
+      if (!settled) {
+        settled = true;
+        resolve(result);
+      }
+    };
 
-//   if (btnClicked) incrementTotalAudioReproductions();
+    try {
+      const audio = new Audio(buildAudioPath(name));
 
-//   // registra ended com opção once para não acumular listeners
-//   audio.addEventListener(
-//     "ended",
-//     () => {
-//       setUseAudioRunning(false);
-//     },
-//     { once: true }
-//   );
+      audio.addEventListener("ended", () => setRunning(false), { once: true });
+      audio.addEventListener("error", () => {
+        // Falha no meio da reprodução libera a interface; falha de carregamento segue para o fallback.
+        if (started) setRunning(false);
+        finish("missing");
+      });
 
-//   audio
-//     .play()
-//     .then(() => {
-//       setUseAudioRunning(true); // só marca como rodando se o play() funcionou
-//       console.log(`Reproduzindo: audio_${name}.mp3`);
-//     })
-//     .catch((err) => {
-//       setUseAudioRunning(false);
-//       // Erro pode vir por autoplay bloqueado, arquivo não encontrado, etc.
-//       console.error("Erro ao reproduzir o áudio:", err);
-//     });
-// }
+      audio
+        .play()
+        .then(() => {
+          started = true;
+          setRunning(true);
+          finish("played");
+        })
+        .catch((error: unknown) => {
+          const blocked = error instanceof DOMException && error.name === "NotAllowedError";
+          finish(blocked ? "blocked" : "missing");
+        });
+    } catch {
+      finish("missing");
+    }
+  });
+}
 
-// /**
-//  * Versão recomendada: reusa instâncias de Audio por nome e retorna a instância criada,
-//  * permitindo pausar/ajustar volume externamente e evitando múltiplas instâncias duplicadas.
-//  */
-// const audioCache = new Map<string, HTMLAudioElement>();
+function pickPortugueseVoice(synth: SpeechSynthesis): SpeechSynthesisVoice | undefined {
+  const voices = synth.getVoices?.() ?? [];
+  return (
+    voices.find((voice) => voice.lang.replace("_", "-").toLowerCase() === "pt-br") ??
+    voices.find((voice) => voice.lang.toLowerCase().startsWith("pt"))
+  );
+}
 
-// export function playAudioManaged(
-//   name: string,
-//   setUseAudioRunning: Dispatch<SetStateAction<boolean>>,
-//   btnClicked: boolean = false
-// ): HTMLAudioElement {
-//   const key = name;
-//   const audioPath = `/audio/audio_${name}.mp3`;
-//   let audio = audioCache.get(key);
+/** Lê o texto com a síntese de voz do navegador. Devolve false se ela não estiver disponível. */
+function speak(text: string, setRunning: SetRunning): boolean {
+  if (
+    typeof window === "undefined" ||
+    !("speechSynthesis" in window) ||
+    typeof SpeechSynthesisUtterance === "undefined"
+  ) {
+    return false;
+  }
 
-//   if (!audio) {
-//     audio = new Audio(audioPath);
-//     audio.preload = "auto";
-//     audioCache.set(key, audio);
-//   } else {
-//     // atualiza src caso necessário (por exemplo se extensão/rota mudar)
-//     if (audio.src && !audio.src.endsWith(`/audio/audio_${name}.mp3`)) {
-//       audio.src = audioPath;
-//     }
-//   }
+  const synth = window.speechSynthesis;
+  const utterance = new SpeechSynthesisUtterance(text);
+  utterance.lang = SPEECH_LANG;
+  const voice = pickPortugueseVoice(synth);
+  if (voice) utterance.voice = voice;
 
-//   if (btnClicked) incrementTotalAudioReproductions();
+  // Alguns navegadores não disparam "end"; o temporizador evita deixar os botões travados.
+  const safetyTimer = setTimeout(() => setRunning(false), 3000 + text.length * 120);
+  const done = () => {
+    clearTimeout(safetyTimer);
+    setRunning(false);
+  };
+  utterance.onend = done;
+  utterance.onerror = done;
 
-//   const onEnded = () => {
-//     setUseAudioRunning(false);
-//     audio?.removeEventListener("ended", onEnded);
-//   };
-//   audio.addEventListener("ended", onEnded);
+  synth.cancel();
+  setRunning(true);
+  synth.speak(utterance);
+  return true;
+}
 
-//   audio
-//     .play()
-//     .then(() => {
-//       setUseAudioRunning(true);
-//       console.log(`Reproduzindo: audio_${name}.mp3`);
-//     })
-//     .catch((err) => {
-//       setUseAudioRunning(false);
-//       console.error("Erro ao reproduzir o áudio:", err);
-//     });
+async function playWithFallback(name: string, setRunning: SetRunning): Promise<void> {
+  const candidates = Array.from(new Set([name, name.toLowerCase()]));
 
-//   return audio;
-// }
+  for (const candidate of candidates) {
+    const result = await tryPlayFile(candidate, setRunning);
+    if (result === "played") return;
+    if (result === "blocked") {
+      setRunning(false);
+      console.warn(`Reprodução de "${name}" bloqueada pelo navegador (requer interação do usuário).`);
+      return;
+    }
+  }
 
-// /**
-//  * Utilitário para parar/limpar um áudio do cache se precisar:
-//  */
-// export function stopAndClearAudio(name: string) {
-//   const key = name;
-//   const audio = audioCache.get(key);
-//   if (audio) {
-//     audio.pause();
-//     audio.currentTime = 0;
-//     audioCache.delete(key);
-//   }
-// }
+  console.warn(`Áudio "${name}" indisponível; usando a síntese de voz do navegador.`);
+  if (!speak(getSpokenText(name), setRunning)) {
+    setRunning(false);
+    console.error(`Não foi possível reproduzir o áudio "${name}".`);
+  }
+}
+
+export function playAudio(name: string, setUseAudioRunning: SetRunning, btnClicked: boolean = false): void {
+  if (btnClicked) incrementTotalAudioReproductions();
+
+  void playWithFallback(name, setUseAudioRunning);
+}
