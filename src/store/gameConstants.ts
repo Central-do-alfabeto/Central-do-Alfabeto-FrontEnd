@@ -11,7 +11,7 @@ const createLetter = (letter: string, pronunciations: string[] = []): LetterPron
 export const Letters: LetterPronunciation[] = [
     createLetter("A", ["Á", "Â", "Ã", "AH"]),
     createLetter("E", ["É", "Ê", "EH"]),
-    createLetter("I", ["E", "IH"]),
+    createLetter("I", ["IH"]),
     createLetter("O", ["Ó", "Ô", "OH"]),
     createLetter("U", ["Ú", "UH"]),
     createLetter("B", ["BÊ", "BE", "BÉ"]),

@@ -8,7 +8,7 @@ import sendRecording from "../../services/api/sendRecording";
 import { useAudioRunning } from "../../state/useAudioRunning";
 import { useShowText } from "../../state/useShowText";
 import useSectionRedirect from "../../hooks/useSectionRedirect";
-import { matchesExpectedSpeech } from "../../utils/speechUtils";
+import { matchesSyllable } from "../../utils/speechUtils";
 import useOneShotAudio from "../../hooks/useOneShotAudio";
 import styles from "../../assets/styles/css/game-section-speech-syllable.module.css";
 
@@ -36,7 +36,7 @@ export default function GameSectionSpeechSyllable() {
       const targetSyllable = clickedWordRef.current;
       const idx = syllables.indexOf(targetSyllable);
 
-      if (idx !== -1 && matchesExpectedSpeech(transcript, targetSyllable)) {
+      if (idx !== -1 && matchesSyllable(transcript, targetSyllable)) {
         setCanGoNextWords((prev) => {
           const updated = [...prev];
           updated[idx] = true;

@@ -4,7 +4,7 @@ import { currentPhaseIndex, incrementTotalErrors } from "../../store/gameState";
 import { useState, useEffect, useRef } from "react";
 import sendRecording from "../../services/api/sendRecording";
 import { playAudio } from "../../utils/playAudio";
-import { matchesExpectedSpeech } from "../../utils/speechUtils";
+import { matchesWord } from "../../utils/speechUtils";
 import { Navigate, useNavigate } from "react-router-dom";
 import { useAudioRunning } from "../../state/useAudioRunning";
 import { useShowText } from "../../state/useShowText";
@@ -65,7 +65,7 @@ function GameSectionFinalContent({ currentWordsSet }: { currentWordsSet: WordSet
         return;
       }
 
-      const isMatch = matchesExpectedSpeech(
+      const isMatch = matchesWord(
         transcript,
         currentSelectedWord.word,
         currentSelectedWord.pronunciations
