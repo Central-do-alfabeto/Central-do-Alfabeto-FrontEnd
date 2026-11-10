@@ -63,7 +63,7 @@ export default function GameSectionSpeech() {
 
   useEffect(() => {
     setCanGoNext(false);
-  }, [currentPhaseIndex]);
+  }, []);
 
   useOneShotAudio(!showText, "repita_letra_mostrada", setAudioRunning);
 
