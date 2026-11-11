@@ -76,7 +76,7 @@
 }
 
 .startButton button:hover {
-  background-color: #58a35a !important; /* lighter green on hover */
+  background-color: #1b5e20 !important; /* lighter green on hover */
   transform: scale(1.08);
 }
 

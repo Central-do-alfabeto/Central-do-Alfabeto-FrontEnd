@@ -1,8 +1,8 @@
 :root {
   --color-background: #e3f2fd;
   --color-surface-soft: #bbdefb;
-  --color-surface: #42a5f5;
-  --color-surface-hover: #1e88e5;
+  --color-surface: #1976d2;
+  --color-surface-hover: #1565c0;
   --color-text: #0d47a1;
   --color-on-surface: #ffffff;
 }
@@ -18,4 +18,23 @@ html, body {
 
 #root {
   min-height: 100vh;
+}
+
+/* Foco sempre visível para quem navega pelo teclado (anel escuro com halo branco). */
+:focus-visible {
+  outline: 3px solid #0b1f3a !important;
+  outline-offset: 2px;
+  box-shadow: 0 0 0 5px #ffffff !important;
+}
+
+/* Quem prefere menos movimento não vê animações nem transições. */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+    scroll-behavior: auto !important;
+  }
 }

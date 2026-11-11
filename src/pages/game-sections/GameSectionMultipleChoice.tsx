@@ -8,11 +8,14 @@ import { useAudioRunning } from "../../state/useAudioRunning";
 import { useShowText } from "../../state/useShowText";
 import useSectionRedirect from "../../hooks/useSectionRedirect";
 import useOneShotAudio from "../../hooks/useOneShotAudio";
+import Feedback, { type FeedbackKind } from "../../components/Feedback";
 import styles from "../../assets/styles/css/game-section-multiple-choice.module.css";
 
 export default function GameSectionMultipleChoice() {
   const [options, setOptions] = useState<string[]>([]);
   const [canGoNext, setCanGoNext] = useState(false);
+  const [feedback, setFeedback] = useState<FeedbackKind>(null);
+  const [wrongOptions, setWrongOptions] = useState<string[]>([]);
 
   const navigate = useNavigate();
   const [audioRunning, setAudioRunning] = useAudioRunning();
@@ -32,8 +35,11 @@ export default function GameSectionMultipleChoice() {
   const handleClick = (value: string) => {
     if (value === currentLetter) {
       setCanGoNext(true);
+      setFeedback("correct");
       playAudio("resposta_correta", setAudioRunning);
     } else {
+      setFeedback("wrong");
+      setWrongOptions((prev) => (prev.includes(value) ? prev : [...prev, value]));
       wrongAnswer();
     }
   };
@@ -65,11 +71,13 @@ export default function GameSectionMultipleChoice() {
           {showText && <span> Ouvir de novo</span>}
         </button>
 
+        <Feedback kind={feedback} />
+
         <div className={styles.options}>
           {options.map((option, idx) => (
             <button
               key={idx}
-              className={styles.optionButton}
+              className={`${styles.optionButton} ${wrongOptions.includes(option) ? styles.optionWrong : ""} ${canGoNext && option === currentLetter ? styles.optionRight : ""}`}
               onClick={() => handleClick(option)}
               disabled={canGoNext || audioRunning}
               aria-label={`Selecionar a opção ${option}`}

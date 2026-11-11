@@ -90,11 +90,11 @@
   position: absolute;                 
   left: 28px;
   bottom: 24px;
-  background-color: #e74c3c;
+  background-color: #c0392b;
   color: #fff;
 }
 .returnButton:hover:not(:disabled) {
-  background-color: #c0392b;
+  background-color: #922b21;
   transform: scale(1.05);
 }
 
@@ -103,11 +103,11 @@
   position: absolute;                
   right: 28px;
   bottom: 24px;
-  background-color: #2ecc71;
+  background-color: #1e8449;
   color: #fff;
 }
 .nextButton:hover:not(:disabled) {
-  background-color: #27ae60;
+  background-color: #196f3d;
   transform: scale(1.05);
 }
 

@@ -55,7 +55,7 @@
 
 /* Botão Verde - Continuar */
 .primaryButton {
-  background-color: #2ecc71;
+  background-color: #1e8449;
   color: white;
   font-size: 20px;
   padding: 16px 28px;
@@ -71,7 +71,7 @@
 }
 
 .primaryButton:hover:not(:disabled) {
-  background-color: #27ae60;
+  background-color: #196f3d;
   transform: scale(1.05);
 }
 
@@ -82,7 +82,7 @@
 
 /* Botão Vermelho - Voltar */
 .secondaryButton {
-  background-color: #e74c3c;
+  background-color: #c0392b;
   color: white;
   font-size: 20px;
   padding: 16px 28px;
@@ -98,7 +98,7 @@
 }
 
 .secondaryButton:hover:not(:disabled) {
-  background-color: #c0392b;
+  background-color: #922b21;
   transform: scale(1.05);
 }
 

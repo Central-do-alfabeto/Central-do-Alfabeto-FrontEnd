@@ -24,7 +24,7 @@
 
 .wrong {
   background-color: #fdeaea;
-  border-color: #c0392b;
+  border-color: #922b21;
   color: #7b241c;
 }
 
@@ -56,7 +56,7 @@
   width: 12px;
   height: 12px;
   border-radius: 50%;
-  background-color: #c0392b;
+  background-color: #922b21;
   animation: pulse 1s ease-in-out infinite;
 }
 
@@ -75,7 +75,7 @@
   padding: 8px 12px;
   border-radius: 10px;
   background-color: #fdeaea;
-  border: 2px solid #c0392b;
+  border: 2px solid #922b21;
   color: #7b241c;
   font-weight: bold;
 }

@@ -116,18 +116,18 @@
 /* 🟢 Próxima — canto inferior direito */
 .nextButton {
   right: 28px;
-  background-color: #2ecc71;
+  background-color: #1e8449;
   color: #fff;
 }
-.nextButton:hover:not(:disabled) { background-color: #27ae60; transform: translateY(-2px); }
+.nextButton:hover:not(:disabled) { background-color: #196f3d; transform: translateY(-2px); }
 
 /* 🔴 Retornar — canto inferior esquerdo */
 .returnButton {
   left: 28px;
-  background-color: #e74c3c;
+  background-color: #c0392b;
   color: #fff;
 }
-.returnButton:hover:not(:disabled) { background-color: #c0392b; transform: translateY(-2px); }
+.returnButton:hover:not(:disabled) { background-color: #922b21; transform: translateY(-2px); }
 
 /* 📱 Responsivo */
 @media (max-width: 900px) {
