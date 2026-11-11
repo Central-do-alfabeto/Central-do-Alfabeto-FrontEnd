@@ -1,6 +1,7 @@
 import { useNavigate, Link } from "react-router-dom";
 import { isAxiosError } from "axios";
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { SESSION_EXPIRED_MESSAGE, clearSessionExpiredNotice, hasSessionExpiredNotice } from "../../services/api/sessionExpired";
 import { loginAPI } from "../../services/api/loginAPI";
 import { clearPlayerSessionState, setPlayerID, syncCurrentPhaseIndex } from "../../store/gameState";
 import { setStudents } from "../../store/TeacherStudentsInfo";
@@ -29,7 +30,13 @@ export default function Login() {
     const [password, setPassword] = useState("");
     const [showPassword, setShowPassword] = useState(false);
     const [isLoading, setIsLoading] = useState(false);
-    const [errorMessage, setErrorMessage] = useState<string | null>(null);
+    const [errorMessage, setErrorMessage] = useState<string | null>(() =>
+        hasSessionExpiredNotice() ? SESSION_EXPIRED_MESSAGE : null
+    );
+
+    useEffect(() => {
+        clearSessionExpiredNotice();
+    }, []);
     const [keepConnected, setKeepConnected] = useState(false);
     const navigate = useNavigate();
 

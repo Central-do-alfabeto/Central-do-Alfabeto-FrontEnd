@@ -26,4 +26,17 @@ describe("Login", () => {
     expect(await screen.findByRole("alert")).toHaveTextContent(/e-mail ou senha incorretos/i);
     expect(alertSpy).not.toHaveBeenCalled();
   });
+
+  it("mostra o aviso de sessão expirada quando o usuário foi levado ao login", () => {
+    sessionStorage.setItem("auth.sessionExpiredNotice", "1");
+
+    render(
+      <MemoryRouter>
+        <Login />
+      </MemoryRouter>
+    );
+
+    expect(screen.getByRole("alert")).toHaveTextContent(/sua sessão expirou/i);
+    expect(sessionStorage.getItem("auth.sessionExpiredNotice")).toBeNull();
+  });
 });
