@@ -4,6 +4,8 @@ import { usePageColor } from "../../state/usePageColor";
 import { paletasDisponiveis, type PaletaDisponivel } from "../../store/paletaCores";
 import { useShowText } from "../../state/useShowText";
 import styles from "../../assets/styles/css/gameConfig.module.css";
+import { isDemoMode } from "../../config/env";
+import RestartProgress from "../../components/RestartProgress";
 import { clearAuthSession, getAuthProfile } from "../../store/auth";
 import { resetTotalValues, setPlayerID, syncCurrentPhaseIndex } from "../../store/gameState";
 
@@ -81,7 +83,11 @@ export default function Config() {
           </div>
 
           <div className={styles.configItem}>
-            <button className={styles.logoutButton} onClick={handleLogout}>Sair da conta</button>
+            {isDemoMode() ? (
+              <RestartProgress />
+            ) : (
+              <button className={styles.logoutButton} onClick={handleLogout}>Sair da conta</button>
+            )}
           </div>
         </div>
       </div>

@@ -1,6 +1,7 @@
 import { type ReactNode } from 'react';
 import { Navigate } from 'react-router-dom';
 import { getAuthSession } from '../store/auth';
+import { isDemoMode } from '../config/env';
 import { currentPhaseIndex, inGameFlow } from '../store/gameState';
 import { isGameComplete } from '../store/gameConstants';
 import { GAME_COMPLETE_ROUTE } from '../utils/phaseFlow';
@@ -12,7 +13,7 @@ interface ProgressProtectedRouteProps {
 export default function ProgressProtectedRoute({ children }: ProgressProtectedRouteProps) {
   const session = getAuthSession();
 
-  if (!session || session.role !== 'STUDENT') {
+  if (!isDemoMode() && (!session || session.role !== 'STUDENT')) {
     return <Navigate to="/Login" replace />;
   }
 

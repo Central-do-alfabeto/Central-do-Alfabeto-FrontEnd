@@ -1,4 +1,5 @@
-import { BrowserRouter, Routes, Route } from 'react-router-dom';
+import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
+import { isDemoMode } from '../../config/env';
 import Login from '../../pages/login/Login'
 import Index from '../../pages/index/Index';
 import PlayerMenu from '../../pages/player-menu/PlayerMenu';
@@ -18,12 +19,16 @@ import ProtectedRoute from '../ProtectedRoute';
 import ProgressProtectedRoute from '../ProgressProtectedRoute';
 
 export function Router() {
+  // Modo demonstração (sem backend): entra direto no jogo; contas e painel do educador não existem.
+  const demo = isDemoMode();
+  const toGame = <Navigate to="/PlayerMenu" replace />;
+
   return (
     <BrowserRouter>
       <Routes>
-        <Route path="/" element={<Index/>}/>
-        <Route path="/Login" element={<Login/>}/>
-        <Route path="/Register" element={<Register/>}/>
+        <Route path="/" element={demo ? toGame : <Index/>}/>
+        <Route path="/Login" element={demo ? toGame : <Login/>}/>
+        <Route path="/Register" element={demo ? toGame : <Register/>}/>
         <Route path="/PlayerMenu" element={
           <ProtectedRoute allowedRoles={['STUDENT']}>
             <PlayerMenu/>

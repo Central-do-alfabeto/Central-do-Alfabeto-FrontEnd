@@ -1,0 +1,77 @@
+.wrapper {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  font-family: "Comic Sans MS", cursive, sans-serif;
+}
+
+.restartButton,
+.danger,
+.cancel {
+  min-height: 44px;
+  padding: 10px 18px;
+  border-radius: 10px;
+  font-size: 1rem;
+  font-weight: bold;
+  font-family: inherit;
+  cursor: pointer;
+}
+
+.restartButton {
+  background-color: #ffffff;
+  color: #1b2a49;
+  border: 2px solid #1b2a49;
+}
+
+.confirm {
+  background-color: #ffffff;
+  color: #1b2a49;
+  border: 3px solid #922b21;
+  border-radius: 14px;
+  padding: 16px;
+  max-width: 22rem;
+  text-align: center;
+}
+
+.confirm p {
+  margin: 0 0 8px;
+}
+
+.title {
+  font-weight: bold;
+  font-size: 1.15rem;
+}
+
+.actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  justify-content: center;
+}
+
+.danger {
+  background-color: #922b21;
+  color: #ffffff;
+  border: 2px solid #922b21;
+}
+
+.cancel {
+  background-color: #ffffff;
+  color: #1b2a49;
+  border: 2px solid #1b2a49;
+}
+
+.status {
+  margin: 0;
+  min-height: 1.2em;
+  font-weight: bold;
+  color: #1b2a49;
+  background-color: rgba(255, 255, 255, 0.85);
+  border-radius: 8px;
+  padding: 0 8px;
+}
+
+.status:empty {
+  display: none;
+}

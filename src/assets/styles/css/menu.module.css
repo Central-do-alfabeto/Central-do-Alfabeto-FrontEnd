@@ -90,3 +90,13 @@
 .startButton button:disabled:hover {
   transform: none;
 }
+
+/* 🔄 Recomeçar (modo demonstração) */
+.restartArea {
+  position: absolute;
+  bottom: 3%;
+  left: 50%;
+  transform: translateX(-50%);
+  width: max-content;
+  max-width: 92%;
+}

@@ -3,6 +3,8 @@ import { playAudio } from "../../utils/playAudio";
 import { useNavigate } from "react-router-dom";
 import { useAudioRunning } from "../../state/useAudioRunning";
 import { currentPhaseIndex, setInGameFlow } from "../../store/gameState";
+import { isDemoMode } from "../../config/env";
+import RestartProgress from "../../components/RestartProgress";
 import { getStartRoute } from "../../utils/phaseFlow";
 import styles from "../../assets/styles/css/menu.module.css";
 import soundIcon from "../../assets/images/sound-icon.png";
@@ -62,6 +64,12 @@ export default function PlayerMenu() {
                         INICIAR
                     </button>
                 </div>
+
+                {isDemoMode() && (
+                    <div className={styles.restartArea}>
+                        <RestartProgress />
+                    </div>
+                )}
             </div>
         </div>
     );

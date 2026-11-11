@@ -2,6 +2,8 @@ import { useNavigate } from "react-router-dom";
 import { setInGameFlow } from "../../store/gameState";
 import { useAudioRunning } from "../../state/useAudioRunning";
 import { useShowText } from "../../state/useShowText";
+import { isDemoMode } from "../../config/env";
+import RestartProgress from "../../components/RestartProgress";
 import useOneShotAudio from "../../hooks/useOneShotAudio";
 import styles from "../../assets/styles/css/game-section-congratulations.module.css";
 
@@ -25,6 +27,12 @@ export default function GameComplete() {
           </span>
           {showText && <>Parabéns! Você aprendeu todas as letras do alfabeto! 🎉</>}
         </p>
+
+        {isDemoMode() && (
+          <div style={{ marginBottom: "16px" }}>
+            <RestartProgress />
+          </div>
+        )}
 
         <div className={styles.buttonRow}>
           <button
