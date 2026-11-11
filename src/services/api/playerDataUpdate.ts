@@ -7,11 +7,9 @@ import {
     PlayerID,
 } from "../../store/gameState";
 
-export type PlayerProgressPayload = {
-    currentPhaseIndex: number;
-    errorsData: number;
-    soundRepeatsData: number;
-};
+import type { PlayerProgressPayload } from "../progress/types";
+
+export type { PlayerProgressPayload };
 
 export async function playerDataUpdate(payload?: PlayerProgressPayload) {
     if (!PlayerID) {

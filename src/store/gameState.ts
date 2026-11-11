@@ -1,5 +1,7 @@
 // gameState.ts
 import { getAuthSession, updatePlayerMetadata } from "./auth";
+import { isDemoMode } from "../config/env";
+import { readLocalProgress } from "../services/progress/localProgress";
 
 const persistedSession = getAuthSession();
 
@@ -62,11 +64,10 @@ export function clearPlayerSessionState() {
 }
 
 // currentPhaseIndex
-export let currentPhaseIndex: number = getSessionNumber(
-  "currentPhaseIndex",
-  0,
-  () => persistedSession?.playerMeta?.currentPhaseIndex
-);
+// No modo demonstração o progresso vem do localStorage; com backend, da sessão/conta.
+export let currentPhaseIndex: number = isDemoMode()
+  ? readLocalProgress().currentPhaseIndex
+  : getSessionNumber("currentPhaseIndex", 0, () => persistedSession?.playerMeta?.currentPhaseIndex);
 export function setCurrentPhaseIndex(value: number) {
   currentPhaseIndex += value;
   setSessionNumber("currentPhaseIndex", currentPhaseIndex);

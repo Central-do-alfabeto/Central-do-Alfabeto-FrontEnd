@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useRef } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import {
   setCurrentPhaseIndex,
@@ -10,7 +10,7 @@ import {
 } from "../../store/gameState";
 import { useAudioRunning } from "../../state/useAudioRunning";
 import { useShowText } from "../../state/useShowText";
-import { playerDataUpdate } from "../../services/api/playerDataUpdate";
+import { getProgressService } from "../../services/progress";
 import { Letters } from "../../store/gameConstants"; 
 import styles from "../../assets/styles/css/game-section-congratulations.module.css";
 import useOneShotAudio from "../../hooks/useOneShotAudio";
@@ -40,35 +40,37 @@ export default function GameSectionCongratulations() {
 
   useOneShotAudio(!showText, congratulationAudioName, setAudioRunning);
 
+  const phaseAdvanced = useRef(false);
+  const [saveState, setSaveState] = useState<"saving" | "saved" | "error">("saving");
+
+  const saveProgress = useCallback(async () => {
+    setSaveState("saving");
+    try {
+      await getProgressService().saveCompletedPhase({
+        currentPhaseIndex: completedPhaseIndex,
+        errorsData: errorsSnapshot,
+        soundRepeatsData: audioSnapshot,
+      });
+
+      if (!phaseAdvanced.current) {
+        phaseAdvanced.current = true;
+        setCurrentPhaseIndex(1);
+        resetTotalValues();
+      }
+      setSaveState("saved");
+    } catch (error) {
+      console.error("Falha ao sincronizar progresso do jogador:", error);
+      setSaveState("error");
+    }
+  }, [audioSnapshot, completedPhaseIndex, errorsSnapshot]);
+
   useEffect(() => {
     if (hasSyncedProgress.current) {
       return;
     }
     hasSyncedProgress.current = true;
-
-    const syncProgress = async () => {
-      let phaseIncrementApplied = false;
-
-      try {
-        await playerDataUpdate({
-          currentPhaseIndex: completedPhaseIndex,
-          errorsData: errorsSnapshot,
-          soundRepeatsData: audioSnapshot,
-        });
-
-        setCurrentPhaseIndex(1);
-        phaseIncrementApplied = true;
-        resetTotalValues();
-      } catch (error) {
-        console.error("Falha ao sincronizar progresso do jogador:", error);
-        if (phaseIncrementApplied) {
-          setCurrentPhaseIndex(-1);
-        }
-      }
-    };
-
-    void syncProgress();
-  }, [audioSnapshot, completedPhaseIndex, errorsSnapshot]);
+    void saveProgress();
+  }, [saveProgress]);
 
   return (
     <div className={styles.page}>
@@ -79,12 +81,26 @@ export default function GameSectionCongratulations() {
           </p>
         )}
 
+        <div role="status" aria-live="polite">
+          {saveState === "saving" && <p>Salvando seu progresso…</p>}
+          {saveState === "saved" && <p>Progresso salvo! ✔</p>}
+        </div>
+        {saveState === "error" && (
+          <div role="alert">
+            <p>Não foi possível salvar seu progresso. Verifique a internet e tente de novo.</p>
+            <button type="button" className={styles.nextButton} onClick={() => void saveProgress()}>
+              <span aria-hidden="true">🔁</span> Tentar salvar de novo
+            </button>
+          </div>
+        )}
+
         <div className={styles.buttonRow}>
           <button
             type="button"
             className={styles.nextButton}
             onClick={() => navigate(getRouteAfterPhase(completedPhaseIndex))}
-            disabled={audioRunning}
+            disabled={audioRunning || saveState !== "saved"}
+            aria-label="Ir para a próxima fase"
           >
             <span aria-hidden="true">➡️</span>
             {showText && <span> Próxima fase</span>}
