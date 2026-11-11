@@ -1,0 +1,119 @@
+.region {
+  min-height: 3rem;
+  margin: 12px 0;
+  display: flex;
+  justify-content: center;
+}
+
+.message {
+  margin: 0;
+  padding: 10px 18px;
+  border-radius: 12px;
+  border: 3px solid;
+  font-size: 1.1rem;
+  font-weight: bold;
+  text-align: center;
+  animation: pop 0.35s ease-out;
+}
+
+.correct {
+  background-color: #e3f6e8;
+  border-color: #1e8449;
+  color: #145a32;
+}
+
+.wrong {
+  background-color: #fdeaea;
+  border-color: #c0392b;
+  color: #7b241c;
+}
+
+@keyframes pop {
+  from {
+    transform: scale(0.85);
+    opacity: 0;
+  }
+  to {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+.listening {
+  margin: 8px 0 0;
+  padding: 6px 14px;
+  border-radius: 999px;
+  background-color: #fff3cd;
+  border: 2px solid #8a6d00;
+  color: #5c4800;
+  font-weight: bold;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.dot {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  background-color: #c0392b;
+  animation: pulse 1s ease-in-out infinite;
+}
+
+@keyframes pulse {
+  0%,
+  100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.3;
+  }
+}
+
+.error {
+  margin: 8px 0 0;
+  padding: 8px 12px;
+  border-radius: 10px;
+  background-color: #fdeaea;
+  border: 2px solid #c0392b;
+  color: #7b241c;
+  font-weight: bold;
+}
+
+.assisted {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  align-items: stretch;
+  padding: 12px;
+  border-radius: 12px;
+  background-color: rgba(255, 255, 255, 0.7);
+  border: 2px dashed currentColor;
+  max-width: 28rem;
+}
+
+.assisted p {
+  margin: 0;
+}
+
+.assistedButton {
+  min-height: 44px;
+  padding: 10px 16px;
+  border-radius: 10px;
+  border: none;
+  font-weight: bold;
+  font-size: 1rem;
+  cursor: pointer;
+  font-family: inherit;
+}
+
+.assistedYes {
+  background-color: #1e8449;
+  color: #fff;
+}
+
+.assistedRetry {
+  background-color: #fff;
+  color: #2c3e50;
+  border: 2px solid #2c3e50;
+}

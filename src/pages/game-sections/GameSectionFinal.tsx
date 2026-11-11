@@ -1,8 +1,9 @@
-import useRecorder from "../../hooks/useRecorder";
+import useSpeechCapture from "../../hooks/useSpeechCapture";
+import RecordControl from "../../components/RecordControl";
+import Feedback, { type FeedbackKind } from "../../components/Feedback";
 import { getWordSetForPhase, type WordKey, type WordSet } from "../../store/gameConstants";
 import { currentPhaseIndex, incrementTotalErrors } from "../../store/gameState";
 import { useState, useEffect, useRef } from "react";
-import sendRecording from "../../services/api/sendRecording";
 import { playAudio } from "../../utils/playAudio";
 import { matchesWord } from "../../utils/speechUtils";
 import { Navigate, useNavigate } from "react-router-dom";
@@ -32,7 +33,8 @@ function GameSectionFinalContent({ currentWordsSet }: { currentWordsSet: WordSet
   const selectedWordKeyRef = useRef<WordKey | null>(null);
   const [audioRunning, setAudioRunning] = useAudioRunning();
   const [showText] = useShowText();
-  const { isRecording, toggleRecording } = useRecorder(handleResult);
+  const [feedback, setFeedback] = useState<FeedbackKind>(null);
+  const capture = useSpeechCapture(handleAlternatives);
   const { redirect } = useSectionRedirect();
   const navigate = useNavigate();
 
@@ -45,56 +47,33 @@ function GameSectionFinalContent({ currentWordsSet }: { currentWordsSet: WordSet
     setSelectedWordKey(key);
   };
 
-  async function handleResult(audioBlob: Blob) {
-    try {
-      const transcript = await sendRecording(audioBlob);
-      const currentSelectedKey = selectedWordKeyRef.current;
-      const currentSelectedWord = currentSelectedKey
-        ? currentWordsSet[currentSelectedKey]
-        : null;
+  function applyResult(key: WordKey, isMatch: boolean) {
+    if (isMatch) {
+      const updated1 = key === "word1" ? true : canGoNextWord1;
+      const updated2 = key === "word2" ? true : canGoNextWord2;
+      const updated3 = key === "word3" ? true : canGoNextWord3;
 
-      console.info(
-        "Transcrição recebida pelo Vosk:",
-        transcript,
-        "| Palavra esperada:",
-        currentSelectedWord?.word ?? "(não selecionada)"
-      );
-
-      if (!currentSelectedKey || !currentSelectedWord) {
-        console.warn("Nenhuma palavra selecionada para validação.");
-        return;
-      }
-
-      const isMatch = matchesWord(
-        transcript,
-        currentSelectedWord.word,
-        currentSelectedWord.pronunciations
-      );
-
-      if (isMatch) {
-        const updatedWord1 = currentSelectedKey === "word1" ? true : canGoNextWord1;
-        const updatedWord2 = currentSelectedKey === "word2" ? true : canGoNextWord2;
-        const updatedWord3 = currentSelectedKey === "word3" ? true : canGoNextWord3;
-
-        setCanGoNext1(updatedWord1);
-        setCanGoNext2(updatedWord2);
-        setCanGoNext3(updatedWord3);
-        setCanGoNext(updatedWord1 && updatedWord2 && updatedWord3);
-        playAudio("resposta_correta", setAudioRunning);
-      } else {
-        playAudio("resposta_errada", setAudioRunning);
-        incrementTotalErrors();
-        setCanGoNext(canGoNextWord1 && canGoNextWord2 && canGoNextWord3);
-      }
-    } catch (error) {
-      console.error("Falha ao processar áudio:", error);
-      if (error instanceof Error) {
-        const friendlyMessage = error.message?.trim()
-          ? error.message
-          : "Não foi possível processar o áudio. Tente novamente.";
-        alert(friendlyMessage);
-      }
+      setCanGoNext1(updated1);
+      setCanGoNext2(updated2);
+      setCanGoNext3(updated3);
+      setCanGoNext(updated1 && updated2 && updated3);
+      setFeedback("correct");
+      playAudio("resposta_correta", setAudioRunning);
+    } else {
+      incrementTotalErrors();
+      setFeedback("wrong");
+      playAudio("resposta_errada", setAudioRunning);
     }
+  }
+
+  function handleAlternatives(alternatives: string[]) {
+    const key = selectedWordKeyRef.current;
+    if (!key) return;
+    const target = currentWordsSet[key];
+    applyResult(
+      key,
+      alternatives.some((text) => matchesWord(text, target.word, target.pronunciations))
+    );
   }
 
   useEffect(() => {
@@ -138,22 +117,19 @@ function GameSectionFinalContent({ currentWordsSet }: { currentWordsSet: WordSet
               >
                 {word1.word}
               </label>
-              <button
-                type="button"
-                id="startRecordingWord1"
+              <RecordControl
+                capture={capture}
                 className={styles.recordButton}
-                onClick={() => {
+                active={selectedWordKey === "word1"}
+                targetLabel={`palavra ${word1.word}`}
+                onToggle={() => {
                   setRecordingTarget("word1");
-                  toggleRecording();
+                  capture.toggle();
                 }}
-                disabled={
-                  canGoNextWord1 ||
-                  (isRecording && selectedWordKey !== "word1") ||
-                  audioRunning
-                }
-              >
-                {isRecording && selectedWordKey === "word1" ? "⏹️ Parar" : "🎙️ Gravar"}
-              </button>
+                disabled={canGoNextWord1 || audioRunning}
+                onAssistedCorrect={() => applyResult("word1", true)}
+                onAssistedRetry={() => setFeedback(null)}
+              />
             </div>
 
             {/* Bloco 2 */}
@@ -180,22 +156,19 @@ function GameSectionFinalContent({ currentWordsSet }: { currentWordsSet: WordSet
               >
                 {word2.word}
               </label>
-              <button
-                type="button"
-                id="startRecordingWord2"
+              <RecordControl
+                capture={capture}
                 className={styles.recordButton}
-                onClick={() => {
+                active={selectedWordKey === "word2"}
+                targetLabel={`palavra ${word2.word}`}
+                onToggle={() => {
                   setRecordingTarget("word2");
-                  toggleRecording();
+                  capture.toggle();
                 }}
-                disabled={
-                  canGoNextWord2 ||
-                  (isRecording && selectedWordKey !== "word2") ||
-                  audioRunning
-                }
-              >
-                {isRecording && selectedWordKey === "word2" ? "⏹️ Parar" : "🎙️ Gravar"}
-              </button>
+                disabled={canGoNextWord2 || audioRunning}
+                onAssistedCorrect={() => applyResult("word2", true)}
+                onAssistedRetry={() => setFeedback(null)}
+              />
             </div>
 
             {/* Bloco 3 */}
@@ -222,24 +195,23 @@ function GameSectionFinalContent({ currentWordsSet }: { currentWordsSet: WordSet
               >
                 {word3.word}
               </label>
-              <button
-                type="button"
-                id="startRecordingWord3"
+              <RecordControl
+                capture={capture}
                 className={styles.recordButton}
-                onClick={() => {
+                active={selectedWordKey === "word3"}
+                targetLabel={`palavra ${word3.word}`}
+                onToggle={() => {
                   setRecordingTarget("word3");
-                  toggleRecording();
+                  capture.toggle();
                 }}
-                disabled={
-                  canGoNextWord3 ||
-                  (isRecording && selectedWordKey !== "word3") ||
-                  audioRunning
-                }
-              >
-                {isRecording && selectedWordKey === "word3" ? "⏹️ Parar" : "🎙️ Gravar"}
-              </button>
+                disabled={canGoNextWord3 || audioRunning}
+                onAssistedCorrect={() => applyResult("word3", true)}
+                onAssistedRetry={() => setFeedback(null)}
+              />
             </div>
           </div>
+
+          <Feedback kind={feedback} />
 
           <button
             type="button"

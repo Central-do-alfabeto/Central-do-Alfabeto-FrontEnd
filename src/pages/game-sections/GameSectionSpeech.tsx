@@ -3,8 +3,9 @@ import { Letters } from "../../store/gameConstants";
 import { useState, useEffect } from "react";
 import { playAudio } from "../../utils/playAudio";
 import { useNavigate } from "react-router-dom";
-import useRecorder from "../../hooks/useRecorder";
-import sendRecording from "../../services/api/sendRecording";
+import useSpeechCapture from "../../hooks/useSpeechCapture";
+import RecordControl from "../../components/RecordControl";
+import Feedback, { type FeedbackKind } from "../../components/Feedback";
 import { useAudioRunning } from "../../state/useAudioRunning";
 import { useShowText } from "../../state/useShowText";
 import useSectionRedirect from "../../hooks/useSectionRedirect";
@@ -14,7 +15,8 @@ import styles from "../../assets/styles/css/game-section-speech.module.css";
 
 export default function GameSectionSpeech() {
   const [canGoNext, setCanGoNext] = useState(false);
-  const { isRecording, toggleRecording } = useRecorder(handleResult);
+  const [feedback, setFeedback] = useState<FeedbackKind>(null);
+  const capture = useSpeechCapture(handleAlternatives);
   const navigate = useNavigate();
   const [audioRunning, setAudioRunning] = useAudioRunning();
   const [showText] = useShowText();
@@ -26,39 +28,21 @@ export default function GameSectionSpeech() {
 
   const presentationAudioName = `essa_letra_${letter}_alfabeto`; 
 
-  // Callback para tratar o resultado do back-end
-  async function handleResult(audioBlob: Blob) {
-    try {
-      const transcript = await sendRecording(audioBlob);
-      const expected = letter;
-
-      console.info(
-        "Transcrição recebida pelo Vosk (GameSectionSpeech):",
-        transcript,
-        "| Letra esperada:",
-        expected,
-        "| Pronúncias aceitas:",
-        acceptedPronunciations
-      );
-
-      if (matchesLetter(transcript, expected, acceptedPronunciations)) {
-        setCanGoNext(true);
-        playAudio("resposta_correta", setAudioRunning);
-      } else {
-        incrementTotalErrors();
-        setCanGoNext(false);
-        playAudio("resposta_errada", setAudioRunning);
-      }
-    } catch (error) {
-      console.error("Falha ao processar áudio:", error);
-      if (error instanceof Error) {
-        const friendlyMessage = error.message?.trim()
-          ? error.message
-          : "Não foi possível processar o áudio. Tente novamente.";
-        alert(friendlyMessage);
-      }
+  function applyResult(isMatch: boolean) {
+    if (isMatch) {
+      setCanGoNext(true);
+      setFeedback("correct");
+      playAudio("resposta_correta", setAudioRunning);
+    } else {
+      incrementTotalErrors();
       setCanGoNext(false);
+      setFeedback("wrong");
+      playAudio("resposta_errada", setAudioRunning);
     }
+  }
+
+  function handleAlternatives(alternatives: string[]) {
+    applyResult(alternatives.some((text) => matchesLetter(text, letter, acceptedPronunciations)));
   }
 
   useEffect(() => {
@@ -107,18 +91,18 @@ export default function GameSectionSpeech() {
           {letter}
         </div>
 
+        <Feedback kind={feedback} />
+
         <div className={styles.buttonRow}>
-           <div className={styles.recordButtonContainer}>
-              <button
-                type="button"
-                id="startRecordingLetter"
-                className={styles.recordButton}
-                onClick={toggleRecording}
-                disabled={canGoNext || audioRunning}
-              >
-                <span aria-hidden="true">{isRecording ? "⏹️" : "🎙️"}</span>
-                <span>{isRecording ? " Parar" : " Gravar"}</span>
-              </button>
+          <div className={styles.recordButtonContainer}>
+            <RecordControl
+              capture={capture}
+              className={styles.recordButton}
+              disabled={canGoNext || audioRunning}
+              onAssistedCorrect={() => applyResult(true)}
+              onAssistedRetry={() => setFeedback(null)}
+              targetLabel={`letra ${letter}`}
+            />
           </div>
           <div className={styles.ButtonContainer}>
             <button

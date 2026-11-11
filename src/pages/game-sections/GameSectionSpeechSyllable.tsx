@@ -2,9 +2,10 @@ import { Letters } from "../../store/gameConstants";
 import { currentPhaseIndex, incrementTotalErrors } from "../../store/gameState";
 import { playAudio } from "../../utils/playAudio";
 import { useState, useEffect, useMemo, useRef } from "react";
-import useRecorder from "../../hooks/useRecorder";
+import useSpeechCapture from "../../hooks/useSpeechCapture";
+import RecordControl from "../../components/RecordControl";
+import Feedback, { type FeedbackKind } from "../../components/Feedback";
 import { useNavigate } from "react-router-dom";
-import sendRecording from "../../services/api/sendRecording";
 import { useAudioRunning } from "../../state/useAudioRunning";
 import { useShowText } from "../../state/useShowText";
 import useSectionRedirect from "../../hooks/useSectionRedirect";
@@ -17,7 +18,8 @@ export default function GameSectionSpeechSyllable() {
   const [canGoNext, setCanGoNext] = useState(false);
   const [clickedWord, setClickedWord] = useState("");
   const clickedWordRef = useRef<string>("");
-  const { isRecording, toggleRecording } = useRecorder(handleResult);
+  const [feedback, setFeedback] = useState<FeedbackKind>(null);
+  const capture = useSpeechCapture(handleAlternatives);
   const navigate = useNavigate();
   const [audioRunning, setAudioRunning] = useAudioRunning();
   const [showText] = useShowText();
@@ -30,40 +32,27 @@ export default function GameSectionSpeechSyllable() {
   );
   const firstSyllableAudio = syllables.length > 0 ? `silaba_${syllables[0]}` : null;
 
-  async function handleResult(audioBlob: Blob) {
-    try {
-      const transcript = await sendRecording(audioBlob);
-      const targetSyllable = clickedWordRef.current;
-      const idx = syllables.indexOf(targetSyllable);
-
-      if (idx !== -1 && matchesSyllable(transcript, targetSyllable)) {
-        setCanGoNextWords((prev) => {
-          const updated = [...prev];
-          updated[idx] = true;
-          const allDone = updated.every(Boolean);
-          setCanGoNext(allDone);
-          return updated;
-        });
-        playAudio("resposta_correta", setAudioRunning);
-        clickedWordRef.current = "";
-        setClickedWord("");
-      } else {
-        incrementTotalErrors();
-        const allDone = canGoNextWords.every(Boolean);
-        setCanGoNext(allDone);
-        playAudio("resposta_errada", setAudioRunning);
-      }
-    } catch (error) {
-      console.error("Falha ao processar áudio:", error);
-      if (error instanceof Error) {
-        const friendlyMessage = error.message?.trim()
-          ? error.message
-          : "Não foi possível processar o áudio. Tente novamente.";
-        alert(friendlyMessage);
-      }
-      const allDone = canGoNextWords.every(Boolean);
-      setCanGoNext(allDone);
+  function applyResult(targetSyllable: string, isMatch: boolean) {
+    const idx = syllables.indexOf(targetSyllable);
+    if (idx !== -1 && isMatch) {
+      const updated = [...canGoNextWords];
+      updated[idx] = true;
+      setCanGoNextWords(updated);
+      setCanGoNext(updated.every(Boolean));
+      setFeedback("correct");
+      playAudio("resposta_correta", setAudioRunning);
+      clickedWordRef.current = "";
+      setClickedWord("");
+    } else {
+      incrementTotalErrors();
+      setFeedback("wrong");
+      playAudio("resposta_errada", setAudioRunning);
     }
+  }
+
+  function handleAlternatives(alternatives: string[]) {
+    const target = clickedWordRef.current;
+    applyResult(target, alternatives.some((text) => matchesSyllable(text, target)));
   }
 
   useEffect(() => {
@@ -112,29 +101,24 @@ export default function GameSectionSpeechSyllable() {
                   {syll}
                 </div>
 
-                <button
-                  type="button"
+                <RecordControl
+                  capture={capture}
                   className={styles.recordButton}
-                  onClick={() => {
+                  active={clickedWord === syll}
+                  targetLabel={`sílaba ${syll}`}
+                  onToggle={() => {
                     clickedWordRef.current = syll;
                     setClickedWord(syll);
-                    toggleRecording();
+                    capture.toggle();
                   }}
-                  disabled={
-                    canGoNextWords[idx] ||
-                    (isRecording && clickedWord !== syll) ||
-                    audioRunning
-                  }
-                >
-                  <span aria-hidden="true">
-                    {isRecording && clickedWord === syll ? "⏹️" : "🎙️"}
-                  </span>
-                  <span>{isRecording && clickedWord === syll ? " Parar" : " Gravar"}</span>
-                </button>
+                  disabled={canGoNextWords[idx] || audioRunning}
+                  onAssistedCorrect={() => applyResult(syll, true)}
+                  onAssistedRetry={() => setFeedback(null)}
+                />
               </div>
             ))}
           </div>
-          {/* ⬆️ FIM DA LINHA */}
+          <Feedback kind={feedback} />
 
           {/* Navegação inferior dentro do container */}
           <button
