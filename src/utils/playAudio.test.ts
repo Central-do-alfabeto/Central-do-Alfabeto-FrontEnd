@@ -1,5 +1,5 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
-import { getSpokenText, playAudio } from "./playAudio";
+import { getSpokenText, playAudio, stopAudio } from "./playAudio";
 
 type Behavior = "play" | "missing" | "blocked";
 
@@ -7,6 +7,7 @@ const requested: string[] = [];
 let behavior: (path: string) => Behavior;
 
 class FakeAudio {
+  static instances: FakeAudio[] = [];
   private listeners: Record<string, Array<() => void>> = {};
   src: string;
   constructor(src: string) {
@@ -16,7 +17,15 @@ class FakeAudio {
   addEventListener(type: string, fn: () => void) {
     (this.listeners[type] ??= []).push(fn);
   }
+  paused = false;
+  pause() {
+    this.paused = true;
+  }
+  emit(type: string) {
+    this.listeners[type]?.forEach((fn) => fn());
+  }
   play(): Promise<void> {
+    FakeAudio.instances.push(this);
     const result = behavior(this.src);
     if (result === "play") return Promise.resolve();
     if (result === "blocked") return Promise.reject(new DOMException("blocked", "NotAllowedError"));
@@ -41,6 +50,7 @@ class FakeUtterance {
 
 beforeEach(() => {
   requested.length = 0;
+  FakeAudio.instances = [];
   vi.stubGlobal("Audio", FakeAudio);
   vi.stubGlobal("SpeechSynthesisUtterance", FakeUtterance);
   Object.defineProperty(window, "speechSynthesis", {
@@ -52,6 +62,7 @@ beforeEach(() => {
 });
 
 afterEach(() => {
+  stopAudio();
   vi.unstubAllGlobals();
   Reflect.deleteProperty(window, "speechSynthesis");
 });
@@ -120,6 +131,77 @@ describe("playAudio", () => {
     await flush();
 
     expect(setRunning).toHaveBeenLastCalledWith(false);
+  });
+});
+
+describe("uma única reprodução ativa", () => {
+  it("iniciar outro áudio para o anterior e ignora o fim do antigo", async () => {
+    behavior = () => "play";
+    const first = vi.fn();
+    const second = vi.fn();
+
+    playAudio("essa_letra_A_alfabeto", first);
+    await flush();
+    playAudio("essa_letra_B_alfabeto", second);
+    await flush();
+
+    const [oldAudio, newAudio] = FakeAudio.instances;
+    expect(oldAudio.paused).toBe(true);
+    expect(newAudio.paused).toBe(false);
+
+    first.mockClear();
+    second.mockClear();
+    oldAudio.emit("ended");
+    expect(first).not.toHaveBeenCalled();
+    expect(second).not.toHaveBeenCalled();
+
+    newAudio.emit("ended");
+    expect(second).toHaveBeenLastCalledWith(false);
+  });
+
+  it("stopAudio da tela dona para o áudio; de outra tela não mexe", async () => {
+    behavior = () => "play";
+    const mine = vi.fn();
+    const other = vi.fn();
+
+    playAudio("tela_inicial", mine);
+    await flush();
+
+    stopAudio(other);
+    expect(FakeAudio.instances[0].paused).toBe(false);
+
+    stopAudio(mine);
+    expect(FakeAudio.instances[0].paused).toBe(true);
+    expect(mine).toHaveBeenLastCalledWith(false);
+  });
+
+  it("parar cancela também a voz sintetizada e ignora o fim dela", async () => {
+    behavior = () => "missing";
+    const setRunning = vi.fn();
+
+    playAudio("palavra_Kiwi", setRunning);
+    await flush();
+    expect(speak).toHaveBeenCalledTimes(1);
+    const utterance = speak.mock.calls[0][0] as FakeUtterance;
+
+    cancel.mockClear();
+    stopAudio(setRunning);
+    expect(cancel).toHaveBeenCalled();
+
+    setRunning.mockClear();
+    utterance.onend?.();
+    expect(setRunning).not.toHaveBeenCalled();
+  });
+
+  it("áudio parado enquanto carregava não cai na voz sintetizada", async () => {
+    behavior = () => "missing";
+    const setRunning = vi.fn();
+
+    playAudio("palavra_Yoga", setRunning);
+    stopAudio(setRunning);
+    await flush();
+
+    expect(speak).not.toHaveBeenCalled();
   });
 });
 
