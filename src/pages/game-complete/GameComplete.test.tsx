@@ -5,16 +5,30 @@ import GameComplete from "./GameComplete";
 
 vi.mock("../../utils/playAudio", () => ({ playAudio: vi.fn() }));
 
-describe("GameComplete", () => {
-  it("mostra a tela de conclusão com botão para voltar ao menu", () => {
-    render(
-      <MemoryRouter>
-        <GameComplete />
-      </MemoryRouter>
-    );
+function renderScreen() {
+  render(
+    <MemoryRouter>
+      <GameComplete />
+    </MemoryRouter>
+  );
+}
 
-    // Consultas por nome: no modo demonstração a tela também mostra "recomeçar do início".
+describe("GameComplete", () => {
+  it("com backend, mostra a conclusão e o botão de voltar ao menu", () => {
+    vi.stubEnv("VITE_API_URL", "http://localhost:8080");
+    renderScreen();
+
     expect(screen.getByRole("status", { name: /aprendeu todas as letras/i })).toBeInTheDocument();
     expect(screen.getByRole("button", { name: /voltar ao menu/i })).toBeInTheDocument();
+    expect(screen.queryByRole("button", { name: /recomeçar do início/i })).not.toBeInTheDocument();
+  });
+
+  it("no modo demonstração, também oferece recomeçar do início", () => {
+    vi.stubEnv("VITE_API_URL", "");
+    renderScreen();
+
+    expect(screen.getByRole("status", { name: /aprendeu todas as letras/i })).toBeInTheDocument();
+    expect(screen.getByRole("button", { name: /voltar ao menu/i })).toBeInTheDocument();
+    expect(screen.getByRole("button", { name: /recomeçar do início/i })).toBeInTheDocument();
   });
 });

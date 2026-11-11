@@ -47,6 +47,10 @@ export default defineConfig(({ mode }) => {
       setupFiles: ['./src/test/setup.ts'],
       include: ['src/**/*.test.{ts,tsx}'],
       clearMocks: true,
+      // Ambiente fixo: o .env local não influencia os testes. Cada teste declara o modo
+      // de que precisa com vi.stubEnv (VITE_API_URL vazio = modo demonstração).
+      env: { VITE_API_URL: '', VITE_SPEECH_ENGINE: '', VITE_BASE_PATH: '' },
+      unstubEnvs: true,
       pool: 'threads' as const,
     },
   }
