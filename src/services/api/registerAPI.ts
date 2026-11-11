@@ -6,7 +6,6 @@ export async function registerAPI(
     fullName: string,
     AccountType: string
 ) {
-    console.log("Função ativada");
 
     const sanitizedRole = AccountType === "players" || AccountType === "educators"
         ? AccountType
@@ -21,7 +20,6 @@ export async function registerAPI(
     try {
         const response = await apiClient.post(`/${sanitizedRole}/register`, payload);
 
-        console.log(response);
         return response.data;
     } catch (error) {
         if (error instanceof Error) {
