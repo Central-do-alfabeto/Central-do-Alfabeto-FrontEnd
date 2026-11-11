@@ -13,7 +13,8 @@ describe("GameComplete", () => {
       </MemoryRouter>
     );
 
-    expect(screen.getByRole("status")).toHaveAccessibleName(/aprendeu todas as letras/i);
-    expect(screen.getByRole("button")).toBeInTheDocument();
+    // Consultas por nome: no modo demonstração a tela também mostra "recomeçar do início".
+    expect(screen.getByRole("status", { name: /aprendeu todas as letras/i })).toBeInTheDocument();
+    expect(screen.getByRole("button", { name: /voltar ao menu/i })).toBeInTheDocument();
   });
 });
