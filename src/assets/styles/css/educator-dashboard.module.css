@@ -352,3 +352,39 @@
   transform: translateY(-1px);
   box-shadow: 0 4px 12px rgba(179, 43, 43, 0.18);
 }
+
+/* 👆 Alvos de toque de pelo menos 44px */
+.logoutButton,
+.addStudentButton {
+  min-height: 44px;
+}
+
+.snapshotsSection {
+  overflow-x: auto;
+}
+
+/* 📱 Telas estreitas: a lista de alunos passa para cima do conteúdo */
+@media (max-width: 800px) {
+  .header {
+    padding: 0.75rem 1rem;
+  }
+
+  .layout {
+    flex-direction: column;
+    padding: 1rem;
+    gap: 1rem;
+  }
+
+  .sidebar {
+    width: auto;
+    box-sizing: border-box;
+  }
+
+  .mainContent {
+    padding: 1rem;
+  }
+
+  .studentHeader {
+    flex-direction: column;
+  }
+}

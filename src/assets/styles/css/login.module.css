@@ -1,5 +1,6 @@
 /* 🌿 Container de página com fundo */
 .page {
+  box-sizing: border-box;
   font-family: 'Comic Sans MS', cursive, sans-serif;
   background-color: #b4f5b1;
   min-height: 100vh;
@@ -203,4 +204,32 @@
   color: #7b241c;
   font-weight: bold;
   text-align: center;
+}
+
+/* 👆 Alvos de toque de pelo menos 44px */
+.togglePasswordButton {
+  width: 44px;
+  height: 44px;
+  right: 4px;
+}
+
+.keepConnected {
+  min-height: 44px;
+}
+
+.keepConnected input {
+  width: 24px;
+  height: 24px;
+}
+
+.link {
+  display: inline-flex;
+  align-items: center;
+  min-height: 44px;
+}
+
+.backButton {
+  min-height: 44px;
+  min-width: 44px;
+  padding: 0 12px;
 }

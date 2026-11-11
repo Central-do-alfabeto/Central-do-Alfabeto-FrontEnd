@@ -1,5 +1,6 @@
 /* 🌿 Fundo geral */
 .page {
+  box-sizing: border-box;
   background-color: var(--color-background, #f0f6fd);
   min-height: 100vh;
   display: flex;
@@ -145,4 +146,19 @@
   .syllableRow { flex-direction: column; gap: 20px; }
   .syllable { font-size: 34px; }
   .recordButton { font-size: 15px; padding: 12px 18px; }
+}
+
+/* 👆 Alvo de toque confortável para cada sílaba */
+.syllable {
+  min-width: 44px;
+  min-height: 44px;
+  text-align: center;
+  padding: 0 6px;
+  box-sizing: border-box;
+}
+
+@media (max-width: 480px) {
+  .syllableRow {
+    gap: 16px;
+  }
 }

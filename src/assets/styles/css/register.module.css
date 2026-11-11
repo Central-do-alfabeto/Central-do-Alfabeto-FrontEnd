@@ -1,5 +1,6 @@
 /* 🌿 Container de página — cobre 100% da tela */
 .page {
+  box-sizing: border-box;
   width: 100vw;
   height: 100vh;
   min-height: 100vh;
@@ -213,4 +214,10 @@ h1 {
   color: #7b241c;
   font-weight: bold;
   text-align: center;
+}
+
+/* 👆 Alvo de toque de pelo menos 44px */
+.togglePasswordButton {
+  width: 44px;
+  height: 44px;
 }

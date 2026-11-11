@@ -1,5 +1,6 @@
 /* 🌿 Fundo geral */
 .page {
+  box-sizing: border-box;
   background-color: var(--color-background, #f0f6fd);
   min-height: 100vh;
   display: flex;

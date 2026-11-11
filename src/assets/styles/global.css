@@ -38,3 +38,10 @@ html, body {
     scroll-behavior: auto !important;
   }
 }
+
+/* Imagens e mídia nunca passam da largura da tela. */
+img,
+svg,
+video {
+  max-width: 100%;
+}
