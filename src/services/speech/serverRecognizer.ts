@@ -20,9 +20,11 @@ export class ServerSpeechRecognizer implements SpeechRecognizer {
   async start(handlers: SpeechHandlers): Promise<void> {
     this.aborted = false;
 
+    let stream: MediaStream;
     try {
-      this.stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+      stream = await navigator.mediaDevices.getUserMedia({ audio: true });
     } catch (error) {
+      if (this.aborted) return;
       const name = error instanceof DOMException ? error.name : "";
       if (name === "NotAllowedError" || name === "SecurityError") {
         handlers.onError("permission-denied");
@@ -35,8 +37,16 @@ export class ServerSpeechRecognizer implements SpeechRecognizer {
       return;
     }
 
+    // abort() pode ter sido chamado enquanto o navegador pedia a permissão do microfone:
+    // o stream chega tarde e precisa ser encerrado aqui, senão o microfone fica aberto.
+    if (this.aborted) {
+      stream.getTracks().forEach((track) => track.stop());
+      return;
+    }
+
+    this.stream = stream;
     const chunks: Blob[] = [];
-    const recorder = new MediaRecorder(this.stream);
+    const recorder = new MediaRecorder(stream);
     this.recorder = recorder;
 
     recorder.ondataavailable = (event) => {
