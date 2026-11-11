@@ -18,13 +18,16 @@ import NotFound from '../../pages/not-found/NotFound';
 import ProtectedRoute from '../ProtectedRoute';
 import ProgressProtectedRoute from '../ProgressProtectedRoute';
 
+// Em subcaminhos (GitHub Pages) o BASE_URL termina com "/"; o basename do roteador não deve.
+const ROUTER_BASENAME = import.meta.env.BASE_URL.replace(/\/$/, '') || '/';
+
 export function Router() {
   // Modo demonstração (sem backend): entra direto no jogo; contas e painel do educador não existem.
   const demo = isDemoMode();
   const toGame = <Navigate to="/PlayerMenu" replace />;
 
   return (
-    <BrowserRouter>
+    <BrowserRouter basename={ROUTER_BASENAME}>
       <Routes>
         <Route path="/" element={demo ? toGame : <Index/>}/>
         <Route path="/Login" element={demo ? toGame : <Login/>}/>
