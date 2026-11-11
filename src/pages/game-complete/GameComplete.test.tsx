@@ -3,7 +3,7 @@ import { render, screen } from "@testing-library/react";
 import { MemoryRouter } from "react-router-dom";
 import GameComplete from "./GameComplete";
 
-vi.mock("../../utils/playAudio", () => ({ playAudio: vi.fn() }));
+vi.mock("../../utils/playAudio", () => ({ playAudio: vi.fn(), stopAudio: vi.fn() }));
 
 function renderScreen() {
   render(

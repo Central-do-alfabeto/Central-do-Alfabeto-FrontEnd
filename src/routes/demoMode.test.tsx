@@ -7,7 +7,7 @@ const { post, get, request } = vi.hoisted(() => ({ post: vi.fn(), get: vi.fn(), 
 vi.mock("../services/api/apiClient", () => ({
   default: { post, get, request, interceptors: { request: { use: vi.fn() } } },
 }));
-vi.mock("../utils/playAudio", () => ({ playAudio: vi.fn() }));
+vi.mock("../utils/playAudio", () => ({ playAudio: vi.fn(), stopAudio: vi.fn() }));
 
 import { Router } from "./private/router";
 import GameSectionCongratulations from "../pages/game-sections/GameSectionCongratulations";

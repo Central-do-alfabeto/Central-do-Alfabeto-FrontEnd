@@ -2,7 +2,7 @@ import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { cleanup, render, screen } from "@testing-library/react";
 import { MemoryRouter, Route, Routes } from "react-router-dom";
 
-vi.mock("../../utils/playAudio", () => ({ playAudio: vi.fn() }));
+vi.mock("../../utils/playAudio", () => ({ playAudio: vi.fn(), stopAudio: vi.fn() }));
 
 const MARKER_KEY = "phaseCompletion.v1";
 const PROGRESS_KEY = "centralDoAlfabeto.demo.progress.v1";
