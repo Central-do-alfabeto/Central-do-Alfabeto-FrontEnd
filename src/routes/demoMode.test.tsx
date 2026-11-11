@@ -11,6 +11,7 @@ vi.mock("../utils/playAudio", () => ({ playAudio: vi.fn() }));
 
 import { Router } from "./private/router";
 import GameSectionCongratulations from "../pages/game-sections/GameSectionCongratulations";
+import { markPhaseCompletion } from "../store/phaseCompletion";
 import { readLocalProgress } from "../services/progress/localProgress";
 
 function expectNoHttp() {
@@ -45,6 +46,7 @@ describe("modo demonstração (sem VITE_API_URL)", () => {
   );
 
   it("salva o progresso no localStorage ao concluir a fase, sem chamadas HTTP", async () => {
+    markPhaseCompletion(0, 0, 0);
     render(
       <MemoryRouter>
         <GameSectionCongratulations />

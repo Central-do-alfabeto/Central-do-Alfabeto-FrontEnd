@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { resetLocalProgress } from "../services/progress/localProgress";
+import { clearPhaseCompletion } from "../store/phaseCompletion";
 import { resetTotalValues, setInGameFlow, syncCurrentPhaseIndex } from "../store/gameState";
 import styles from "../assets/styles/css/restart.module.css";
 
@@ -10,6 +11,7 @@ export default function RestartProgress({ onRestarted }: { onRestarted?: () => v
 
   const restart = () => {
     resetLocalProgress();
+    clearPhaseCompletion();
     syncCurrentPhaseIndex(0);
     resetTotalValues();
     setInGameFlow(false);

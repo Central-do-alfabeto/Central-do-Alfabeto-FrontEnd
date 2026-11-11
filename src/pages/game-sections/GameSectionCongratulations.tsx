@@ -1,76 +1,73 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
-import { useNavigate } from "react-router-dom";
-import {
-  setCurrentPhaseIndex,
-  resetTotalValues,
-  currentPhaseIndex,
-  setInGameFlow,
-  TotalErrors,
-  TotalAudioReproductions,
-} from "../../store/gameState";
+import { Navigate, useNavigate } from "react-router-dom";
+import { currentPhaseIndex, resetTotalValues, setInGameFlow, syncCurrentPhaseIndex } from "../../store/gameState";
 import { useAudioRunning } from "../../state/useAudioRunning";
 import { useShowText } from "../../state/useShowText";
 import { getProgressService } from "../../services/progress";
-import { Letters } from "../../store/gameConstants"; 
+import { Letters } from "../../store/gameConstants";
+import { markPhaseCompletionSaved, readPhaseCompletion, type PhaseCompletion } from "../../store/phaseCompletion";
 import styles from "../../assets/styles/css/game-section-congratulations.module.css";
 import useOneShotAudio from "../../hooks/useOneShotAudio";
 import { getRouteAfterPhase } from "../../utils/phaseFlow";
 
 export default function GameSectionCongratulations() {
+  // A fase concluída vem do registro feito ao terminar a última atividade. Sem registro
+  // (URL aberta direto), não há o que salvar: volta ao menu sem conceder progresso.
+  const [completion] = useState(readPhaseCompletion);
+
+  if (!completion || !Letters[completion.phase]) {
+    return <Navigate to="/PlayerMenu" replace />;
+  }
+
+  return <CongratulationsContent completion={completion} />;
+}
+
+function CongratulationsContent({ completion }: { completion: PhaseCompletion }) {
   const [showText] = useShowText();
   const [audioRunning, setAudioRunning] = useAudioRunning();
   const navigate = useNavigate();
   const hasSyncedProgress = useRef(false);
-  
-  // 1. Captura o índice inicial para evitar reavaliações após o incremento
-  const initialPhaseIndexRef = useRef(currentPhaseIndex);
-  const completedLetter = useMemo(
-    () => Letters[initialPhaseIndexRef.current].letter,
-    []
-  );
 
-  const congratulationAudioName = useMemo(
-    () => `Parabens_aprendeu_${completedLetter}`,
-    [completedLetter]
-  );
-
-  const completedPhaseIndex = initialPhaseIndexRef.current;
-  const errorsSnapshot = TotalErrors;
-  const audioSnapshot = TotalAudioReproductions;
+  const completedPhaseIndex = completion.phase;
+  const completedLetter = useMemo(() => Letters[completedPhaseIndex].letter, [completedPhaseIndex]);
+  const congratulationAudioName = `Parabens_aprendeu_${completedLetter}`;
 
   useOneShotAudio(!showText, congratulationAudioName, setAudioRunning);
 
-  const phaseAdvanced = useRef(false);
-  const [saveState, setSaveState] = useState<"saving" | "saved" | "error">("saving");
+  const [saveState, setSaveState] = useState<"saving" | "saved" | "error">(
+    completion.saved ? "saved" : "saving"
+  );
 
   const saveProgress = useCallback(async () => {
     setSaveState("saving");
     try {
       await getProgressService().saveCompletedPhase({
-        currentPhaseIndex: completedPhaseIndex,
-        errorsData: errorsSnapshot,
-        soundRepeatsData: audioSnapshot,
+        currentPhaseIndex: completion.phase,
+        errorsData: completion.errors,
+        soundRepeatsData: completion.audioReproductions,
       });
 
-      if (!phaseAdvanced.current) {
-        phaseAdvanced.current = true;
-        setCurrentPhaseIndex(1);
-        resetTotalValues();
+      // Idempotente: o índice é definido de forma absoluta e nunca retrocede.
+      if (currentPhaseIndex < completion.phase + 1) {
+        syncCurrentPhaseIndex(completion.phase + 1);
       }
+      resetTotalValues();
+      markPhaseCompletionSaved();
       setSaveState("saved");
     } catch (error) {
       console.error("Falha ao sincronizar progresso do jogador:", error);
       setSaveState("error");
     }
-  }, [audioSnapshot, completedPhaseIndex, errorsSnapshot]);
+  }, [completion]);
 
   useEffect(() => {
-    if (hasSyncedProgress.current) {
+    // Ao recarregar depois de salvo, só mostra o sucesso: nada é salvo nem avançado de novo.
+    if (completion.saved || hasSyncedProgress.current) {
       return;
     }
     hasSyncedProgress.current = true;
     void saveProgress();
-  }, [saveProgress]);
+  }, [completion.saved, saveProgress]);
 
   return (
     <div className={styles.page}>

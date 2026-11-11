@@ -1,5 +1,6 @@
 // gameState.ts
 import { getAuthSession, updatePlayerMetadata } from "./auth";
+import { clearPhaseCompletion } from "./phaseCompletion";
 import { isDemoMode } from "../config/env";
 import { readLocalProgress } from "../services/progress/localProgress";
 
@@ -61,6 +62,7 @@ export function clearPlayerSessionState() {
 
   inGameFlow = false;
   sessionStorage.removeItem("inGameFlow");
+  clearPhaseCompletion();
 }
 
 // currentPhaseIndex
