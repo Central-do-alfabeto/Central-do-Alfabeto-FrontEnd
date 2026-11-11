@@ -1,4 +1,5 @@
 import { useNavigate, Link } from "react-router-dom";
+import { isAxiosError } from "axios";
 import { useState } from "react";
 import { loginAPI } from "../../services/api/loginAPI";
 import { clearPlayerSessionState, setPlayerID, syncCurrentPhaseIndex } from "../../store/gameState";
@@ -28,6 +29,7 @@ export default function Login() {
     const [password, setPassword] = useState("");
     const [showPassword, setShowPassword] = useState(false);
     const [isLoading, setIsLoading] = useState(false);
+    const [errorMessage, setErrorMessage] = useState<string | null>(null);
     const [keepConnected, setKeepConnected] = useState(false);
     const navigate = useNavigate();
 
@@ -39,6 +41,7 @@ export default function Login() {
         }
 
         setIsLoading(true);
+        setErrorMessage(null);
 
         try {
             const user = await loginAPI(email, password);
@@ -83,8 +86,13 @@ export default function Login() {
             }
 
         } catch (e: unknown) {
-            alert('Email ou senha incorretos!');
-            console.log(e);
+            const noResponse = isAxiosError(e) && !e.response;
+            setErrorMessage(
+                noResponse
+                    ? 'Não foi possível conectar ao servidor. Verifique a internet e tente de novo.'
+                    : 'E-mail ou senha incorretos. Confira os dados e tente de novo.'
+            );
+            console.error('Falha no login:', e);
         } finally {
             setIsLoading(false);
         }
@@ -101,6 +109,8 @@ export default function Login() {
                     <input
                         type="email"
                         placeholder="E-mail"
+                        aria-label="E-mail"
+                        autoComplete="email"
                         value={email}
                         onChange={(e) => setEmail(e.target.value)}
                         required
@@ -111,6 +121,8 @@ export default function Login() {
                         <input
                             type={showPassword ? "text" : "password"}
                             placeholder="Senha"
+                            aria-label="Senha"
+                            autoComplete="current-password"
                             value={password}
                             onChange={(e) => setPassword(e.target.value)}
                             required
@@ -136,6 +148,12 @@ export default function Login() {
                         />
                         <span>Manter conectado</span>
                     </label>
+
+                    {errorMessage && (
+                        <p role="alert" className={styles.errorMessage}>
+                            {errorMessage}
+                        </p>
+                    )}
 
                     <button type="submit" className={styles.button} disabled={isLoading}>
                         {isLoading ? "Entrando..." : "Login"}

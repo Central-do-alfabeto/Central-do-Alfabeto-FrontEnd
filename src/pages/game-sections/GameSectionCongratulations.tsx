@@ -106,7 +106,7 @@ export default function GameSectionCongratulations() {
             {showText && <span> Próxima fase</span>}
           </button>
 
-          <button
+          <button aria-label="Voltar ao menu"
             type="button"
             className={styles.returnButton}
             onClick={() => {

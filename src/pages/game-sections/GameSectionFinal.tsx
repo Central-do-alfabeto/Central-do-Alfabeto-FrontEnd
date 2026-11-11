@@ -104,6 +104,7 @@ function GameSectionFinalContent({ currentWordsSet }: { currentWordsSet: WordSet
                   playAudio(`palavra_${word1.word}`, setAudioRunning, true);
                 }}
                 role="button"
+                aria-label={`Palavra ${word1.word}. Ouvir a pronúncia`}
                 tabIndex={0}
                 onKeyDown={(event) => {
                   if (audioRunning) {
@@ -143,6 +144,7 @@ function GameSectionFinalContent({ currentWordsSet }: { currentWordsSet: WordSet
                   playAudio(`palavra_${word2.word}`, setAudioRunning, true);
                 }}
                 role="button"
+                aria-label={`Palavra ${word2.word}. Ouvir a pronúncia`}
                 tabIndex={0}
                 onKeyDown={(event) => {
                   if (audioRunning) {
@@ -182,6 +184,7 @@ function GameSectionFinalContent({ currentWordsSet }: { currentWordsSet: WordSet
                   playAudio(`palavra_${word3.word}`, setAudioRunning, true);
                 }}
                 role="button"
+                aria-label={`Palavra ${word3.word}. Ouvir a pronúncia`}
                 tabIndex={0}
                 onKeyDown={(event) => {
                   if (audioRunning) {
@@ -213,7 +216,7 @@ function GameSectionFinalContent({ currentWordsSet }: { currentWordsSet: WordSet
 
           <Feedback kind={feedback} />
 
-          <button
+          <button aria-label="Ir para a próxima fase"
             type="button"
             className={styles.nextButton}
             disabled={!canGoNext || audioRunning}
@@ -223,7 +226,7 @@ function GameSectionFinalContent({ currentWordsSet }: { currentWordsSet: WordSet
             {showText && <span> Próxima fase</span>}
           </button>
 
-          <button
+          <button aria-label="Voltar ao menu"
             type="button"
             className={styles.returnButton}
             onClick={() => navigate("/PlayerMenu")}

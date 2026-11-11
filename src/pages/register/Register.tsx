@@ -11,6 +11,7 @@ export default function Register() {
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const navigate = useNavigate();
   const location = useLocation();
 
@@ -25,17 +26,18 @@ export default function Register() {
       return;
     }
 
+    setErrorMessage(null);
     const sanitizedNome = nomeCompleto.trim().replace(/\s+/g, " ");
 
     if (!sanitizedNome || !nomeRegex.test(sanitizedNome)) {
-      alert("O nome deve conter apenas letras e espaços.");
+      setErrorMessage("O nome deve conter apenas letras e espaços.");
       setNomeCompleto(sanitizedNome);
       return;
     }
 
     setNomeCompleto(sanitizedNome);
     if (!senhaRegex.test(password)) {
-      alert("A senha deve ter no mínimo 8 caracteres, incluindo letras e números.");
+      setErrorMessage("A senha deve ter no mínimo 8 caracteres, incluindo letras e números.");
       return;
     }
 
@@ -50,7 +52,7 @@ export default function Register() {
       } else {
         console.error("Erro no cadastro:", error);
       }
-      alert("Erro ao cadastrar. Tente novamente.");
+      setErrorMessage("Não foi possível cadastrar. Verifique os dados e a internet e tente de novo.");
     } finally {
       setIsSubmitting(false);
     }
@@ -70,6 +72,8 @@ export default function Register() {
           <input
             type="text"
             placeholder="Nome Completo"
+            aria-label="Nome completo"
+            autoComplete="name"
             value={nomeCompleto}
             onChange={(e) => setNomeCompleto(e.target.value)}
             maxLength={100}
@@ -79,6 +83,8 @@ export default function Register() {
           <input
             type="email"
             placeholder="E-mail"
+            aria-label="E-mail"
+            autoComplete="email"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
             maxLength={100}
@@ -89,6 +95,8 @@ export default function Register() {
             <input
               type={showPassword ? "text" : "password"}
               placeholder="Senha"
+              aria-label="Senha"
+              autoComplete="new-password"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
               maxLength={32}
@@ -104,6 +112,12 @@ export default function Register() {
               {showPassword ? <AiOutlineEyeInvisible size={20} /> : <AiOutlineEye size={20} />}
             </button>
           </div>
+
+          {errorMessage && (
+            <p role="alert" className={styles.errorMessage}>
+              {errorMessage}
+            </p>
+          )}
 
           <div className={styles.buttonGroup}>
             <button type="submit" disabled={isSubmitting}>

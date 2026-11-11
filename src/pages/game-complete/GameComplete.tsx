@@ -35,7 +35,7 @@ export default function GameComplete() {
         )}
 
         <div className={styles.buttonRow}>
-          <button
+          <button aria-label="Voltar ao menu"
             type="button"
             className={styles.returnButton}
             onClick={() => {

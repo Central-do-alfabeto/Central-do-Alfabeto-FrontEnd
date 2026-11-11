@@ -43,6 +43,7 @@ export default function GameSectionPresentation() {
                         );
                     }}
                     role="button"
+                    aria-label={`Letra ${letter}. Ouvir a pronúncia`}
                     tabIndex={0}
                     onKeyDown={(event) => {
                         if (event.key === "Enter" || event.key === " ") {
@@ -62,7 +63,7 @@ export default function GameSectionPresentation() {
                 </section>
 
                 <div className={styles.buttonRow}>
-                    <button
+                    <button aria-label="Voltar ao menu"
                         type="button"
                         className={styles.returnButton}
                         onClick={() => navigate("/PlayerMenu")}
@@ -71,7 +72,7 @@ export default function GameSectionPresentation() {
                         <span aria-hidden="true">⬅️</span>
                         {showText && <span> Voltar ao menu</span>}
                     </button>
-                    <button
+                    <button aria-label="Ir para a próxima fase"
                         type="button"
                         className={styles.nextButton}
                         onClick={() => redirect("GameSectionPresentation")}

@@ -87,6 +87,7 @@ export default function GameSectionSpeechSyllable() {
                     playAudio(`silaba_${syll}`, setAudioRunning, true);
                   }}
                   role="button"
+                  aria-label={`Sílaba ${syll}. Ouvir a pronúncia`}
                   tabIndex={0}
                   onKeyDown={(event) => {
                     if (event.key === "Enter" || event.key === " ") {
@@ -121,7 +122,7 @@ export default function GameSectionSpeechSyllable() {
           <Feedback kind={feedback} />
 
           {/* Navegação inferior dentro do container */}
-          <button
+          <button aria-label="Ir para a próxima fase"
             type="button"
             className={styles.nextButton}
             disabled={!canGoNext || audioRunning}
@@ -131,7 +132,7 @@ export default function GameSectionSpeechSyllable() {
             {showText && <span> Próxima fase</span>}
           </button>
 
-          <button
+          <button aria-label="Voltar ao menu"
             type="button"
             className={styles.returnButton}
             onClick={() => navigate("/PlayerMenu")}

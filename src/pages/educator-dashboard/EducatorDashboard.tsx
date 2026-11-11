@@ -254,12 +254,12 @@ export default function EducatorDashboard() {
             </button>
           </div>
 
-          {fetchError && <p className={styles.error}>{fetchError}</p>}
+          {fetchError && <p className={styles.error} role="alert">{fetchError}</p>}
 
           <div className={styles.studentList}>
             {isLoading ? (
               <p className={styles.feedback}>Carregando alunos...</p>
-            ) : students.length === 0 ? (
+            ) : fetchError ? null : students.length === 0 ? (
               <p className={styles.feedback}>Nenhum aluno vinculado ainda.</p>
             ) : (
               studentButtons
@@ -269,7 +269,7 @@ export default function EducatorDashboard() {
 
         <main className={styles.mainContent}>
           {progressError ? (
-            <div className={styles.errorPanel}>{progressError}</div>
+            <div className={styles.errorPanel} role="alert">{progressError}</div>
           ) : isProgressLoading && !selectedStudentProgress ? (
             <p className={styles.feedback}>Carregando progresso do aluno...</p>
           ) : selectedStudentProgress ? (
@@ -321,14 +321,23 @@ export default function EducatorDashboard() {
       </div>
 
       {isModalOpen && (
-        <div className={styles.modalOverlay} role="dialog" aria-modal="true">
+        <div
+          className={styles.modalOverlay}
+          role="dialog"
+          aria-modal="true"
+          aria-labelledby="add-student-title"
+          onKeyDown={(event) => {
+            if (event.key === "Escape") closeModal();
+          }}
+        >
           <div className={styles.modal}>
-            <h3 className={styles.modalTitle}>Adicionar aluno</h3>
+            <h3 id="add-student-title" className={styles.modalTitle}>Adicionar aluno</h3>
             <form className={styles.modalForm} onSubmit={handleAddStudent}>
               <label className={styles.modalField}>
                 <span>Email</span>
                 <input
                   type="email"
+                  autoFocus
                   value={studentEmail}
                   onChange={(event) => setStudentEmail(event.target.value)}
                   required
@@ -345,7 +354,7 @@ export default function EducatorDashboard() {
                 />
               </label>
 
-              {modalError && <p className={styles.modalError}>{modalError}</p>}
+              {modalError && <p className={styles.modalError} role="alert">{modalError}</p>}
 
               <div className={styles.modalActions}>
                 <button type="button" onClick={closeModal} className={styles.modalSecondaryButton}>

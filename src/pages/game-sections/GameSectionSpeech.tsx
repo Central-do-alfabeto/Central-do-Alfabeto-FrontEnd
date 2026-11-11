@@ -73,6 +73,7 @@ export default function GameSectionSpeech() {
             );
           }}
           role="button"
+          aria-label={`Letra ${letter}. Ouvir a pronúncia`}
           tabIndex={0}
           onKeyDown={(event) => {
             if (event.key === "Enter" || event.key === " ") {
@@ -105,7 +106,7 @@ export default function GameSectionSpeech() {
             />
           </div>
           <div className={styles.ButtonContainer}>
-            <button
+            <button aria-label="Voltar ao menu"
               type="button"
               className={styles.returnButton}
               onClick={() => navigate("/PlayerMenu")}
